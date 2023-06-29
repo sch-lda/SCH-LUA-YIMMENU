@@ -231,3 +231,69 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除自身悬赏", function()
     globals.set_int(1+2359296+5150+13,2880000)   
 end)
     
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("玩家选项-请在Yim玩家列表选择玩家") 
+
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("生成笼子", function()
+    local objHash <const> = MISC.GET_HASH_KEY("prop_fnclink_03e")
+    STREAMING.REQUEST_MODEL(objHash)
+
+    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+
+    pos.z = pos.z - 1.0
+    local object = {}
+
+    object[1] = OBJECT.CREATE_OBJECT(objHash, pos.x - 1.5, pos.y + 1.5, pos.z,true, 1, 0)
+    object[2] = OBJECT.CREATE_OBJECT(objHash, pos.x - 1.5, pos.y - 1.5, pos.z,true, 1, 0)
+
+    object[3] = OBJECT.CREATE_OBJECT(objHash, pos.x + 1.5, pos.y + 1.5, pos.z,true, 1, 0)
+    local rot_3 = ENTITY.GET_ENTITY_ROTATION(object[3], 2)
+    rot_3.z = -90.0
+    ENTITY.SET_ENTITY_ROTATION(object[3], rot_3.x, rot_3.y, rot_3.z, 1, true)
+
+    object[4] = OBJECT.CREATE_OBJECT(objHash, pos.x - 1.5, pos.y + 1.5, pos.z,true, 1, 0)
+    local rot_4 = ENTITY.GET_ENTITY_ROTATION(object[4], 2)
+    rot_4.z = -90.0
+    ENTITY.SET_ENTITY_ROTATION(object[4], rot_4.x, rot_4.y, rot_4.z, 1, true)
+
+    for i = 1, 4 do ENTITY.FREEZE_ENTITY_POSITION(object[i], true) end
+    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(objHash)
+
+end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试1", function()
+    local CrashModel = MISC.GET_HASH_KEY("prop_fragtest_cnst_04")
+    local Coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(Ped)
+    TASK.CLEAR_PED_SECONDARY_TASK(Ped)
+
+    while STREAMING.HAS_MODEL_LOADED(CrashModel) ~= 1 do
+    
+        STREAMING.REQUEST_MODEL(CrashModel)
+        script.sleep(100)
+        
+    end
+
+    local Object = OBJECT.CREATE_OBJECT(CrashModel, Coords.x, Coords.y, Coords.z, TRUE, TRUE, FALSE)
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(Object, NULL, NULL)
+
+    script.sleep(1000)
+
+    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(CrashModel)
+    entity.delete_entity(Object)
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(Object, NULL, NULL)
+
+end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("全局选项") 
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("全局爆炸", function()
+    for i = 0, 31 do
+        FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
+    end
+end)

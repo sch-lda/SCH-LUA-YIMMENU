@@ -8,6 +8,26 @@ function upgrade_vehicle(vehicle)
 end
 ]]
 
+      
+function CreatePed(index, Hash, Pos, Heading)
+    STREAMING.REQUEST_MODEL(Hash)
+    while not STREAMING.HAS_MODEL_LOADED(Hash) do script.yield() end
+    local SpawnedVehicle = PED.CREATE_PED(index, Hash, Pos.x, Pos.y, Pos.z, Heading, true, true)
+    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
+    return SpawnedVehicle
+end
+
+function CreateObject(Hash, Pos, static)
+    STREAMING.REQUEST_MODEL(Hash)
+    while not STREAMING.HAS_MODEL_LOADED(Hash) do script.yield() end
+    local SpawnedVehicle = create_object(Hash, Pos)
+    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
+    if static then
+        ENTITY.FREEZE_ENTITY_POSITION(SpawnedVehicle, true)
+    end
+    return SpawnedVehicle
+end
+
 function create_object(hash, pos)
     gui.show_message("Debughash", hash)
    -- gui.show_message("DebugX", pos.x)
@@ -47,6 +67,21 @@ function Create_Network_Ped(pedType, modelHash, x, y, z, heading)
     return ped
 end
 
+function CreateVehicle(Hash, Pos, Heading, Invincible)
+    gui.show_message("Debugvehhash", Hash)
+
+    STREAMING.REQUEST_MODEL(Hash)
+    while not STREAMING.HAS_MODEL_LOADED(Hash) do script.yield() end
+    local SpawnedVehicle = VEHICLE.CREATE_VEHICLE(Hash, Pos.x,Pos.y,Pos.z, Heading , true, true, true)
+    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
+    if Invincible then
+        ENTITY.SET_ENTITY_INVINCIBLE(SpawnedVehicle, true)
+    end
+    gui.show_message("Debugvehhash", SpawnedVehicle)
+
+    return SpawnedVehicle
+end
+
 --------------------------------------------------------------------------------------- MPx
 
 local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
@@ -59,7 +94,7 @@ else
 end
 
 --gui.show_message("Debugmpx", mpx.."H4_")
----------------------------------------------------------------------------------------
+
 --[[
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试6", function()
 
@@ -123,7 +158,7 @@ end)
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("一键配置前置(猎豹雕像)", function()
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(猎豹雕像)", function()
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 5, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 131071, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 63, true)
@@ -148,7 +183,7 @@ end)
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("一键配置前置(粉钻)", function()
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(粉钻)", function()
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 3, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 131071, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 63, true)
@@ -171,6 +206,66 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("一键配置前置(粉钻)", func
     gui.show_message("写入完成", "远离计划面板并重新接近以刷新面板")
 
 end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(钻石)", function()
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 3, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 3, true) --diamond
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 159, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 2, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWWEAP"), 1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWDRIVER"), 1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWHACKER"), 5, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_VEHS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_WEAPS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET0"),443351, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_MASKS"), 12, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_COMPLETEDPOSIX"), -1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CAS_HEIST_FLOW"), -1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_POI"), 1023, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
+end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(黄金)", function()
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 3, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 1, true) --gold
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 159, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 2, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWWEAP"), 1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWDRIVER"), 1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWHACKER"), 5, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_VEHS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_WEAPS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET0"),443351, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_MASKS"), 12, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_COMPLETEDPOSIX"), -1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CAS_HEIST_FLOW"), -1, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_POI"), 1023, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
+end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("重置赌场计划面板", function()
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 0, true) --gold
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET0"),0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_MASKS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_COMPLETEDPOSIX"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CAS_HEIST_FLOW"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_POI"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 0, true)
+end)
+
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("娱乐功能") 
@@ -407,6 +502,48 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱(先进入夜�
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -1615.6832, -3015.7546, -75.204994)
 end)
 
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("游戏厅", function()
+
+    local Blip = HUD.GET_FIRST_BLIP_INFO_ID(740) -- Arcade Blip
+    local Pos = HUD.GET_BLIP_COORDS(Blip)
+    local Label = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION(ZONE.GET_NAME_OF_ZONE(Pos.x, Pos.y, Pos.z))
+
+ if string.find(HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("MP_ARC_1"), Label) ~= nil then 
+    ArcadePos = vec3:new(-245.9931, 6210.773, 31.939024)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), -50)
+ end
+ if string.find(HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("MP_ARC_2"), Label) ~= nil then 
+    ArcadePos = vec3:new(1695.5393, 4784.196, 41.94444)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), -95)
+ end
+ if string.find(HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("MP_ARC_3"), Label) ~= nil then 
+    ArcadePos = vec3:new(-115.45246, -1772.0801, 29.858917)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), -125)
+ end
+ if string.find(HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("FMC_LOC_WSTVNWD"), Label) ~= nil then 
+    ArcadePos = vec3:new(-600.911, 279.97433, 82.041245)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 80)
+ end
+ if string.find(HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("MP_ARC_5"), Label) ~= nil then 
+    ArcadePos = vec3:new(-1269.7747, -304.4372, 37.001965)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 75)
+ end
+ if string.find(HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("MP_ARC_6"), Label) ~= nil then 
+    ArcadePos = vec3:new(758.91815, -814.60864, 26.301702)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 90)
+
+ end
+
+  PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  ArcadePos.x, ArcadePos.y,  ArcadePos.z)
+
+end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("游戏厅计划面板(先进游戏厅)", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  2711.773, -369.458, -54.781)
+end)
+
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("杂项")
 
@@ -435,6 +572,8 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("解除部分卡云", function()
         NETWORK.NETWORK_BAIL(0, 0, 0)
     end
 end)
+
+local check1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("移除交易错误警告")
 
 --[[
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
@@ -714,6 +853,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("轰炸", function()
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 45 , pos.x-2, pos.y+2, pos.z + 45, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
 
 end)
+
+local check2 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("掉帧攻击")
+
 --[[
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("TSE C", function()
 
@@ -728,7 +870,7 @@ end)
     
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("鬼崩1", function()
+gui.get_tab(""):add_button("模型1", function()
     
     STREAMING.REQUEST_MODEL(-1364166376)
     local c = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
@@ -736,8 +878,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("鬼崩1", function()
     ENTITY.ATTACH_ENTITY_TO_ENTITY(cone, cone, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, true, false, 0, true)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("鬼崩8", function()
+gui.get_tab(""):add_sameline()
 
+gui.get_tab(""):add_button("模型2", function()
 
 local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
 local object = create_object(MISC.GET_HASH_KEY("virgo"), cord)
@@ -753,7 +896,7 @@ local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor01"), cord)
 local object = create_object(MISC.GET_HASH_KEY("feltzer3"), cord)
 local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor02"), cord)
 local object = create_object(MISC.GET_HASH_KEY("windsor"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor04"))
+local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor04"), cord)
 local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor03"), cord)
 local object = create_object(MISC.GET_HASH_KEY("v_serv_bs_clutter"), cord)
 ENTITY.SET_ENTITY_AS_MISSION_ENTITY(object, true, true)
@@ -762,11 +905,68 @@ ENTITY.SET_ENTITY_ROTATION(object, math.random(0, 360), math.random(0, 360), mat
 ENTITY.SET_ENTITY_VELOCITY(object, math.random(-10, 10), math.random(-10, 10), math.random(30, 50))
 ENTITY.ATTACH_ENTITY_TO_ENTITY(object, object, 0, 0, -1, 2.5, 0, 180, 0, 0, false, true, false, 0, true)
 script.sleep(300)
-MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(cord.x, cord.y, cord.z + 1, cord.x, cord.y, cord.z, 0, true, MISC.GET_HASH_KEY("weapon_heavysniper_mk2"), players.user_ped(), false, true, 1.0)
+MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(cord.x, cord.y, cord.z + 1, cord.x, cord.y, cord.z, 0, true, MISC.GET_HASH_KEY("weapon_heavysniper_mk2"), PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 1.0)
 ENTITY.DETACH_ENTITY(object, object)
-delete_by_handle(object)
+--delete_by_handle(object)
 end)
 
+gui.get_tab(""):add_sameline()
+
+gui.get_tab(""):add_button("模型4", function()
+    local TTPed = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+    local TTPos = ENTITY.GET_ENTITY_COORDS(TTPed, true)
+            local spped = PLAYER.PLAYER_PED_ID()
+            local SelfPlayerPos = ENTITY.GET_ENTITY_COORDS(spped, true)
+            SelfPlayerPos.x = SelfPlayerPos.x + 10
+            TTPos.x = TTPos.x + 10
+            local carc = CreateObject(joaat("apa_prop_flag_china"), TTPos, ENTITY.GET_ENTITY_HEADING(spped), true)
+            local carcPos = ENTITY.GET_ENTITY_COORDS(vehicle, true)
+            local pedc = CreatePed(26, joaat("A_C_HEN"), TTPos, 0)
+            local pedcPos = ENTITY.GET_ENTITY_COORDS(vehicle, true)
+            local ropec = PHYSICS.ADD_ROPE(TTPos.x, TTPos.y, TTPos.z, 0, 0, 0, 1, 1, 0.00300000000000000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, 0)
+            PHYSICS.ATTACH_ENTITIES_TO_ROPE(ropec,carc,pedc,carcPos.x, carcPos.y, carcPos.z ,pedcPos.x, pedcPos.y, pedcPos.z,2, false, false, 0, 0, "Center","Center")
+            script.sleep(3500)
+            PHYSICS.DELETE_CHILD_ROPE(ropec)
+           -- entities.delete_by_handle(pedc)
+    
+end)
+
+gui.get_tab(""):add_sameline()
+
+gui.get_tab(""):add_button("模型3", function()
+    pedp = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+    towtruck = CreateVehicle(-1323100960, pos, 0)
+    skylift = CreateVehicle(-692292317, pos, 0)
+    cargobob = CreateVehicle(4244420235, pos, 0)
+    cargobob2 = CreateVehicle(4244420235, pos, 0)
+    cargobob1 = CreateVehicle(4244420235, pos, 0)
+    handler = CreateVehicle(444583674, pos, 0)
+    ENTITY.ATTACH_ENTITY_TO_ENTITY(cargobob, skylift, 0, 0, 0, 0.2, 0, 0, 0, false, true, false, 0, true)
+    ENTITY.ATTACH_ENTITY_TO_ENTITY(cargobob1, skylift, 0, 0, 0, -0.2, 0, 0, 0, false, true, false, 0, true)
+    ENTITY.ATTACH_ENTITY_TO_ENTITY(handler, skylift, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
+    ENTITY.ATTACH_ENTITY_TO_ENTITY(towtruck, skylift, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
+    ENTITY.ATTACH_ENTITY_TO_ENTITY(cargobob2, towtruck, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
+    ENTITY.ATTACH_ENTITY_TO_ENTITY(skylift, pedp, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
+
+end)
+
+gui.get_tab(""):add_sameline()
+
+gui.get_tab(""):add_button("A C", function()
+    local time = os.time() + 2
+    while time > os.time() do
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        for i = 1, 20 do
+            AUDIO.PLAY_SOUND_FROM_COORD(-1, 'Event_Message_Purple', pos.x, pos.y, pos.z, 'GTAO_FM_Events_Soundset', true, 1000, false)
+            AUDIO.PLAY_SOUND_FROM_COORD(-1, '5s', pos.x, pos.y, pos.z, 'GTAO_FM_Events_Soundset', true, 1000, false)
+        end
+        script.sleep(20)
+    end	
+
+end)
+]]
+--[[
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("IN MD C", function()
     for i = 1, 10 do
 		local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
@@ -919,3 +1119,106 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("赠送暴君MK2", function()
 
     end
 end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("PED伞崩", function()
+    local spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
+    local ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
+    for n = 0 , 5 do
+        local object_hash = joaat("prop_logpile_06b")
+        STREAMING.REQUEST_MODEL(object_hash)
+          while not STREAMING.HAS_MODEL_LOADED(object_hash) do
+           script.yield()
+        end
+        PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, false, true, true)
+        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
+        script.sleep(1000)
+        for i = 0 , 20 do
+            PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
+        end
+        script.sleep(1000)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
+
+        local object_hash2 = joaat("prop_beach_parasol_03")
+        STREAMING.REQUEST_MODEL(object_hash2)
+          while not STREAMING.HAS_MODEL_LOADED(object_hash2) do
+            script.yield()
+        end
+        PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash2)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, 0, 0, 1)
+        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
+        script.sleep(1000)
+        for i = 0 , 20 do
+            PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
+        end
+        script.sleep(1000)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
+    end
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
+end)
+
+local iputint1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("测试7")
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试8", function()
+    
+    gui.show_message("Debughash", iputint1:get_value())
+
+end)
+
+--[[
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试10", function()
+
+  if   check1:is_enabled() then
+    gui.show_message("Debug", 1)
+  else
+    gui.show_message("Debug", 0)
+  end
+  PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(),65,true)
+
+end)
+]]
+
+--------------------------------------------------------------------------------------- looped
+
+script.register_looped("rmtranserr", function() --移除交易错误警告
+    if  check1:is_enabled() then
+        globals.set_int(4536677,0) 
+        globals.set_int(4536679,0) 
+        globals.set_int(4536678,0) 
+    end
+end)
+
+Ptools_PanTable = {}
+Ptools_PanCount = 1
+Ptools_FishPan = 200
+
+script.register_looped("defps", function() --卡死其他玩家
+    if  check2:is_enabled() then
+local targetped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+local targetcoords = ENTITY.GET_ENTITY_COORDS(targetped)
+
+local hash = joaat("tug")
+STREAMING.REQUEST_MODEL(hash)
+while not STREAMING.HAS_MODEL_LOADED(hash) do script.yield() end
+
+for i = 1, Ptools_FishPan do
+    Ptools_PanTable[Ptools_PanCount] = VEHICLE.CREATE_VEHICLE(hash, targetcoords.x, targetcoords.y, targetcoords.z, 0, true, true, true)
+
+    local netID = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(Ptools_PanTable[Ptools_PanCount])
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(Ptools_PanTable[Ptools_PanCount])
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_NETWORK_ID(netID)
+    NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(netID)
+    NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netID, false)
+    NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(netID, pid, true)
+    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Ptools_PanTable[Ptools_PanCount], true, false)
+    ENTITY.SET_ENTITY_VISIBLE(Ptools_PanTable[Ptools_PanCount], false, 0)
+end
+end
+end)
+---------------------------------------------------------------------------------------

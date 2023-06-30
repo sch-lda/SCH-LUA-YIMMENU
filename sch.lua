@@ -106,43 +106,6 @@ end)
 ]]--
 --------------------------------------------------------------------------------------- Players 页面
 --------------------------------------------------------------------------------------- Players 页面
-gui.get_tab(""):add_separator()
-gui.get_tab(""):add_text("Lua选项") 
-
-gui.get_tab(""):add_button("栅栏笼子", function()
-    local objHash <const> = MISC.GET_HASH_KEY("prop_fnclink_03e")
-    STREAMING.REQUEST_MODEL(objHash)
-
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-
-    pos.z = pos.z - 1.0
-    local object = {}
-
-    object[1] = OBJECT.CREATE_OBJECT(objHash, pos.x - 1.5, pos.y + 1.5, pos.z,true, 1, 0)
-    object[2] = OBJECT.CREATE_OBJECT(objHash, pos.x - 1.5, pos.y - 1.5, pos.z,true, 1, 0)
-
-    object[3] = OBJECT.CREATE_OBJECT(objHash, pos.x + 1.5, pos.y + 1.5, pos.z,true, 1, 0)
-    local rot_3 = ENTITY.GET_ENTITY_ROTATION(object[3], 2)
-    rot_3.z = -90.0
-    ENTITY.SET_ENTITY_ROTATION(object[3], rot_3.x, rot_3.y, rot_3.z, 1, true)
-
-    object[4] = OBJECT.CREATE_OBJECT(objHash, pos.x - 1.5, pos.y + 1.5, pos.z,true, 1, 0)
-    local rot_4 = ENTITY.GET_ENTITY_ROTATION(object[4], 2)
-    rot_4.z = -90.0
-    ENTITY.SET_ENTITY_ROTATION(object[4], rot_4.x, rot_4.y, rot_4.z, 1, true)
-    ENTITY.IS_ENTITY_STATIC(object[1]) 
-    ENTITY.IS_ENTITY_STATIC(object[2])
-    ENTITY.IS_ENTITY_STATIC(object[3])
-    ENTITY.IS_ENTITY_STATIC(object[4])
-    ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[1], false) 
-    ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[2], false) 
-    ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[3], false) 
-    ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[4], false) 
-
-    for i = 1, 4 do ENTITY.FREEZE_ENTITY_POSITION(object[i], true) end
-    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(objHash)
-
-end)
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 --------------------------------------------------------------------------------------- Lua管理器页面
@@ -597,11 +560,11 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试4", function()
     end
 end)
 ]]--
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("玩家选项-请在Yim玩家列表选择玩家") 
+gui.get_tab(""):add_separator()
+gui.get_tab(""):add_text("SCH LUA玩家选项") 
 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("栅栏笼子", function()
+gui.get_tab(""):add_button("栅栏笼子", function()
     local objHash <const> = MISC.GET_HASH_KEY("prop_fnclink_03e")
     STREAMING.REQUEST_MODEL(objHash)
 
@@ -636,9 +599,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("栅栏笼子", function()
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.get_tab(""):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("竞技管笼子", function()
+gui.get_tab(""):add_button("竞技管笼子", function()
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     STREAMING.REQUEST_MODEL(2081936690)
 
@@ -663,9 +626,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("竞技管笼子", function()
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.get_tab(""):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("保险箱笼子", function()
+gui.get_tab(""):add_button("保险箱笼子", function()
 	local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
 	local hash = 1089807209
 	STREAMING.REQUEST_MODEL(hash)
@@ -693,18 +656,18 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("保险箱笼子", function()
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.get_tab(""):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("电击", function()
+gui.get_tab(""):add_button("电击", function()
 
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 1000, true, MISC.GET_HASH_KEY("weapon_stungun"), false, false, true, 1.0)
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.get_tab(""):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("轰炸", function()
+gui.get_tab(""):add_button("轰炸", function()
 
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     airshash = MISC.GET_HASH_KEY("vehicle_weapon_trailer_dualaa")
@@ -854,7 +817,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("轰炸", function()
 
 end)
 
-local check2 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("掉帧攻击")
+local check2 = gui.get_tab(""):add_checkbox("掉帧攻击(尽可能远离目标)")
 
 --[[
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("TSE C", function()
@@ -1102,7 +1065,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("全局选项")
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("全局爆炸", function()
     for i = 0, 31 do
-        FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
+            FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
     end
 end)
 
@@ -1158,7 +1121,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("PED伞崩", function()
     end
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
 end)
-
+--[[
 local iputint1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("测试7")
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
@@ -1168,7 +1131,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试8", function()
     gui.show_message("Debughash", iputint1:get_value())
 
 end)
-
+]]--
 --[[
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
@@ -1198,7 +1161,7 @@ Ptools_PanTable = {}
 Ptools_PanCount = 1
 Ptools_FishPan = 200
 
-script.register_looped("defps", function() --卡死其他玩家
+script.register_looped("defps", function() --卡死玩家
     if  check2:is_enabled() then
 local targetped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
 local targetcoords = ENTITY.GET_ENTITY_COORDS(targetped)
@@ -1208,6 +1171,8 @@ STREAMING.REQUEST_MODEL(hash)
 while not STREAMING.HAS_MODEL_LOADED(hash) do script.yield() end
 
 for i = 1, Ptools_FishPan do
+    if targetped ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+    
     Ptools_PanTable[Ptools_PanCount] = VEHICLE.CREATE_VEHICLE(hash, targetcoords.x, targetcoords.y, targetcoords.z, 0, true, true, true)
 
     local netID = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(Ptools_PanTable[Ptools_PanCount])
@@ -1218,6 +1183,10 @@ for i = 1, Ptools_FishPan do
     NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(netID, pid, true)
     ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Ptools_PanTable[Ptools_PanCount], true, false)
     ENTITY.SET_ENTITY_VISIBLE(Ptools_PanTable[Ptools_PanCount], false, 0)
+    else
+        gui.show_message("掉帧攻击", "你在攻击自己!")
+        check2:set_enabled(nil)
+    end
 end
 end
 end)

@@ -324,11 +324,12 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("CEO仓库员工进货一次", fun
     STATS.SET_PACKED_STAT_BOOL_CODE(32363,1,playerid)
 end)
 
+local check3 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("锁定仓库单次进货数量为")
+
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("每次进15个板条箱", function()
-    globals.set_int(1890714+12,15) 
-end)
+local iputint1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("个板条箱")
+
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱30万循环10次", function()
     a2 =0
@@ -1154,6 +1155,12 @@ script.register_looped("rmtranserr", function() --移除交易错误警告
         globals.set_int(4536677,0) 
         globals.set_int(4536679,0) 
         globals.set_int(4536678,0) 
+    end
+end)
+
+script.register_looped("ceocargo15", function() --锁定CEO仓库进货15板条箱
+    if  check3:is_enabled() then
+        globals.set_int(1890714+12,iputint1:get_value()) 
     end
 end)
 

@@ -1,12 +1,12 @@
 --------------------------------------------------------------------------------------- functions
---[[
+
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
         local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
         VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
     end
 end
-]]
+
 
 function attach_to_player(hash, bone, x, y, z, xrot, yrot, zrot)     --附加实体到自己
     local user_ped = PLAYER.PLAYER_PED_ID()
@@ -22,7 +22,7 @@ function attach_to_player(hash, bone, x, y, z, xrot, yrot, zrot)     --附加实
     ENTITY.ATTACH_ENTITY_TO_ENTITY(object, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), bone), x, y, z, xrot, yrot, zrot, false, false, false, false, 2, true) 
 end
 
-    --[[  
+
 function CreatePed(index, Hash, Pos, Heading)
     STREAMING.REQUEST_MODEL(Hash)
     while not STREAMING.HAS_MODEL_LOADED(Hash) do script.yield() end
@@ -41,7 +41,7 @@ function CreateObject(Hash, Pos, static)
     end
     return SpawnedVehicle
 end
-]]
+
 function create_object(hash, pos)
    --gui.show_message("Debughash", hash)
    -- gui.show_message("DebugX", pos.x)
@@ -51,7 +51,7 @@ function create_object(hash, pos)
     --STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
     return obj
 end
---[[
+
 function request_model(hash)
     local end_time = os.time() + 5
     STREAMING.REQUEST_MODEL(hash)
@@ -95,10 +95,8 @@ function CreateVehicle(Hash, Pos, Heading, Invincible)
 
     return SpawnedVehicle
 end
-]]
+
 --------------------------------------------------------------------------------------- MPx
-
-
 
 --gui.show_message("Debugmpx", mpx.."H4_")
 
@@ -111,8 +109,6 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试6", function()
 
 end)
 ]]
---------------------------------------------------------------------------------------- Players 页面
---------------------------------------------------------------------------------------- Players 页面
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 --------------------------------------------------------------------------------------- Lua管理器页面
@@ -724,6 +720,10 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试4", function()
     end
 end)
 ]]--
+
+--------------------------------------------------------------------------------------- Players 页面
+--------------------------------------------------------------------------------------- Players 页面
+
 gui.get_tab(""):add_separator()
 gui.get_tab(""):add_text("SCH LUA玩家选项") 
 
@@ -981,9 +981,21 @@ gui.get_tab(""):add_button("轰炸", function()
 
 end)
 
+gui.get_tab(""):add_sameline()
+
+local check8 = gui.get_tab(""):add_checkbox("循环水柱")
+gui.get_tab(""):add_button("循环水柱", function()
+
+end)
+
 local check2 = gui.get_tab(""):add_checkbox("掉帧攻击(尽可能远离目标)")
 
+gui.get_tab(""):add_sameline()
+
 local check5 = gui.get_tab(""):add_checkbox("粒子效果轰炸(尽可能远离目标)")
+
+--------------------------------------------------------------------------------------- Players 页面
+--------------------------------------------------------------------------------------- Players 页面
 
 --[[
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("TSE C", function()
@@ -1333,32 +1345,32 @@ script.register_looped("cargolock", function()
 end)
 
 
-Ptools_PanTable = {}
-Ptools_PanCount = 1
-Ptools_FishPan = 200
+defpttable = {}
+defpscount2 = 1
+defpscount = 200
 
 script.register_looped("defps", function() 
     if  check2:is_enabled() then--卡死玩家
-local targetped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-local targetcoords = ENTITY.GET_ENTITY_COORDS(targetped)
+local defpstarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+local targetcoords = ENTITY.GET_ENTITY_COORDS(defpstarget)
 
 local hash = joaat("tug")
 STREAMING.REQUEST_MODEL(hash)
 while not STREAMING.HAS_MODEL_LOADED(hash) do script.yield() end
 
-for i = 1, Ptools_FishPan do
-    if targetped ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+for i = 1, defpscount do
+    if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
     
-    Ptools_PanTable[Ptools_PanCount] = VEHICLE.CREATE_VEHICLE(hash, targetcoords.x, targetcoords.y, targetcoords.z, 0, true, true, true)
+    defpttable[defpscount2] = VEHICLE.CREATE_VEHICLE(hash, targetcoords.x, targetcoords.y, targetcoords.z, 0, true, true, true)
 
-    local netID = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(Ptools_PanTable[Ptools_PanCount])
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(Ptools_PanTable[Ptools_PanCount])
+    local netID = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(defpttable[defpscount2])
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(defpttable[defpscount2])
     NETWORK.NETWORK_REQUEST_CONTROL_OF_NETWORK_ID(netID)
     NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(netID)
     NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netID, false)
     NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(netID, pid, true)
-    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Ptools_PanTable[Ptools_PanCount], true, false)
-    ENTITY.SET_ENTITY_VISIBLE(Ptools_PanTable[Ptools_PanCount], false, 0)
+    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(defpttable[defpscount2], true, false)
+    ENTITY.SET_ENTITY_VISIBLE(defpttable[defpscount2], false, 0)
     else
         gui.show_message("掉帧攻击已停止", "你在攻击自己!")
         check2:set_enabled(nil)
@@ -1366,11 +1378,11 @@ for i = 1, Ptools_FishPan do
 end
 end
 if  check5:is_enabled() then --粒子效果轰炸
-    local targetped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-    local tar1 = ENTITY.GET_ENTITY_COORDS(targetped)
+    local defpstarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+    local tar1 = ENTITY.GET_ENTITY_COORDS(defpstarget)
     local ptfx = {dic = 'scr_rcbarry2', name = 'scr_clown_appears'}
 
-    if targetped ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+    if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
         STREAMING.REQUEST_NAMED_PTFX_ASSET(ptfx.dic)
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(ptfx.dic) do
             script.yield()
@@ -1384,6 +1396,11 @@ if  check5:is_enabled() then --粒子效果轰炸
 
 end
 
+if  check8:is_enabled() then --水柱
+
+    local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+    FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z - 2.0, 13, 1, true, false, 0, false)
+end
 end)
 
 script.register_looped("swimeveryw", function() --随处游泳

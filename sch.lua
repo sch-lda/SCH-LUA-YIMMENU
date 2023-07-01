@@ -315,6 +315,23 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("摩托帮出货一键完成", function()
     locals.set_int("gb_biker_contraband_sell","821","30")
 end)
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("摩托帮产业满原材料", function()
+    globals.set_int(1648657+1+1,1) --可卡因
+    globals.set_int(1648657+1+2,1) --冰毒
+    globals.set_int(1648657+1+3,1) --大麻
+    globals.set_int(1648657+1+4,1) --证件
+    globals.set_int(1648657+1+0,1) --假钞
+    gui.show_message("自动补货","全部完成")
+end)
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("地堡满原材料", function()
+    globals.set_int(1648657+1+5,1) --bunker
+    gui.show_message("自动补货","全部完成")
+end)
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("CEO仓库员工进货一次", function()
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
@@ -348,23 +365,6 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱30万循环10�
     end
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
-
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("摩托帮产业满原材料", function()
-    globals.set_int(1648657+1+1,1) --可卡因
-    globals.set_int(1648657+1+2,1) --冰毒
-    globals.set_int(1648657+1+3,1) --大麻
-    globals.set_int(1648657+1+4,1) --证件
-    globals.set_int(1648657+1+0,1) --假钞
-    gui.show_message("自动补货","全部完成")
-end)
-
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
-
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("地堡满原材料", function()
-    globals.set_int(1648657+1+5,1) --bunker
-    gui.show_message("自动补货","全部完成")
-end)
 --[[  已被检测
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除赌场轮盘冷却", function()
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."LUCKY_WHEEL_NUM_SPIN"), 0, true)

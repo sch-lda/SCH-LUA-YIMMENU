@@ -341,11 +341,26 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("CEO仓库员工进货一次", fun
     STATS.SET_PACKED_STAT_BOOL_CODE(32363,1,playerid)
 end)
 
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("机库员工进货一次", function()
+    STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
+end)
+
 local check3 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("锁定仓库单次进货数量为")
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
 local iputint1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("个板条箱")
+
+
+
+local check4 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("锁定机库单次进货数量为")
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+local iputint3 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("箱")
+
 
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱30万循环10次", function()
@@ -359,11 +374,11 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱30万循环10�
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 100000, true)
         gui.show_message("警告", "此方法仅用于偶尔小额恢复")
-
         script.sleep(10000)
     
     end
 end)
+
 
 --[[  已被检测
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除赌场轮盘冷却", function()
@@ -1158,9 +1173,15 @@ script.register_looped("rmtranserr", function() --移除交易错误警告
     end
 end)
 
-script.register_looped("ceocargo15", function() --锁定CEO仓库进货15板条箱
+script.register_looped("ceocargo", function() --锁定CEO仓库进货数
     if  check3:is_enabled() then
         globals.set_int(1890714+12,iputint1:get_value()) 
+    end
+end)
+
+script.register_looped("aircargo", function() --锁定机库仓库进货15板条箱
+    if  check4:is_enabled() then
+        globals.set_int(1890730+6,iputint3:get_value()) 
     end
 end)
 

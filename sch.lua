@@ -14,7 +14,7 @@ function attach_to_player(hash, bone, x, y, z, xrot, yrot, zrot)     --附加实
 
     STREAMING.REQUEST_MODEL(hash)
     while not STREAMING.HAS_MODEL_LOADED(hash) do		
-        script.yield()
+        script_util:yield()
     end
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
 
@@ -25,7 +25,7 @@ end
 
 function CreatePed(index, Hash, Pos, Heading)
     STREAMING.REQUEST_MODEL(Hash)
-    while not STREAMING.HAS_MODEL_LOADED(Hash) do script.yield() end
+    while not STREAMING.HAS_MODEL_LOADED(Hash) do script_util:yield() end
     local SpawnedVehicle = PED.CREATE_PED(index, Hash, Pos.x, Pos.y, Pos.z, Heading, true, true)
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
     return SpawnedVehicle
@@ -33,7 +33,7 @@ end
 
 function CreateObject(Hash, Pos, static)
     STREAMING.REQUEST_MODEL(Hash)
-    while not STREAMING.HAS_MODEL_LOADED(Hash) do script.yield() end
+    while not STREAMING.HAS_MODEL_LOADED(Hash) do script_util:yield() end
     local SpawnedVehicle = create_object(Hash, Pos)
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
     if static then
@@ -46,7 +46,7 @@ function create_object(hash, pos)
    --gui.show_message("Debughash", hash)
    -- gui.show_message("DebugX", pos.x)
     STREAMING.REQUEST_MODEL(hash)
-    while not STREAMING.HAS_MODEL_LOADED(hash) do script.yield() end
+    while not STREAMING.HAS_MODEL_LOADED(hash) do script_util:yield() end
     local obj = OBJECT.CREATE_OBJECT(hash, pos.x, pos.y, pos.z, true, false, false)
     --STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
     return obj
@@ -56,7 +56,7 @@ function request_model(hash)
     local end_time = os.time() + 5
     STREAMING.REQUEST_MODEL(hash)
     while not STREAMING.HAS_MODEL_LOADED(hash) and end_time >= os.time() do
-        script.yield()
+        script_util:yield()
     end
     return STREAMING.HAS_MODEL_LOADED(hash)
 end
@@ -85,7 +85,7 @@ function CreateVehicle(Hash, Pos, Heading, Invincible)
     gui.show_message("Debugvehhash", Hash)
 
     STREAMING.REQUEST_MODEL(Hash)
-    while not STREAMING.HAS_MODEL_LOADED(Hash) do script.yield() end
+    while not STREAMING.HAS_MODEL_LOADED(Hash) do script_util:yield() end
     local SpawnedVehicle = VEHICLE.CREATE_VEHICLE(Hash, Pos.x,Pos.y,Pos.z, Heading , true, true, true)
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
     if Invincible then
@@ -128,7 +128,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(猎豹雕像)"
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
-    if playerid == 0 then 
+    if playerid == 1 then 
         mpx = "MP1_" 
     
     end
@@ -160,7 +160,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(粉钻)", func
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
-    if playerid == 0 then 
+    if playerid == 1 then 
         mpx = "MP1_" 
     
     end
@@ -187,14 +187,48 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(粉钻)", func
 
 end)
 
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+
+gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("重置佩岛", function()
+    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+
+    local mpx = "MP0_"
+    if playerid == 1 then 
+        mpx = "MP1_" 
+    end
+
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_APPROACH"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEAPONS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEP_DISRP"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_ARM_DISRP"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_HEL_DISRP"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C_SCOPED"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_SCOPED"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_V"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_V"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_PROGRESS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_MISSIONS"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I_SCOPED"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I"), 0, true)
+
+    gui.show_message("写入完成", "远离计划面板并重新接近以刷新面板")
+
+end)
+
+
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(钻石)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
-    if playerid == 0 then 
+    if playerid == 1 then 
         mpx = "MP1_" 
-    
     end
+
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 3, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 3, true) --diamond
@@ -220,7 +254,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(黄金)", func
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
-    if playerid == 0 then 
+    if playerid == 1 then 
         mpx = "MP1_" 
     
     end
@@ -249,7 +283,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("重置赌场计划面板", functi
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
-    if playerid == 0 then 
+    if playerid == 1 then 
         mpx = "MP1_" 
     
     end
@@ -285,7 +319,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("放烟花", function()
     ENTITY.FREEZE_ENTITY_POSITION(ped, true)
     TASK.TASK_PLAY_ANIM(ped, animlib, anim_name, -1, -8.0, 3000, 0, 0, false, false, false)
 
-    script.sleep(1500)
+    script_util:sleep(1500)
 
     local firework_box =     create_object(3176209716, pos)
     local firework_box_pos = ENTITY.GET_ENTITY_COORDS(firework_box)
@@ -293,7 +327,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("放烟花", function()
     OBJECT.PLACE_OBJECT_ON_GROUND_PROPERLY(firework_box)
     ENTITY.FREEZE_ENTITY_POSITION(ped, false)
 
-    script.sleep(1000)
+    script_util:sleep(1000)
 
     ENTITY.FREEZE_ENTITY_POSITION(firework_box, true)
     STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_indep_fireworks")
@@ -303,19 +337,19 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("放烟花", function()
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
-        script.sleep(1500)
+        script_util:sleep(1500)
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
   
-        script.sleep(1500)
+        script_util:sleep(1500)
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
  
-        script.sleep(1500)
+        script_util:sleep(1500)
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
   
-        script.sleep(1500)
+        script_util:sleep(1500)
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
         
@@ -452,7 +486,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱30万循环10�
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
-    if playerid == 0 then 
+    if playerid == 1 then 
         mpx = "MP1_" 
     
     end
@@ -466,7 +500,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱30万循环10�
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 100000, true)
         gui.show_message("警告", "此方法仅用于偶尔小额恢复")
-        script.sleep(10000)
+        script_util:sleep(10000)
     
     end
 end)
@@ -477,7 +511,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除赌场轮盘冷却", functi
      local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
 local mpx = "MP0_"
-if playerid == 0 then 
+if playerid == 1 then 
     mpx = "MP1_" 
 
 end
@@ -637,7 +671,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除达克斯冷却", function(
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
-    if playerid == 0 then 
+    if playerid == 1 then 
         mpx = "MP1_" 
     
     end
@@ -716,7 +750,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试4", function()
 
     GRAPHICS.END_SCALEFORM_MOVIE_METHOD(scaleForm)
 
-    script.sleep(5)
+    script_util:sleep(5)
     end
 end)
 ]]--
@@ -770,11 +804,11 @@ gui.get_tab(""):add_button("竞技管笼子", function()
     STREAMING.REQUEST_MODEL(2081936690)
 
 	while not STREAMING.HAS_MODEL_LOADED(2081936690) do		
-        script.sleep(100)
+        script_util:sleep(100)
 	end
     local cage_object = OBJECT.CREATE_OBJECT(2081936690, pos.x, pos.y, pos.z-5, true, true, false)
 
-    script.sleep(15)
+    script_util:sleep(15)
     local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object)
     rot.y = 90
     ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x,rot.y,rot.z,1,true)
@@ -782,7 +816,7 @@ gui.get_tab(""):add_button("竞技管笼子", function()
 
     local cage_object2 = OBJECT.CREATE_OBJECT(2081936690, pos.x-5, pos.y+5, pos.z-5, true, true, false)
 
-    script.sleep(15)
+    script_util:sleep(15)
     local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object2)
     rot.x = 90 
     ENTITY.SET_ENTITY_ROTATION(cage_object2, rot.x,rot.y,rot.z,2,true)
@@ -798,7 +832,7 @@ gui.get_tab(""):add_button("保险箱笼子", function()
 	STREAMING.REQUEST_MODEL(hash)
 
 	while not STREAMING.HAS_MODEL_LOADED(hash) do		
-        script.sleep(100)
+        script_util:sleep(100)
 	end
 	local cage_object = OBJECT.CREATE_OBJECT(hash, pos.x - 1, pos.y, pos.z - .5, true, true, false) -- front
 	local cage_object2 = OBJECT.CREATE_OBJECT(hash, pos.x + 1, pos.y, pos.z - .5, true, true, false) -- back
@@ -815,7 +849,7 @@ gui.get_tab(""):add_button("保险箱笼子", function()
 	ENTITY.FREEZE_ENTITY_POSITION(cage_object3, true)
 	ENTITY.FREEZE_ENTITY_POSITION(cage_object4, true)
 	ENTITY.FREEZE_ENTITY_POSITION(cage_object5, true)
-    script.sleep(100)
+    script_util:sleep(100)
 	STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(cage_object)
 
 end)
@@ -840,139 +874,139 @@ gui.get_tab(""):add_button("轰炸", function()
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z- 1 , pos.x-2, pos.y, pos.z - 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z- 1 , pos.x-2, pos.y-2, pos.z - 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z- 1 , pos.x-2, pos.y+2, pos.z - 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 1 , pos.x, pos.y, pos.z + 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 1 , pos.x+2, pos.y, pos.z + 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 1 , pos.x-2, pos.y, pos.z + 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 1 , pos.x-2, pos.y-2, pos.z + 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 1 , pos.x-2, pos.y+2, pos.z + 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 3 , pos.x, pos.y, pos.z + 3, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 3, pos.x+2, pos.y, pos.z + 3, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 3, pos.x-2, pos.y, pos.z + 3, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 3 , pos.x-2, pos.y-2, pos.z + 3, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 3 , pos.x-2, pos.y+2, pos.z + 3, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 5, pos.x, pos.y, pos.z + 5, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 5 , pos.x+2, pos.y, pos.z + 5, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 5 , pos.x-2, pos.y, pos.z + 5, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 5, pos.x-2, pos.y-2, pos.z + 5, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 5 , pos.x-2, pos.y+2, pos.z + 5, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 7 , pos.x, pos.y, pos.z + 7, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 7 , pos.x+2, pos.y, pos.z + 7, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 7 , pos.x-2, pos.y, pos.z + 7, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 7 , pos.x-2, pos.y-2, pos.z + 7, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 7 , pos.x-2, pos.y+2, pos.z + 7, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 9 , pos.x, pos.y, pos.z + 9, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 9 , pos.x+2, pos.y, pos.z + 9, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 9 , pos.x-2, pos.y, pos.z + 9, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 9 , pos.x-2, pos.y-2, pos.z + 9, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 9 , pos.x-2, pos.y+2, pos.z + 9, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 11 , pos.x, pos.y, pos.z + 11, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 11 , pos.x+2, pos.y, pos.z + 11, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 11 , pos.x-2, pos.y, pos.z + 11, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 11 , pos.x-2, pos.y-2, pos.z + 11, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 11 , pos.x-2, pos.y+2, pos.z + 11, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 13 , pos.x, pos.y, pos.z + 13, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 13 , pos.x+2, pos.y, pos.z + 13, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 13 , pos.x-2, pos.y, pos.z + 13, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 13 , pos.x-2, pos.y-2, pos.z + 13, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 13 , pos.x-2, pos.y+2, pos.z + 13, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 15 , pos.x, pos.y, pos.z + 15, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 15 , pos.x+2, pos.y, pos.z + 15, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 15 , pos.x-2, pos.y, pos.z + 15, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 15 , pos.x-2, pos.y-2, pos.z + 15, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 15 , pos.x-2, pos.y+2, pos.z + 15, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 17 , pos.x, pos.y, pos.z + 17, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 17 , pos.x+2, pos.y, pos.z + 17, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 17 , pos.x-2, pos.y, pos.z + 17, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 17 , pos.x-2, pos.y-2, pos.z + 17, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 17 , pos.x-2, pos.y+2, pos.z + 17, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 19 , pos.x, pos.y, pos.z + 19, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 19 , pos.x+2, pos.y, pos.z + 19, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 19 , pos.x-2, pos.y, pos.z + 19, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 19 , pos.x-2, pos.y-2, pos.z + 19, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 19 , pos.x-2, pos.y+2, pos.z + 19, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 21 , pos.x, pos.y, pos.z + 21, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 21 , pos.x+2, pos.y, pos.z + 21, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 21 , pos.x-2, pos.y, pos.z + 21, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 21 , pos.x-2, pos.y-2, pos.z + 21, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 21 , pos.x-2, pos.y+2, pos.z + 21, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 23 , pos.x, pos.y, pos.z + 23, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 23 , pos.x+2, pos.y, pos.z + 23, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 23 , pos.x-2, pos.y, pos.z + 23, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 23 , pos.x-2, pos.y-2, pos.z + 23, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 23 , pos.x-2, pos.y+2, pos.z + 23, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 25 , pos.x, pos.y, pos.z + 25, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 25 , pos.x+2, pos.y, pos.z + 25, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 25 , pos.x-2, pos.y, pos.z + 25, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 25 , pos.x-2, pos.y-2, pos.z + 25, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 25 , pos.x-2, pos.y+2, pos.z + 25, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 27 , pos.x, pos.y, pos.z + 27, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 27 , pos.x+2, pos.y, pos.z + 27, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 27 , pos.x-2, pos.y, pos.z + 27, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 27 , pos.x-2, pos.y-2, pos.z + 27, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 27 , pos.x-2, pos.y+2, pos.z + 27, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 29 , pos.x, pos.y, pos.z + 29, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 29 , pos.x+2, pos.y, pos.z + 29, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 29 , pos.x-2, pos.y, pos.z + 29, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 29 , pos.x-2, pos.y-2, pos.z + 29, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 29 , pos.x-2, pos.y+2, pos.z + 29, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 31 , pos.x, pos.y, pos.z + 31, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 31 , pos.x+2, pos.y, pos.z + 31, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 31 , pos.x-2, pos.y, pos.z + 31, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 31 , pos.x-2, pos.y-2, pos.z + 31, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 31 , pos.x-2, pos.y+2, pos.z + 31, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 33 , pos.x, pos.y, pos.z + 33, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 33 , pos.x+2, pos.y, pos.z + 33, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-22, pos.y, pos.z+ 33 , pos.x-2, pos.y, pos.z + 33, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 33 , pos.x-2, pos.y-2, pos.z + 33, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 33 , pos.x-2, pos.y+2, pos.z + 3, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 35 , pos.x, pos.y, pos.z + 35, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 35 , pos.x+2, pos.y, pos.z + 35, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 35 , pos.x-2, pos.y, pos.z + 35, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-22, pos.y-2, pos.z+ 35 , pos.x-2, pos.y-2, pos.z + 35, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 35 , pos.x-2, pos.y+2, pos.z + 35, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 37 , pos.x, pos.y, pos.z + 37, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 37 , pos.x+2, pos.y, pos.z + 37, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 37 , pos.x-2, pos.y, pos.z + 37, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 37 , pos.x-2, pos.y-2, pos.z + 37, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 37 , pos.x-2, pos.y+2, pos.z + 37, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 39 , pos.x, pos.y, pos.z + 39, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 39 , pos.x+2, pos.y, pos.z + 39, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 39 , pos.x-2, pos.y, pos.z + 39, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 39 , pos.x-2, pos.y-2, pos.z + 39, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 39 , pos.x-2, pos.y+2, pos.z + 39, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 41 , pos.x, pos.y, pos.z + 41, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 41 , pos.x+2, pos.y, pos.z + 41, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 41 , pos.x-2, pos.y, pos.z + 41, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 41 , pos.x-2, pos.y-2, pos.z + 41, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 41 , pos.x-2, pos.y+2, pos.z + 41, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 43 , pos.x, pos.y, pos.z + 43, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 43 , pos.x+2, pos.y, pos.z + 43, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 43 , pos.x-2, pos.y, pos.z + 43, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 43 , pos.x-2, pos.y-2, pos.z + 43, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 43 , pos.x-2, pos.y+2, pos.z + 43, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-    script.sleep(100)
+    script_util:sleep(100)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z+ 45 , pos.x, pos.y, pos.z + 45, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z+ 45 , pos.x+2, pos.y, pos.z + 45, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 45 , pos.x-2, pos.y, pos.z + 45, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
@@ -1045,7 +1079,7 @@ ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(object, 1, 0.0, 10000.0, 0.0, 0.0, 0
 ENTITY.SET_ENTITY_ROTATION(object, math.random(0, 360), math.random(0, 360), math.random(0, 360), 0, true)
 ENTITY.SET_ENTITY_VELOCITY(object, math.random(-10, 10), math.random(-10, 10), math.random(30, 50))
 ENTITY.ATTACH_ENTITY_TO_ENTITY(object, object, 0, 0, -1, 2.5, 0, 180, 0, 0, false, true, false, 0, true)
-script.sleep(300)
+script_util:sleep(300)
 MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(cord.x, cord.y, cord.z + 1, cord.x, cord.y, cord.z, 0, true, MISC.GET_HASH_KEY("weapon_heavysniper_mk2"), PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 1.0)
 ENTITY.DETACH_ENTITY(object, object)
 --delete_by_handle(object)
@@ -1066,7 +1100,7 @@ gui.get_tab(""):add_button("模型4", function()
             local pedcPos = ENTITY.GET_ENTITY_COORDS(vehicle, true)
             local ropec = PHYSICS.ADD_ROPE(TTPos.x, TTPos.y, TTPos.z, 0, 0, 0, 1, 1, 0.00300000000000000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, 0)
             PHYSICS.ATTACH_ENTITIES_TO_ROPE(ropec,carc,pedc,carcPos.x, carcPos.y, carcPos.z ,pedcPos.x, pedcPos.y, pedcPos.z,2, false, false, 0, 0, "Center","Center")
-            script.sleep(3500)
+            script_util:sleep(3500)
             PHYSICS.DELETE_CHILD_ROPE(ropec)
            -- entities.delete_by_handle(pedc)
     
@@ -1102,7 +1136,7 @@ gui.get_tab(""):add_button("A C", function()
             AUDIO.PLAY_SOUND_FROM_COORD(-1, 'Event_Message_Purple', pos.x, pos.y, pos.z, 'GTAO_FM_Events_Soundset', true, 1000, false)
             AUDIO.PLAY_SOUND_FROM_COORD(-1, '5s', pos.x, pos.y, pos.z, 'GTAO_FM_Events_Soundset', true, 1000, false)
         end
-        script.sleep(20)
+        script_util:sleep(20)
     end	
 
 end)
@@ -1112,20 +1146,20 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("IN MD C", function()
     for i = 1, 10 do
 		local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         STREAMING.REQUEST_MODEL(-930879665)
-        script.sleep(10)
+        script_util:sleep(10)
         STREAMING.REQUEST_MODEL(3613262246)
-        script.sleep(10)
+        script_util:sleep(10)
         STREAMING.REQUEST_MODEL(452618762)
-        script.sleep(10)
-        while not STREAMING.HAS_MODEL_LOADED(-930879665) do script.sleep() end
-        while not STREAMING.HAS_MODEL_LOADED(3613262246) do script.sleep() end
-        while not STREAMING.HAS_MODEL_LOADED(452618762) do script.sleep() end
+        script_util:sleep(10)
+        while not STREAMING.HAS_MODEL_LOADED(-930879665) do script_util:sleep() end
+        while not STREAMING.HAS_MODEL_LOADED(3613262246) do script_util:sleep() end
+        while not STREAMING.HAS_MODEL_LOADED(452618762) do script_util:sleep() end
         local a1 = create_object(-930879665, cord)
-        script.sleep(10)
+        script_util:sleep(10)
         local a2 = create_object(3613262246, cord)
-        script.sleep(10)
+        script_util:sleep(10)
         local b1 = create_object(452618762, cord)
-        script.sleep(10)
+        script_util:sleep(10)
         local b2 = create_object(3613262246, cord)
     end
 end)
@@ -1139,7 +1173,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试5", function()
     while STREAMING.HAS_MODEL_LOADED(ufoModel) ~= 1 do
     
         STREAMING.REQUEST_MODEL(ufoModel)
-        script.sleep(100)
+        script_util:sleep(100)
         
     end
     local Object = OBJECT.CREATE_OBJECT(ufoModel, coords.x, coords.y, coords.z, TRUE, TRUE, FALSE)
@@ -1173,14 +1207,14 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试1", function()
     while STREAMING.HAS_MODEL_LOADED(CrashModel) ~= 1 do
     
         STREAMING.REQUEST_MODEL(CrashModel)
-        script.sleep(100)
+        script_util:sleep(100)
         
     end
 
     local Object = OBJECT.CREATE_OBJECT(CrashModel, Coords.x, Coords.y, Coords.z, TRUE, TRUE, FALSE)
     OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(Object, NULL, NULL)
 
-    script.sleep(1000)
+    script_util:sleep(1000)
 
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(CrashModel)
     entity.delete_entity(Object)
@@ -1195,19 +1229,19 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试2", function()
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
     while STREAMING.HAS_MODEL_LOADED(3613262246) ~= 1 do
         STREAMING.REQUEST_MODEL(3613262246)
-        script.sleep(100)
+        script_util:sleep(100)
     end
     while STREAMING.HAS_MODEL_LOADED(2155335200) ~= 1 do
         STREAMING.REQUEST_MODEL(2155335200)
-        script.sleep(100)
+        script_util:sleep(100)
     end
     while STREAMING.HAS_MODEL_LOADED(3026699584) ~= 1 do
         STREAMING.REQUEST_MODEL(3026699584)
-        script.sleep(100)
+        script_util:sleep(100)
     end
     while STREAMING.HAS_MODEL_LOADED(-1348598835) ~= 1 do
         STREAMING.REQUEST_MODEL(-1348598835)
-        script.sleep(100)
+        script_util:sleep(100)
     end
     local Object_pizza1 = OBJECT.CREATE_OBJECT(3613262246, pos.x,pos.y,pos.z, true, false, false)
     local Object_pizza2 = OBJECT.CREATE_OBJECT(2155335200, pos.x,pos.y,pos.z, true, false, false)
@@ -1219,7 +1253,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试2", function()
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza2, pos.x, pos.y, pos.z, false, true, true)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza3, pos.x, pos.y, pos.z, false, true, true)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza4, pos.x, pos.y, pos.z, false, true, true)
-        script.yield(10)
+        script_util:yield()
     end
 
 end)
@@ -1231,9 +1265,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试3", function()
     local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
     local PED1 =     PED.CREATE_PED(26,MISC.GET_HASH_KEY("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
     ENTITY.SET_ENTITY_VISIBLE(PED1, false, 0)
-    script.sleep(100)
+    script_util:sleep(100)
     WEAPON.GIVE_WEAPON_TO_PED(PED1,-270015777,80,true,true)
-    script.sleep(100)
+    script_util:sleep(100)
     FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, 2, 50, true, false, 0.0)
 
 end)
@@ -1253,7 +1287,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("赠送暴君MK2", function()
     STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
     while STREAMING.HAS_MODEL_LOADED(MISC.GET_HASH_KEY("oppressor2")) ~= 1 do
         STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
-        script.sleep(100)
+        script_util:sleep(100)
     end   
     for i = 0, 31 do
         veh = VEHICLE.CREATE_VEHICLE(MISC.GET_HASH_KEY("oppressor2"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 0 , true, true, true)
@@ -1270,31 +1304,31 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("PED伞崩", function()
         local object_hash = joaat("prop_logpile_06b")
         STREAMING.REQUEST_MODEL(object_hash)
           while not STREAMING.HAS_MODEL_LOADED(object_hash) do
-           script.yield()
+           script_util:yield()
         end
         PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, false, true, true)
         WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
-        script.sleep(1000)
+        script_util:sleep(1000)
         for i = 0 , 20 do
             PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
         end
-        script.sleep(1000)
+        script_util:sleep(1000)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
 
         local object_hash2 = joaat("prop_beach_parasol_03")
         STREAMING.REQUEST_MODEL(object_hash2)
           while not STREAMING.HAS_MODEL_LOADED(object_hash2) do
-            script.yield()
+            script_util:yield()
         end
         PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash2)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, 0, 0, 1)
         WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
-        script.sleep(1000)
+        script_util:sleep(1000)
         for i = 0 , 20 do
             PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
         end
-        script.sleep(1000)
+        script_util:sleep(1000)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
     end
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
@@ -1356,7 +1390,7 @@ local targetcoords = ENTITY.GET_ENTITY_COORDS(defpstarget)
 
 local hash = joaat("tug")
 STREAMING.REQUEST_MODEL(hash)
-while not STREAMING.HAS_MODEL_LOADED(hash) do script.yield() end
+while not STREAMING.HAS_MODEL_LOADED(hash) do script_util:yield() end
 
 for i = 1, defpscount do
     if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
@@ -1385,7 +1419,7 @@ if  check5:is_enabled() then --粒子效果轰炸
     if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
         STREAMING.REQUEST_NAMED_PTFX_ASSET(ptfx.dic)
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(ptfx.dic) do
-            script.yield()
+            script_util:yield()
         end
         GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx.dic)
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD( ptfx.name, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 10.0, true, true, true)
@@ -1414,7 +1448,7 @@ script.register_looped("fireservice", function()
         STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
             STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-            script.yield()
+            script_util:yield()
         end
         GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
         local ptfxx = GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("muz_xs_turret_flamethrower_looping", PLAYER.PLAYER_PED_ID(), 0, 0.12, 0.58, 30, 0, 0, 0x8b93, 1, false, false, false)
@@ -1430,7 +1464,7 @@ script.register_looped("fireservice", function()
             local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
 
             STREAMING.REQUEST_MODEL(obj1)
-            while not STREAMING.HAS_MODEL_LOADED(obj1) do script.yield() end
+            while not STREAMING.HAS_MODEL_LOADED(obj1) do script_util:yield() end
              ptfxAegg = OBJECT.CREATE_OBJECT(obj1, pos.x, pos.y, pos.z, true, false, false)
 
             --ptfxAegg = create_object(obj1, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()))
@@ -1443,7 +1477,7 @@ script.register_looped("fireservice", function()
             STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
             while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
                 STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-                script.sleep(20)
+                script_util:sleep(20)
             end
             GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
             bigfireWings[i].ptfx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("muz_xs_turret_flamethrower_looping", ptfxAegg, 0, 0, 0.1, bigfireWings[i].pos[1], 0, bigfireWings[i].pos[2], 1, false, false, false)

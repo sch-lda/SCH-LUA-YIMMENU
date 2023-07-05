@@ -420,7 +420,7 @@ local ptfxAegg
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
-local check8 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("火焰翅膀")
+local checkfirew = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("火焰翅膀")
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("中高风险功能") 
@@ -1456,7 +1456,7 @@ script.register_looped("fireservice", function()
     else
     end
 
-    if  check8:is_enabled() then
+    if  checkfirew:is_enabled() then
         ENTITY.SET_ENTITY_PROOFS(PLAYER.PLAYER_PED_ID(), false, true, false, false, false, false, 1, false)
         if  ptfxAegg == nil then
             local obj1 = 1803116220

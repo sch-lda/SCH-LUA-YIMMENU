@@ -307,6 +307,14 @@ gui.add_tab("SCH LUA测试版"):add_button("重置赌场计划面板", function(
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 0, true)
 end)
 
+--[[
+gui.add_tab("SCH LUA测试版"):add_button("注册为CEO", function()
+    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
+    --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
+    globals.set_int(1895156+playerIndex*609+10+429+1,0)
+end)
+]]
 
 gui.add_tab("SCH LUA测试版"):add_separator()
 gui.add_tab("SCH LUA测试版"):add_text("娱乐功能") 
@@ -429,7 +437,7 @@ gui.add_tab("SCH LUA测试版"):add_sameline()
 local checkfirew = gui.add_tab("SCH LUA测试版"):add_checkbox("火焰翅膀")
 
 gui.add_tab("SCH LUA测试版"):add_separator()
-gui.add_tab("SCH LUA测试版"):add_text("中高风险功能") 
+gui.add_tab("SCH LUA测试版"):add_text("产业功能-中高风险") 
 
 gui.add_tab("SCH LUA测试版"):add_button("CEO仓库出货一键完成", function()
     locals.set_int("gb_contraband_sell","542","99999")
@@ -443,14 +451,20 @@ end)
 
 gui.add_tab("SCH LUA测试版"):add_sameline()
 
+gui.add_tab("SCH LUA测试版"):add_button("地堡出货一键完成", function()
+    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+    locals.set_int("gb_gunrunning","1980","0") --bunkerAutoComplete: {('1206', '774')}  LOCAL gb_gunrunning set to 0 to autocomplete 
+    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+end)
+
+gui.add_tab("SCH LUA测试版"):add_sameline()
+
 gui.add_tab("SCH LUA测试版"):add_button("机库(空运)出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     local integer = locals.get_int("gb_smuggler", "3007")
     locals.set_int("gb_smuggler","2964",integer)
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
-
-gui.add_tab("SCH LUA测试版"):add_sameline()
 
 gui.add_tab("SCH LUA测试版"):add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+1,1) --可卡因
@@ -468,6 +482,8 @@ gui.add_tab("SCH LUA测试版"):add_button("地堡满原材料", function()
     gui.show_message("自动补货","全部完成")
 end)
 
+gui.add_tab("SCH LUA测试版"):add_sameline()
+
 gui.add_tab("SCH LUA测试版"):add_button("CEO仓库员工进货一次", function()
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32360,1,playerid)
@@ -482,11 +498,11 @@ gui.add_tab("SCH LUA测试版"):add_button("机库员工进货一次", function(
     STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
 end)
 
-local check3 = gui.add_tab("SCH LUA测试版"):add_checkbox("锁定仓库员工单次进货数量为")
+local checkCEOcargo = gui.add_tab("SCH LUA测试版"):add_checkbox("锁定仓库员工单次进货数量为")
 
 gui.add_tab("SCH LUA测试版"):add_sameline()
 
-local iputint1 = gui.add_tab("SCH LUA测试版"):add_input_int("个板条箱")
+local inputCEOcargo = gui.add_tab("SCH LUA测试版"):add_input_int("个板条箱")
 
 
 
@@ -517,10 +533,12 @@ gui.add_tab("SCH LUA测试版"):add_button("夜总会保险箱30万循环10次",
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 100000, true)
         gui.show_message("警告", "此方法仅用于偶尔小额恢复")
         script_util:sleep(10000)
-    
     end
 end)
 
+gui.add_tab("SCH LUA测试版"):add_sameline()
+
+local checklkw = gui.add_tab("SCH LUA测试版"):add_checkbox("赌场转盘抽车")
 
 --[[  已被检测
 gui.add_tab("SCH LUA测试版"):add_button("移除赌场轮盘冷却", function()
@@ -588,6 +606,7 @@ local NightclubPropertyInfo = {
 -- Business / Other Online Work Stuff [[update]]
 local function GetOnlineWorkOffset()
     -- GLOBAL_PLAYER_STAT
+        local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     return (1853988 + 1 + (playerid * 867) + 267)
 end
 local function GetNightClubHubOffset()
@@ -1349,31 +1368,6 @@ gui.add_tab("SCH LUA测试版"):add_button("PED伞崩", function()
     end
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
 end)
---[[
-local iputint1 = gui.add_tab("SCH LUA测试版"):add_input_int("测试7")
-
-gui.add_tab("SCH LUA测试版"):add_sameline()
-
-gui.add_tab("SCH LUA测试版"):add_button("测试8", function()
-    
-    gui.show_message("Debughash", iputint1:get_value())
-
-end)
-]]--
---[[
-gui.add_tab("SCH LUA测试版"):add_sameline()
-
-gui.add_tab("SCH LUA测试版"):add_button("测试10", function()
-
-  if   check1:is_enabled() then
-    gui.show_message("Debug", 1)
-  else
-    gui.show_message("Debug", 0)
-  end
-  PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(),65,true)
-
-end)
-]]
 
 --------------------------------------------------------------------------------------- looped
 
@@ -1386,12 +1380,22 @@ script.register_looped("rmtranserr", function() --移除交易错误警告
 end)
 
 script.register_looped("cargolock", function() 
-    if  check3:is_enabled() then--锁定CEO仓库进货数
-        globals.set_int(1890714+12,iputint1:get_value()) 
+    if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
+        if inputCEOcargo:get_value() <= 111 then 
+        globals.set_int(1890714+12,inputCEOcargo:get_value()) 
+        else
+            gui.show_error("超过限额", "进货数超过仓库容量上限")
+            checkCEOcargo:set_enabled(nil)
+        end
     end
     if  check4:is_enabled() then--锁定机库仓库进货数
         globals.set_int(1890730+6,iputint3:get_value()) 
     end
+    if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘-载具
+        locals.set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
+        --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
+    end
+
 end)
 
 

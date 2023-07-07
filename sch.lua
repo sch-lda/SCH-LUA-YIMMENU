@@ -101,7 +101,7 @@ end
 --gui.show_message("Debugmpx", mpx.."H4_")
 
 --[[
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试6", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试6", function()
 
     local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     gui.show_message("DebugX", pos.x)
@@ -113,11 +113,12 @@ end)
 --------------------------------------------------------------------------------------- Lua管理器页面
 --------------------------------------------------------------------------------------- Lua管理器页面
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("SCH LUA(测试)") 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("任务功能") 
+gui.add_tab("SCH LUA测试版"):add_separator()
+gui.add_tab("SCH LUA测试版"):add_text("要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("佩里科终章一键完成", function()
+gui.add_tab("SCH LUA测试版"):add_text("任务功能") 
+
+gui.add_tab("SCH LUA测试版"):add_button("佩里科终章一键完成", function()
     local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
     while not PLAYER.PLAYER_ID() == FMMC2020host do
         network.force_script_host("fm_mission_controller_2020")
@@ -127,9 +128,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("佩里科终章一键完成", fun
     locals.set_int("fm_mission_controller_2020","45450","9")
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(猎豹雕像)", function()
+gui.add_tab("SCH LUA测试版"):add_button("配置佩岛前置(猎豹雕像)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -159,9 +160,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(猎豹雕像)"
     gui.show_message("写入完成", "远离计划面板并重新接近以刷新面板")
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(粉钻)", function()
+gui.add_tab("SCH LUA测试版"):add_button("配置佩岛前置(粉钻)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -192,9 +193,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置佩岛前置(粉钻)", func
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("重置佩岛", function()
+gui.add_tab("SCH LUA测试版"):add_button("重置佩岛", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -226,7 +227,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("重置佩岛", function()
 end)
 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(钻石)", function()
+gui.add_tab("SCH LUA测试版"):add_button("配置赌场前置(钻石)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -253,9 +254,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(钻石)", func
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(黄金)", function()
+gui.add_tab("SCH LUA测试版"):add_button("配置赌场前置(黄金)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -282,9 +283,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("配置赌场前置(黄金)", func
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("重置赌场计划面板", function()
+gui.add_tab("SCH LUA测试版"):add_button("重置赌场计划面板", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -307,10 +308,10 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("重置赌场计划面板", functi
 end)
 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("娱乐功能") 
+gui.add_tab("SCH LUA测试版"):add_separator()
+gui.add_tab("SCH LUA测试版"):add_text("娱乐功能") 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("放烟花", function()
+gui.add_tab("SCH LUA测试版"):add_button("放烟花", function()
     local animlib = 'anim@mp_fireworks'
     local ptfx_asset = "scr_indep_fireworks"
     local anim_name = 'place_firework_3_box'
@@ -364,9 +365,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("放烟花", function()
     --ENTITY.DELETE_ENTITY(firework_box)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("飞天扫帚", function()
+gui.add_tab("SCH LUA测试版"):add_button("飞天扫帚", function()
     local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local broomstick = MISC.GET_HASH_KEY("prop_tool_broom")
     local oppressor = MISC.GET_HASH_KEY("oppressor2")
@@ -380,20 +381,20 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("飞天扫帚", function()
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("头顶666", function()
+gui.add_tab("SCH LUA测试版"):add_button("头顶666", function()
     local md6 = "prop_mp_num_6"
     attach_to_player(md6, 0, 0.0, 0, 1.7, 0, 0,0)
     attach_to_player(md6, 0, 1.0, 0, 1.7, 0, 0,0)
     attach_to_player(md6, 0, -1.0, 0, 1.7, 0, 0,0)
 end)
 
-local check6 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("游泳模式")
+local check6 = gui.add_tab("SCH LUA测试版"):add_checkbox("游泳模式")
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-local check7 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("喷火")
+local check7 = gui.add_tab("SCH LUA测试版"):add_checkbox("喷火")
 
 bigfireWings = {
     [1] = {pos = {[1] = 120, [2] =  75}},
@@ -423,25 +424,35 @@ bigfireWings = {
 }
 local ptfxAegg
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-local checkfirew = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("火焰翅膀")
+local checkfirew = gui.add_tab("SCH LUA测试版"):add_checkbox("火焰翅膀")
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("中高风险功能") 
+gui.add_tab("SCH LUA测试版"):add_separator()
+gui.add_tab("SCH LUA测试版"):add_text("中高风险功能") 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("CEO仓库出货一键完成", function()
+gui.add_tab("SCH LUA测试版"):add_button("CEO仓库出货一键完成", function()
     locals.set_int("gb_contraband_sell","542","99999")
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("摩托帮出货一键完成", function()
+gui.add_tab("SCH LUA测试版"):add_button("摩托帮出货一键完成", function()
     locals.set_int("gb_biker_contraband_sell","821","30")
 end)
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("摩托帮产业满原材料", function()
+gui.add_tab("SCH LUA测试版"):add_sameline()
+
+gui.add_tab("SCH LUA测试版"):add_button("机库(空运)出货一键完成", function()
+    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+    local integer = locals.get_int("gb_smuggler", "3007")
+    locals.set_int("gb_smuggler","2964",integer)
+    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+end)
+
+gui.add_tab("SCH LUA测试版"):add_sameline()
+
+gui.add_tab("SCH LUA测试版"):add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+1,1) --可卡因
     globals.set_int(1648657+1+2,1) --冰毒
     globals.set_int(1648657+1+3,1) --大麻
@@ -450,14 +461,14 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("摩托帮产业满原材料", fun
     gui.show_message("自动补货","全部完成")
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("地堡满原材料", function()
+gui.add_tab("SCH LUA测试版"):add_button("地堡满原材料", function()
     globals.set_int(1648657+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("CEO仓库员工进货一次", function()
+gui.add_tab("SCH LUA测试版"):add_button("CEO仓库员工进货一次", function()
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32360,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32361,1,playerid)
@@ -465,29 +476,29 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("CEO仓库员工进货一次", fun
     STATS.SET_PACKED_STAT_BOOL_CODE(32363,1,playerid)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("机库员工进货一次", function()
+gui.add_tab("SCH LUA测试版"):add_button("机库员工进货一次", function()
     STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
 end)
 
-local check3 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("锁定仓库单次进货数量为")
+local check3 = gui.add_tab("SCH LUA测试版"):add_checkbox("锁定仓库员工单次进货数量为")
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-local iputint1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("个板条箱")
-
-
-
-local check4 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("锁定机库单次进货数量为")
-
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
-
-local iputint3 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("箱")
+local iputint1 = gui.add_tab("SCH LUA测试版"):add_input_int("个板条箱")
 
 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱30万循环10次", function()
+local check4 = gui.add_tab("SCH LUA测试版"):add_checkbox("锁定机库员工单次进货数量为")
+
+gui.add_tab("SCH LUA测试版"):add_sameline()
+
+local iputint3 = gui.add_tab("SCH LUA测试版"):add_input_int("箱")
+
+
+
+gui.add_tab("SCH LUA测试版"):add_button("夜总会保险箱30万循环10次", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -512,7 +523,7 @@ end)
 
 
 --[[  已被检测
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除赌场轮盘冷却", function()
+gui.add_tab("SCH LUA测试版"):add_button("移除赌场轮盘冷却", function()
      local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
 local mpx = "MP0_"
@@ -525,8 +536,8 @@ end
     globals.set_int(262145+27383,1) -- -312420223
 end)
 ]]--
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("传送")
+gui.add_tab("SCH LUA测试版"):add_separator()
+gui.add_tab("SCH LUA测试版"):add_text("传送")
 function tpfac()
     local Pos = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(590))
     if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(590)) then
@@ -534,7 +545,7 @@ function tpfac()
     end
 
 end
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("设施", function()
+gui.add_tab("SCH LUA测试版"):add_button("设施", function()
     local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
 
@@ -545,9 +556,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("设施", function()
     end
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("设施计划屏幕", function()
+gui.add_tab("SCH LUA测试版"):add_button("设施计划屏幕", function()
     local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
     if intr == 269313 then 
@@ -609,17 +620,17 @@ function tpnc() --传送到夜总会
     end
 end
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会", function()
+gui.add_tab("SCH LUA测试版"):add_button("夜总会", function()
     tpnc()
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("夜总会保险箱(先进入夜总会)", function()
+gui.add_tab("SCH LUA测试版"):add_button("夜总会保险箱(先进入夜总会)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -1615.6832, -3015.7546, -75.204994)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("游戏厅", function()
+gui.add_tab("SCH LUA测试版"):add_button("游戏厅", function()
 
     local Blip = HUD.GET_FIRST_BLIP_INFO_ID(740) -- Arcade Blip
     local Pos = HUD.GET_BLIP_COORDS(Blip)
@@ -655,24 +666,24 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("游戏厅", function()
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("游戏厅计划面板(先进游戏厅)", function()
+gui.add_tab("SCH LUA测试版"):add_button("游戏厅计划面板(先进游戏厅)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  2711.773, -369.458, -54.781)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("杂项")
+gui.add_tab("SCH LUA测试版"):add_separator()
+gui.add_tab("SCH LUA测试版"):add_text("杂项")
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("预览万圣节猎鬼活动", function()
+gui.add_tab("SCH LUA测试版"):add_button("预览万圣节猎鬼活动", function()
     globals.set_int(262145+35064,1) --Ghost hunt enable
     globals.set_int(262145+35158,50000) --Ghost hunt GHOSTHUNT_CASH_REWARD
     gui.show_message("鬼将随机生成在某个位置","该活动只发生在晚八点至次日凌晨六点")
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除达克斯冷却", function()
+gui.add_tab("SCH LUA测试版"):add_button("移除达克斯冷却", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -684,63 +695,63 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除达克斯冷却", function(
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除自身悬赏", function()
+gui.add_tab("SCH LUA测试版"):add_button("移除自身悬赏", function()
     globals.set_int(1+2359296+5150+13,2880000)   
 end)
         
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("跳过一条对话", function()
+gui.add_tab("SCH LUA测试版"):add_button("跳过一条对话", function()
     AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE()
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("解除部分卡云", function()
+gui.add_tab("SCH LUA测试版"):add_button("解除部分卡云", function()
     if NETWORK.NETWORK_CAN_BAIL() then
         NETWORK.NETWORK_BAIL(0, 0, 0)
     end
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("移除视觉效果", function()
+gui.add_tab("SCH LUA测试版"):add_button("移除视觉效果", function()
     GRAPHICS.ANIMPOSTFX_STOP_ALL()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("DEFAULT")
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("视觉效果:吸毒", function()
+gui.add_tab("SCH LUA测试版"):add_button("视觉效果:吸毒", function()
     GRAPHICS.ANIMPOSTFX_PLAY("DrugsDrivingIn", 5, true)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("模糊", function()
+gui.add_tab("SCH LUA测试版"):add_button("模糊", function()
     GRAPHICS.ANIMPOSTFX_PLAY("MenuMGSelectionIn", 5, true)
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("提升亮度", function()
+gui.add_tab("SCH LUA测试版"):add_button("提升亮度", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("AmbientPush")
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("大雾", function()
+gui.add_tab("SCH LUA测试版"):add_button("大雾", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("casino_main_floor_heist")
 end)
 
 
-local check1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_checkbox("移除交易错误警告")
+local check1 = gui.add_tab("SCH LUA测试版"):add_checkbox("移除交易错误警告")
 
 --[[
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试4", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试4", function()
     local start_time = os.time()
     local duration = 5  
     
@@ -1037,7 +1048,7 @@ local check5 = gui.get_tab(""):add_checkbox("粒子效果轰炸(尽可能远离�
 --------------------------------------------------------------------------------------- Players 页面
 
 --[[
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("TSE C", function()
+gui.add_tab("SCH LUA测试版"):add_button("TSE C", function()
 
     local karmaPid = network.get_selected_player()
     
@@ -1048,7 +1059,7 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("TSE C", function()
     network.trigger_script_event(1 << karmaPid, {548471420, 3, 804923209, 1128590390, 136699892, -168325547, -814593329, 1630974017, 1101362956, 1510529262, 2, 1875285955, 633832161, -1097780228})
 end)
     
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
 gui.get_tab(""):add_button("模型1", function()
     
@@ -1147,7 +1158,7 @@ gui.get_tab(""):add_button("A C", function()
 end)
 ]]
 --[[
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("IN MD C", function()
+gui.add_tab("SCH LUA测试版"):add_button("IN MD C", function()
     for i = 1, 10 do
 		local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         STREAMING.REQUEST_MODEL(-930879665)
@@ -1169,9 +1180,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("IN MD C", function()
     end
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试5", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试5", function()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     coords.z = coords.z + 63
     local ufoModel = MISC.GET_HASH_KEY("p_spinning_anus_s")
@@ -1198,9 +1209,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试5", function()
 end)
 ]]--
 --[[
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试1", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试1", function()
     local CrashModel = MISC.GET_HASH_KEY("prop_fragtest_cnst_04")
     local Coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
 
@@ -1227,9 +1238,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试1", function()
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试2", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试2", function()
 
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
     while STREAMING.HAS_MODEL_LOADED(3613262246) ~= 1 do
@@ -1263,9 +1274,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试2", function()
 
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试3", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试3", function()
 
     local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
     local PED1 =     PED.CREATE_PED(26,MISC.GET_HASH_KEY("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
@@ -1277,18 +1288,18 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试3", function()
 
 end)
 ]]
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_separator()
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("全局选项") 
+gui.add_tab("SCH LUA测试版"):add_separator()
+gui.add_tab("SCH LUA测试版"):add_text("全局选项") 
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("全局爆炸", function()
+gui.add_tab("SCH LUA测试版"):add_button("全局爆炸", function()
     for i = 0, 31 do
             FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
     end
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("赠送暴君MK2", function()
+gui.add_tab("SCH LUA测试版"):add_button("赠送暴君MK2", function()
     STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
     while STREAMING.HAS_MODEL_LOADED(MISC.GET_HASH_KEY("oppressor2")) ~= 1 do
         STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
@@ -1300,9 +1311,9 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("赠送暴君MK2", function()
     end
 end)
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("PED伞崩", function()
+gui.add_tab("SCH LUA测试版"):add_button("PED伞崩", function()
     local spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
     local ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
     for n = 0 , 5 do
@@ -1339,20 +1350,20 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("PED伞崩", function()
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
 end)
 --[[
-local iputint1 = gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_input_int("测试7")
+local iputint1 = gui.add_tab("SCH LUA测试版"):add_input_int("测试7")
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试8", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试8", function()
     
     gui.show_message("Debughash", iputint1:get_value())
 
 end)
 ]]--
 --[[
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_sameline()
+gui.add_tab("SCH LUA测试版"):add_sameline()
 
-gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("测试10", function()
+gui.add_tab("SCH LUA测试版"):add_button("测试10", function()
 
   if   check1:is_enabled() then
     gui.show_message("Debug", 1)

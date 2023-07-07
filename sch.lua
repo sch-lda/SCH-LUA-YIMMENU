@@ -118,6 +118,11 @@ gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("SCH LUA(测试)")
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_text("任务功能") 
 
 gui.get_tab("GUI_TAB_LUA_SCRIPTS"):add_button("佩里科终章一键完成", function()
+    local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
+    while not PLAYER.PLAYER_ID() == FMMC2020host do
+        network.force_script_host("fm_mission_controller_2020")
+        script_util:yield()
+    end
     locals.set_int("fm_mission_controller_2020","46829","50")
     locals.set_int("fm_mission_controller_2020","45450","9")
 end)

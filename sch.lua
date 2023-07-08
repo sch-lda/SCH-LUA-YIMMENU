@@ -625,6 +625,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("尝试移除火翅膀", function()
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_separator()
+
 gui.add_tab("sch-lua-Alpha"):add_text("产业功能-中高风险") 
 
 gui.add_tab("sch-lua-Alpha"):add_button("CEO仓库出货一键完成", function()
@@ -655,7 +656,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("机库(空运)出货一键完成", func
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_button("摩托帮产业满原材料", function()
-    globals.set_int(1648657+1+1,1) --可卡因
+    globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
     globals.set_int(1648657+1+2,1) --冰毒
     globals.set_int(1648657+1+3,1) --大麻
     globals.set_int(1648657+1+4,1) --证件
@@ -714,8 +715,8 @@ gui.add_tab("sch-lua-Alpha"):add_button("夜总会保险箱30万循环10次", fu
     while a2 < 10 do
         a2 = a2 + 1
         gui.show_message("已执行次数", a2)
-        globals.set_int(262145 + 24227,300000)
-        globals.set_int(262145 + 24223,300000)
+        globals.set_int(262145 + 24227,300000) -- 	if (func_22904(MP_STAT_CLUB_SAFE_CASH_VALUE, -1) != Global_262145.f_24227)
+        globals.set_int(262145 + 24223,300000) -- 	func_6(iParam0, iParam1, joaat("NIGHTCLUBINCOMEUPTOPOP100"), &(Global_262145.f_24223), true);
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 10000, true)
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 100000, true)
@@ -727,6 +728,8 @@ end)
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local checklkw = gui.add_tab("sch-lua-Alpha"):add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具)")
+
+local checkxsdped = gui.add_tab("sch-lua-Alpha"):add_checkbox("NPC掉落2000元循环(不推荐)")
 
 --[[  已被检测
 gui.add_tab("sch-lua-Alpha"):add_button("移除赌场轮盘冷却", function()
@@ -761,7 +764,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("虎鲸计划面板", function()
         local Interior = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
         if Interior ~= 281345 then
 
-            globals.set_int(2794162 + 960, 1) --呼叫虎鲸
+            globals.set_int(2794162 + 960, 1) --呼叫虎鲸 --freemode.c 			func_12047("HELP_SUBMA_P" /*Go to the Planning Screen on board your new Kosatka ~a~~s~ to begin The Cayo Perico Heist as a VIP, CEO or MC President. You can also request the Kosatka nearby via the Services section of the Interaction Menu.*/, "H_BLIP_SUB2" /*~BLIP_SUB2~*/, func_3011(PLAYER::PLAYER_ID()), -1, false, true);
 
             repeat script_util:sleep(2000) until HUD.DOES_BLIP_EXIST(SubBlip)
             PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),1561.2369, 385.8771, -49.689915)
@@ -925,6 +928,19 @@ gui.add_tab("sch-lua-Alpha"):add_button("移除达克斯冷却", function()
     end
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."XM22JUGGALOWORKCDTIMER"), -1, true)
 
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("移除安保合约/电话暗杀冷却", function()
+    globals.set_int(262145 + 31908, 0)   --tuneables_processing.c   	func_6(iParam0, iParam1, joaat("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME") /* collision: FIXER_SECURITY_CONTRACT_COOLDOWN_TIME */, &(Global_262145.f_31908), true);
+    globals.set_int(262145 + 31973, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, -2036534141, &(Global_262145.f_31973), true);    	Global_262145.f_31973 = 500;
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("移除CEO载具冷却", function()
+    globals.set_int(262145 + 13005, 0)   --tuneables_processing.c 	func_6(iParam0, iParam1, joaat("GB_CALL_VEHICLE_COOLDOWN") /* collision: GB_CALL_VEHICLE_COOLDOWN */, &(Global_262145.f_13005), true);
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
@@ -1742,32 +1758,51 @@ script.register_looped("freemove", function() --阻止看云
 
 end)
 ]]
+script.register_looped("recoveryservice", function() 
+    if  checkxsdped:is_enabled() then --NPC掉落2000元循环
+        PED.SET_AMBIENT_PEDS_DROP_MONEY(true)
+        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+        TargetPPos.z=TargetPPos.z+10
+        local PED1  = CreatePed(28,3552233440,TargetPPos,0) --席桑达
+        PED.SET_PED_MONEY(PED1,2000)
+        ENTITY.SET_ENTITY_HEALTH(PED1,1,true)
+        script_util:sleep(300)
+    end
+end)
 
 script.register_looped("miscservice", function() 
+
     if  check1:is_enabled() then --移除交易错误警告
         globals.set_int(4536677,0) 
         globals.set_int(4536679,0) 
         globals.set_int(4536678,0) 
     end
+
     if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
         if inputCEOcargo:get_value() <= 111 then 
-        globals.set_int(1890714+12,inputCEOcargo:get_value()) 
+        globals.set_int(1890714+12,inputCEOcargo:get_value()) --freemode.c      func_17512("SRC_CRG_TICKER_1" /*~a~ Staff has sourced: ~n~1 Crate: ~a~*/, func_6676(hParam0), func_17513(Global_1890714.f_15), HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE);
+
         else
             gui.show_error("超过限额", "进货数超过仓库容量上限")
             checkCEOcargo:set_enabled(nil)
         end
     end
+
     if  check4:is_enabled() then--锁定机库仓库进货数
-        globals.set_int(1890730+6,iputint3:get_value()) 
+        globals.set_int(1890730+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
+
     end
+
     if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘-载具
         locals.set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
         --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
     end
-    if checkmiss:is_enabled() then
-        globals.set_int(262145 + 30394, 0) -- IH_SUBMARINE_MISSILES_COOLDOWN
-        globals.set_int(262145 + 30395, 99999) -- IH_SUBMARINE_MISSILES_DISTANCE
+
+    if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
+        globals.set_int(262145 + 30394, 0) --tuneables_processing.c IH_SUBMARINE_MISSILES_COOLDOWN
+        globals.set_int(262145 + 30395, 80000) --tuneables_processing.c IH_SUBMARINE_MISSILES_DISTANCE
     end
+
     if checkbypassconv:is_enabled() then  --跳过NPC对话
         if AUDIO.IS_SCRIPTED_CONVERSATION_ONGOING() then
             AUDIO.STOP_SCRIPTED_CONVERSATION(false)
@@ -1923,3 +1958,8 @@ script.register_looped("ptfxservice", function()
 end)
 
 ---------------------------------------------------------------------------------------
+--[[
+    	Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
+
+
+]]

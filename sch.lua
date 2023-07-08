@@ -158,7 +158,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("配置佩岛前置(猎豹雕像)", func
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I"), 16777215, true)
 
-    gui.show_message("写入完成", "远离计划面板并重新接近以刷新面板")
+    locals.set_int("heist_island_planning", 1526, 2) --刷新面板
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
@@ -190,7 +190,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("配置佩岛前置(粉钻)", function()
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I"), 16777215, true)
 
-    gui.show_message("写入完成", "远离计划面板并重新接近以刷新面板")
+    locals.set_int("heist_island_planning", 1526, 2)
 
 end)
 
@@ -222,8 +222,8 @@ gui.add_tab("sch-lua-Alpha"):add_button("重置佩岛", function()
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_MISSIONS"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I_SCOPED"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I"), 0, true)
-
-    gui.show_message("写入完成", "远离计划面板并重新接近以刷新面板")
+    locals.set_int("heist_island_planning", 1526, 2)
+    gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 
 end)
 
@@ -308,14 +308,144 @@ gui.add_tab("sch-lua-Alpha"):add_button("重置赌场计划面板", function()
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 0, true)
 end)
 
---[[
-gui.add_tab("sch-lua-Alpha"):add_button("注册为CEO", function()
+
+gui.add_tab("sch-lua-Alpha"):add_button("转换CEO/首领", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
-    globals.set_int(1895156+playerIndex*609+10+429+1,0)
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+        globals.set_int(1895156+playerIndex*609+10+429+1,1)
+        gui.show_message("提示","已转换为摩托帮首领")
+
+    else
+        if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
+            globals.set_int(1895156+playerIndex*609+10+429+1,0)
+            gui.show_message("提示","已转换为CEO")
+
+        else
+            gui.show_message("您不是老大","您既不是CEO也不是首领")
+        end
+    
+    end
+
 end)
-]]
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("显示事务所电脑", function()
+    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
+    --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+        SCRIPT.REQUEST_SCRIPT("appfixersecurity")
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appfixersecurity")
+        SYSTEM.START_NEW_SCRIPT("appfixersecurity", 5000)
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appfixersecurity")
+    else
+        if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
+            globals.set_int(1895156+playerIndex*609+10+429+1,0)
+            gui.show_message("提示","已转换为CEO")
+            SCRIPT.REQUEST_SCRIPT("appfixersecurity")
+            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appfixersecurity")
+            SYSTEM.START_NEW_SCRIPT("appfixersecurity", 5000)
+            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appfixersecurity")
+            else
+            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
+        end
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("显示地堡电脑", function()
+    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
+    --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+        SCRIPT.REQUEST_SCRIPT("appbunkerbusiness")
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appbunkerbusiness")
+        SYSTEM.START_NEW_SCRIPT("appbunkerbusiness", 5000)
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appbunkerbusiness")
+    else
+        if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
+            SCRIPT.REQUEST_SCRIPT("appbunkerbusiness")
+            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appbunkerbusiness")
+            SYSTEM.START_NEW_SCRIPT("appbunkerbusiness", 5000)
+            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appbunkerbusiness")
+            else
+            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
+        end
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("显示机库电脑", function()
+    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
+    --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+        SCRIPT.REQUEST_SCRIPT("appsmuggler")
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appsmuggler")
+        SYSTEM.START_NEW_SCRIPT("appsmuggler", 5000)
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appsmuggler")
+    else
+        if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
+            SCRIPT.REQUEST_SCRIPT("appsmuggler")
+            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appsmuggler")
+            SYSTEM.START_NEW_SCRIPT("appsmuggler", 5000)
+            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appsmuggler")
+            else
+            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
+        end
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("显示游戏厅产业总控电脑", function()
+    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
+    --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+        SCRIPT.REQUEST_SCRIPT("apparcadebusinesshub")
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apparcadebusinesshub")
+        SYSTEM.START_NEW_SCRIPT("apparcadebusinesshub", 5000)
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apparcadebusinesshub")
+    else
+        if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
+            SCRIPT.REQUEST_SCRIPT("apparcadebusinesshub")
+            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apparcadebusinesshub")
+            SYSTEM.START_NEW_SCRIPT("apparcadebusinesshub", 5000)
+            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apparcadebusinesshub")
+            else
+            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
+        end
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("显示恐霸主控面板", function()
+    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
+    --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+        SCRIPT.REQUEST_SCRIPT("apphackertruck")
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apphackertruck")
+        SYSTEM.START_NEW_SCRIPT("apphackertruck", 5000)
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apphackertruck")
+    else
+        if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
+            SCRIPT.REQUEST_SCRIPT("apphackertruck")
+            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apphackertruck")
+            SYSTEM.START_NEW_SCRIPT("apphackertruck", 5000)
+            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apphackertruck")
+                else
+            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
+        end
+    end
+end)
 
 gui.add_tab("sch-lua-Alpha"):add_separator()
 gui.add_tab("sch-lua-Alpha"):add_text("娱乐功能(稳定性不高,全是bug)") 
@@ -621,6 +751,31 @@ function tpfac()
     end
 
 end
+
+gui.add_tab("sch-lua-Alpha"):add_button("虎鲸计划面板", function()
+    local SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
+    local SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
+
+    if not HUD.DOES_BLIP_EXIST(SubBlip) and not HUD.DOES_BLIP_EXIST(SubControlBlip) then
+        local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0)
+        local Interior = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
+        if Interior ~= 281345 then
+
+            globals.set_int(2794162 + 960, 1) --呼叫虎鲸
+
+            repeat script_util:sleep(2000) until HUD.DOES_BLIP_EXIST(SubBlip)
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),1561.2369, 385.8771, -49.689915)
+            PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 175)
+        
+        end
+    end
+
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),1561.2369, 385.8771, -49.689915)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 175)
+
+
+end)
+
 gui.add_tab("sch-lua-Alpha"):add_button("设施", function()
     local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
@@ -777,20 +932,23 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 gui.add_tab("sch-lua-Alpha"):add_button("移除自身悬赏", function()
     globals.set_int(1+2359296+5150+13,2880000)   
 end)
-        
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("跳过一条对话", function()
-    AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE()
-end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
-gui.add_tab("sch-lua-Alpha"):add_button("解除部分卡云", function()
+gui.add_tab("sch-lua-Alpha"):add_button("卡云退线下", function()
     if NETWORK.NETWORK_CAN_BAIL() then
         NETWORK.NETWORK_BAIL(0, 0, 0)
     end
 end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("跳过一条NPC对话", function()
+    AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE()
+end)
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local checkbypassconv = gui.add_tab("sch-lua-Alpha"):add_checkbox("自动跳过NPC对话")
 
 gui.add_tab("sch-lua-Alpha"):add_button("移除视觉效果", function()
     GRAPHICS.ANIMPOSTFX_STOP_ALL()
@@ -824,7 +982,9 @@ end)
 
 local check1 = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除交易错误警告")
 
--- gui.add_tab("sch-lua-Alpha"):add_sameline()
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local checkmiss = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除虎鲸导弹冷却并提升射程")
 
 -- local checkmovefree = gui.add_tab("sch-lua-Alpha"):add_checkbox("战局切换时自由移动")
 
@@ -856,7 +1016,6 @@ end)
 
 gui.get_tab(""):add_separator()
 gui.get_tab(""):add_text("SCH LUA玩家选项-不接受任何反馈!") 
-gui.get_tab(""):add_text("多行不义必自毙") 
 
 gui.get_tab(""):add_button("栅栏笼子", function()
     local objHash <const> = MISC.GET_HASH_KEY("prop_fnclink_03e")
@@ -1584,15 +1743,12 @@ script.register_looped("freemove", function() --阻止看云
 end)
 ]]
 
-script.register_looped("rmtranserr", function() --移除交易错误警告
-    if  check1:is_enabled() then
+script.register_looped("miscservice", function() 
+    if  check1:is_enabled() then --移除交易错误警告
         globals.set_int(4536677,0) 
         globals.set_int(4536679,0) 
         globals.set_int(4536678,0) 
     end
-end)
-
-script.register_looped("cargolock", function() 
     if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
         if inputCEOcargo:get_value() <= 111 then 
         globals.set_int(1890714+12,inputCEOcargo:get_value()) 
@@ -1608,7 +1764,15 @@ script.register_looped("cargolock", function()
         locals.set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
         --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
     end
-
+    if checkmiss:is_enabled() then
+        globals.set_int(262145 + 30394, 0) -- IH_SUBMARINE_MISSILES_COOLDOWN
+        globals.set_int(262145 + 30395, 99999) -- IH_SUBMARINE_MISSILES_DISTANCE
+    end
+    if checkbypassconv:is_enabled() then  --跳过NPC对话
+        if AUDIO.IS_SCRIPTED_CONVERSATION_ONGOING() then
+            AUDIO.STOP_SCRIPTED_CONVERSATION(false)
+        end
+    end
 end)
 
 

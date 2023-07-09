@@ -1041,7 +1041,7 @@ gui.get_tab(""):add_separator()
 gui.get_tab(""):add_text("SCH LUA玩家选项-不接受任何反馈!") 
 
 gui.get_tab(""):add_button("栅栏笼子", function()
-    local objHash <const> = MISC.GET_HASH_KEY("prop_fnclink_03e")
+    local objHash = MISC.GET_HASH_KEY("prop_fnclink_03e")
     STREAMING.REQUEST_MODEL(objHash)
 
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)

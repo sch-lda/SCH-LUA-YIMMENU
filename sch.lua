@@ -11,6 +11,10 @@ function upgrade_vehicle(vehicle)
     end
 end
 
+function StatGetInt(stathash)
+    statvalue = STATS.STAT_GET_INT(stathash, statvalue, -1) 
+    return statvalue
+end
 
 function attach_to_player(hash, bone, x, y, z, xrot, yrot, zrot)     --附加实体到自己
     local user_ped = PLAYER.PLAYER_PED_ID()
@@ -712,7 +716,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("夜总会保险箱30万循环10次", fu
     
     end
     a2 =0
-    while a2 < 10 do
+    while a2 < 10 do --循环次数
         a2 = a2 + 1
         gui.show_message("已执行次数", a2)
         globals.set_int(262145 + 24227,300000) -- 	if (func_22904(MP_STAT_CLUB_SAFE_CASH_VALUE, -1) != Global_262145.f_24227)
@@ -721,7 +725,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("夜总会保险箱30万循环10次", fu
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
         STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 100000, true)
         gui.show_message("警告", "此方法仅用于偶尔小额恢复")
-        script_util:sleep(10000)
+        script_util:sleep(10000) --执行间隔，单位ms
     end
 end)
 
@@ -763,13 +767,11 @@ gui.add_tab("sch-lua-Alpha"):add_button("虎鲸计划面板", function()
         local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0)
         local Interior = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
         if Interior ~= 281345 then
-
             globals.set_int(2794162 + 960, 1) --呼叫虎鲸 --freemode.c 			func_12047("HELP_SUBMA_P" /*Go to the Planning Screen on board your new Kosatka ~a~~s~ to begin The Cayo Perico Heist as a VIP, CEO or MC President. You can also request the Kosatka nearby via the Services section of the Interaction Menu.*/, "H_BLIP_SUB2" /*~BLIP_SUB2~*/, func_3011(PLAYER::PLAYER_ID()), -1, false, true);
-
             repeat script_util:sleep(2000) until HUD.DOES_BLIP_EXIST(SubBlip)
             PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),1561.2369, 385.8771, -49.689915)
             PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 175)
-        
+
         end
     end
 
@@ -1001,7 +1003,12 @@ local check1 = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除交易错误警�
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local checkmiss = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除虎鲸导弹冷却并提升射程")
+ 
+local checkzhongjia = gui.add_tab("sch-lua-Alpha"):add_checkbox("请求重甲花费(用于删除黑钱)")
 
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local iputintzhongjia = gui.add_tab("sch-lua-Alpha"):add_input_int("元")
 -- local checkmovefree = gui.add_tab("sch-lua-Alpha"):add_checkbox("战局切换时自由移动")
 
 --[[
@@ -1770,12 +1777,12 @@ script.register_looped("recoveryservice", function()
     end
 end)
 
-script.register_looped("miscservice", function() 
+script.register_looped("dataservice", function() 
 
     if  check1:is_enabled() then --移除交易错误警告
-        globals.set_int(4536677,0) 
-        globals.set_int(4536679,0) 
-        globals.set_int(4536678,0) 
+        globals.set_int(4536677,0)   -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
+        globals.set_int(4536679,0)   -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
+        globals.set_int(4536678,0)  -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
     end
 
     if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
@@ -1807,6 +1814,15 @@ script.register_looped("miscservice", function()
         if AUDIO.IS_SCRIPTED_CONVERSATION_ONGOING() then
             AUDIO.STOP_SCRIPTED_CONVERSATION(false)
         end
+    end
+
+    if checkzhongjia:is_enabled() then --锁定请求重甲花费
+        if iputintzhongjia:get_value() <= 1000 then 
+            gui.show_error("错误", "金额需要大于1000")
+            checkzhongjia:set_enabled(nil)
+            else
+                globals.set_int(262145 + 20468, iputintzhongjia:get_value()) --am_pi_menu.c  func_1277("PIM_TBALLI" /*BALLISTIC EQUIPMENT SERVICES*/);
+            end
     end
 end)
 
@@ -1960,6 +1976,4 @@ end)
 ---------------------------------------------------------------------------------------
 --[[
     	Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
-
-
 ]]

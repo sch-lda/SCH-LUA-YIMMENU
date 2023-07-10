@@ -26,6 +26,13 @@ function upgrade_vehicle(vehicle)
     end
 end
 
+function run_script(name) 
+    SCRIPT.REQUEST_SCRIPT(name)  
+    repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED(name)
+    SYSTEM.START_NEW_SCRIPT(name, 5000)
+    SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(name)
+end
+
 function StatGetInt(stathash)
     statvalue = STATS.STAT_GET_INT(stathash, statvalue, -1) 
     return statvalue
@@ -358,20 +365,15 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示事务所电脑", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("appfixersecurity")  --关键代码,若判断逻辑失效请直接执行关键代码
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appfixersecurity")--关键代码,若判断逻辑失效请直接执行关键代码
-        SYSTEM.START_NEW_SCRIPT("appfixersecurity", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appfixersecurity")--关键代码,若判断逻辑失效请直接执行关键代码
+        run_script("appfixersecurity")
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             globals.set_int(1895156+playerIndex*609+10+429+1,0)
             gui.show_message("提示","已转换为CEO")
-            SCRIPT.REQUEST_SCRIPT("appfixersecurity")
-            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appfixersecurity")
-            SYSTEM.START_NEW_SCRIPT("appfixersecurity", 5000)
-            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appfixersecurity")
+            run_script("appfixersecurity")
             else
-            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
+            gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+            run_script("appfixersecurity")
         end
     end
 end)
@@ -383,19 +385,14 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示地堡电脑", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("appbunkerbusiness")--关键代码,若判断逻辑失效请直接执行关键代码
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appbunkerbusiness")--关键代码,若判断逻辑失效请直接执行关键代码
-        SYSTEM.START_NEW_SCRIPT("appbunkerbusiness", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appbunkerbusiness")--关键代码,若判断逻辑失效请直接执行关键代码
+        run_script("appbunkerbusiness")
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            SCRIPT.REQUEST_SCRIPT("appbunkerbusiness")
-            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appbunkerbusiness")
-            SYSTEM.START_NEW_SCRIPT("appbunkerbusiness", 5000)
-            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appbunkerbusiness")
+            run_script("appbunkerbusiness")
             else
-            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
-        end
+                gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+                run_script("appbunkerbusiness")
+            end
     end
 end)
 
@@ -406,19 +403,14 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示机库电脑", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("appsmuggler")--关键代码,若判断逻辑失效请直接执行关键代码
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appsmuggler")--关键代码,若判断逻辑失效请直接执行关键代码
-        SYSTEM.START_NEW_SCRIPT("appsmuggler", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appsmuggler")--关键代码,若判断逻辑失效请直接执行关键代码
+        run_script("appsmuggler")
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            SCRIPT.REQUEST_SCRIPT("appsmuggler")
-            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appsmuggler")
-            SYSTEM.START_NEW_SCRIPT("appsmuggler", 5000)
-            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appsmuggler")
+            run_script("appsmuggler")
             else
-            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
-        end
+                gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+                run_script("appsmuggler")
+            end
     end
 end)
 
@@ -429,19 +421,14 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示游戏厅产业总控电脑", fun
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("apparcadebusinesshub")--关键代码,若判断逻辑失效请直接执行关键代码
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apparcadebusinesshub")--关键代码,若判断逻辑失效请直接执行关键代码
-        SYSTEM.START_NEW_SCRIPT("apparcadebusinesshub", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apparcadebusinesshub")--关键代码,若判断逻辑失效请直接执行关键代码
+        run_script("apparcadebusinesshub")
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            SCRIPT.REQUEST_SCRIPT("apparcadebusinesshub")
-            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apparcadebusinesshub")
-            SYSTEM.START_NEW_SCRIPT("apparcadebusinesshub", 5000)
-            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apparcadebusinesshub")
-            else
-            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
-        end
+            run_script("apparcadebusinesshub")
+        else
+                gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+                run_script("apparcadebusinesshub")
+            end
     end
 end)
 
@@ -452,18 +439,14 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示恐霸主控面板", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("apphackertruck")--关键代码,若判断逻辑失效请直接执行关键代码
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apphackertruck")--关键代码,若判断逻辑失效请直接执行关键代码
-        SYSTEM.START_NEW_SCRIPT("apphackertruck", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apphackertruck")--关键代码,若判断逻辑失效请直接执行关键代码
+        run_script("apphackertruck")
+
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            SCRIPT.REQUEST_SCRIPT("apphackertruck")
-            repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apphackertruck")
-            SYSTEM.START_NEW_SCRIPT("apphackertruck", 5000)
-            SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apphackertruck")
-                else
-            gui.show_message("请先注册为老大","您既不是CEO也不是首领")
+            run_script("apphackertruck")
+        else
+            gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+            run_script("apphackertruck")
         end
     end
 end)

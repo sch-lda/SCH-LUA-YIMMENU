@@ -1,8 +1,23 @@
-if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
-   gui.show_error("SCH LUA", "游戏版本不受支持!仍然使用可能损坏游戏")
-end
+--我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
+--有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
+--[[
+    使用协议：
+允许：
+         个人使用
+         修改后个人使用
+         修改后二次分发
 
---------------------------------------------------------------------------------------- functions
+禁止:
+         商用
+         修改后二次分发仍使用包含sch的名称
+
+无任何保障(我只能保证编写时无主观恶意,造成各种意想不到的后果概不负责)
+
+另请确保通过小助手官方discord用户yeahsch(sch)发布的文件下载，其他任何方式均有可能是恶意脚本
+
+]]
+
+--------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -100,8 +115,9 @@ function CreateVehicle(Hash, Pos, Heading, Invincible)
     end
     return SpawnedVehicle
 end
+--------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
---------------------------------------------------------------------------------------- MPx
+--------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 --gui.show_message("Debugmpx", mpx.."H4_")
 
@@ -114,8 +130,9 @@ gui.add_tab("sch-lua-Alpha"):add_button("测试6", function()
 
 end)
 ]]    
-    
---------------------------------------------------------------------------------------- Lua管理器页面
+--------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
+
+
 --------------------------------------------------------------------------------------- Lua管理器页面
 
 gui.add_tab("sch-lua-Alpha"):add_separator()
@@ -125,25 +142,25 @@ gui.add_tab("sch-lua-Alpha"):add_text("任务功能")
 
 gui.add_tab("sch-lua-Alpha"):add_button("佩里科终章一键完成", function()
     local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
-    while not PLAYER.PLAYER_ID() == FMMC2020host do
-        network.force_script_host("fm_mission_controller_2020")
+    while not PLAYER.PLAYER_ID() == FMMC2020host do   --如果判断不是脚本主机则自动抢脚本主机
+        network.force_script_host("fm_mission_controller_2020") --抢脚本主机
         script_util:yield()
     end
-    locals.set_int("fm_mission_controller_2020","46829","50")
-    locals.set_int("fm_mission_controller_2020","45450","9")
+    locals.set_int("fm_mission_controller_2020","46829","50") --关键代码
+    locals.set_int("fm_mission_controller_2020","45450","9")  --关键代码
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 gui.add_tab("sch-lua-Alpha"):add_button("配置佩岛前置(猎豹雕像)", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等  --用于判断当前是角色1还是角色2
 
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
+    local mpx = "MP0_"--用于判断当前是角色1还是角色2
+    if playerid == 1 then --用于判断当前是角色1还是角色2
+        mpx = "MP1_" --用于判断当前是角色1还是角色2
     
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 5, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 5, true)  --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 131071, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 63, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_APPROACH"), -1, true)
@@ -175,7 +192,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("配置佩岛前置(粉钻)", function()
         mpx = "MP1_" 
     
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 3, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 3, true) --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 131071, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 63, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_APPROACH"), -1, true)
@@ -208,7 +225,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("重置佩岛", function()
         mpx = "MP1_" 
     end
 
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 0, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 0, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_APPROACH"), 0, true)
@@ -240,9 +257,9 @@ gui.add_tab("sch-lua-Alpha"):add_button("配置赌场前置(钻石)", function()
         mpx = "MP1_" 
     end
 
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 3, true) --diamond
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 3, true) --主目标:钻石
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 159, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 2, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
@@ -269,9 +286,9 @@ gui.add_tab("sch-lua-Alpha"):add_button("配置赌场前置(黄金)", function()
         mpx = "MP1_" 
     
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 1, true) --gold
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 1, true) --主目标: 黄金
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 159, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 2, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
@@ -300,7 +317,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("重置赌场计划面板", function()
     end
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 0, true) --gold
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 0, true)
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 0, true)
@@ -317,7 +334,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("转换CEO/首领", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
-    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then --1895156+playerIndex*609+10+429+1 = 0 为CEO =1为摩托帮首领
         globals.set_int(1895156+playerIndex*609+10+429+1,1)
         gui.show_message("提示","已转换为摩托帮首领")
 
@@ -341,10 +358,10 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示事务所电脑", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("appfixersecurity")
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appfixersecurity")
-        SYSTEM.START_NEW_SCRIPT("appfixersecurity", 5000)
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appfixersecurity")
+        SCRIPT.REQUEST_SCRIPT("appfixersecurity")  --关键代码,若判断逻辑失效请直接执行关键代码
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appfixersecurity")--关键代码,若判断逻辑失效请直接执行关键代码
+        SYSTEM.START_NEW_SCRIPT("appfixersecurity", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appfixersecurity")--关键代码,若判断逻辑失效请直接执行关键代码
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             globals.set_int(1895156+playerIndex*609+10+429+1,0)
@@ -366,10 +383,10 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示地堡电脑", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("appbunkerbusiness")
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appbunkerbusiness")
-        SYSTEM.START_NEW_SCRIPT("appbunkerbusiness", 5000)
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appbunkerbusiness")
+        SCRIPT.REQUEST_SCRIPT("appbunkerbusiness")--关键代码,若判断逻辑失效请直接执行关键代码
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appbunkerbusiness")--关键代码,若判断逻辑失效请直接执行关键代码
+        SYSTEM.START_NEW_SCRIPT("appbunkerbusiness", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appbunkerbusiness")--关键代码,若判断逻辑失效请直接执行关键代码
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             SCRIPT.REQUEST_SCRIPT("appbunkerbusiness")
@@ -389,10 +406,10 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示机库电脑", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("appsmuggler")
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appsmuggler")
-        SYSTEM.START_NEW_SCRIPT("appsmuggler", 5000)
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appsmuggler")
+        SCRIPT.REQUEST_SCRIPT("appsmuggler")--关键代码,若判断逻辑失效请直接执行关键代码
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("appsmuggler")--关键代码,若判断逻辑失效请直接执行关键代码
+        SYSTEM.START_NEW_SCRIPT("appsmuggler", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("appsmuggler")--关键代码,若判断逻辑失效请直接执行关键代码
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             SCRIPT.REQUEST_SCRIPT("appsmuggler")
@@ -412,10 +429,10 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示游戏厅产业总控电脑", fun
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("apparcadebusinesshub")
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apparcadebusinesshub")
-        SYSTEM.START_NEW_SCRIPT("apparcadebusinesshub", 5000)
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apparcadebusinesshub")
+        SCRIPT.REQUEST_SCRIPT("apparcadebusinesshub")--关键代码,若判断逻辑失效请直接执行关键代码
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apparcadebusinesshub")--关键代码,若判断逻辑失效请直接执行关键代码
+        SYSTEM.START_NEW_SCRIPT("apparcadebusinesshub", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apparcadebusinesshub")--关键代码,若判断逻辑失效请直接执行关键代码
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             SCRIPT.REQUEST_SCRIPT("apparcadebusinesshub")
@@ -435,10 +452,10 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示恐霸主控面板", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        SCRIPT.REQUEST_SCRIPT("apphackertruck")
-        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apphackertruck")
-        SYSTEM.START_NEW_SCRIPT("apphackertruck", 5000)
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apphackertruck")
+        SCRIPT.REQUEST_SCRIPT("apphackertruck")--关键代码,若判断逻辑失效请直接执行关键代码
+        repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED("apphackertruck")--关键代码,若判断逻辑失效请直接执行关键代码
+        SYSTEM.START_NEW_SCRIPT("apphackertruck", 5000)--关键代码,若判断逻辑失效请直接执行关键代码
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED("apphackertruck")--关键代码,若判断逻辑失效请直接执行关键代码
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             SCRIPT.REQUEST_SCRIPT("apphackertruck")
@@ -452,7 +469,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示恐霸主控面板", function()
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_separator()
-gui.add_tab("sch-lua-Alpha"):add_text("娱乐功能(稳定性不高,全是bug)") 
+gui.add_tab("sch-lua-Alpha"):add_text("娱乐功能(稳定性不高,全是bug)") --不解释，我自己也搞不明白
 
 gui.add_tab("sch-lua-Alpha"):add_button("放烟花", function()
     local animlib = 'anim@mp_fireworks'
@@ -526,9 +543,9 @@ end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
-local objectsix1
-local objectsix2
-local objectsix3
+local objectsix1 --注册为全局变量以便后续移除666
+local objectsix2--注册为全局变量以便后续移除666
+local objectsix3--注册为全局变量以便后续移除666
 
 gui.add_tab("sch-lua-Alpha"):add_button("头顶666", function()
     local md6 = "prop_mp_num_6"
@@ -573,11 +590,11 @@ gui.add_tab("sch-lua-Alpha"):add_button("移除666", function()
 
 end)
 
-local check6 = gui.add_tab("sch-lua-Alpha"):add_checkbox("游泳模式")
+local check6 = gui.add_tab("sch-lua-Alpha"):add_checkbox("游泳模式") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
-local checkfirebreath = gui.add_tab("sch-lua-Alpha"):add_checkbox("喷火")
+local checkfirebreath = gui.add_tab("sch-lua-Alpha"):add_checkbox("喷火")--这只是一个复选框,代码往最后的循环脚本部分找
 
 bigfireWings = {
     [1] = {pos = {[1] = 120, [2] =  75}},
@@ -678,6 +695,8 @@ end)
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 gui.add_tab("sch-lua-Alpha"):add_button("CEO仓库员工进货一次", function()
+    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32360,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32361,1,playerid)
@@ -688,6 +707,8 @@ end)
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 gui.add_tab("sch-lua-Alpha"):add_button("机库员工进货一次", function()
+    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+
     STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
 end)
 
@@ -733,25 +754,12 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local checklkw = gui.add_tab("sch-lua-Alpha"):add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具)")
 
-local checkxsdped = gui.add_tab("sch-lua-Alpha"):add_checkbox("NPC掉落2000元循环(不推荐)")
+local checkxsdped = gui.add_tab("sch-lua-Alpha"):add_checkbox("NPC掉落2000元循环(高危)")
 
---[[  已被检测
-gui.add_tab("sch-lua-Alpha"):add_button("移除赌场轮盘冷却", function()
-     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
-
-local mpx = "MP0_"
-if playerid == 1 then 
-    mpx = "MP1_" 
-
-end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."LUCKY_WHEEL_NUM_SPIN"), 0, true)
-    globals.set_int(262145+27382,1) -- 9960150 
-    globals.set_int(262145+27383,1) -- -312420223
-end)
-]]--
 gui.add_tab("sch-lua-Alpha"):add_separator()
 gui.add_tab("sch-lua-Alpha"):add_text("传送")
-function tpfac()
+
+function tpfac() --传送到设施
     local Pos = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(590))
     if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(590)) then
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), Pos.x, Pos.y, Pos.z)
@@ -964,6 +972,7 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 gui.add_tab("sch-lua-Alpha"):add_button("跳过一条NPC对话", function()
     AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE()
 end)
+
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local checkbypassconv = gui.add_tab("sch-lua-Alpha"):add_checkbox("自动跳过NPC对话")
@@ -998,47 +1007,22 @@ gui.add_tab("sch-lua-Alpha"):add_button("大雾", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("casino_main_floor_heist")
 end)
 
-local check1 = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除交易错误警告")
+local check1 = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
-local checkmiss = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除虎鲸导弹冷却并提升射程")
+local checkmiss = gui.add_tab("sch-lua-Alpha"):add_checkbox("移除虎鲸导弹冷却并提升射程")--只是一个开关，代码往后面找
  
-local checkzhongjia = gui.add_tab("sch-lua-Alpha"):add_checkbox("请求重甲花费(用于删除黑钱)")
+local checkzhongjia = gui.add_tab("sch-lua-Alpha"):add_checkbox("请求重甲花费(用于删除黑钱)")--只是一个开关，代码往后面找
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local iputintzhongjia = gui.add_tab("sch-lua-Alpha"):add_input_int("元")
--- local checkmovefree = gui.add_tab("sch-lua-Alpha"):add_checkbox("战局切换时自由移动")
 
---[[
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("测试4", function()
-    local start_time = os.time()
-    local duration = 5  
-    
-    while os.time() - start_time < duration do
-    local scaleForm = GRAPHICS.REQUEST_SCALEFORM_MOVIE("POPUP_WARNING")
-    GRAPHICS.DRAW_RECT(.5, .5, 1, 1, 255, 158, 177, 255)
-    GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleForm, "SHOW_POPUP_WARNING")
-    GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleForm, 0, 0, 0, 0, 0)
-    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT(500.0)
-    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("YIMMENU")
-    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("欢迎使用SCH LUA")
-
-    GRAPHICS.END_SCALEFORM_MOVIE_METHOD(scaleForm)
-
-    script_util:sleep(5)
-    end
-end)
-]]--
-
---------------------------------------------------------------------------------------- Players 页面
 --------------------------------------------------------------------------------------- Players 页面
 
 gui.get_tab(""):add_separator()
-gui.get_tab(""):add_text("SCH LUA玩家选项-不接受任何反馈!") 
+gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
 
 gui.get_tab(""):add_button("栅栏笼子", function()
     local objHash = MISC.GET_HASH_KEY("prop_fnclink_03e")
@@ -1302,87 +1286,411 @@ local check2 = gui.get_tab(""):add_checkbox("掉帧攻击(尽可能远离目标)
 gui.get_tab(""):add_sameline()
 
 local check5 = gui.get_tab(""):add_checkbox("粒子效果轰炸(尽可能远离目标)")
---[[
-gui.add_tab(""):add_button("载具状态崩溃", function()
-
-    if PLAYER.GET_PLAYER_PED(network.get_selected_player()) ==PLAYER.PLAYER_PED_ID() then
-        gui.show_message("提示","你正试图崩溃自己")
-        return
-    end
-
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    for i = 0, 30 do
-        vehw = CreateVehicle(joaat("banshee"),pos,ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())) - 180)
-        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehw)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehw, pos.x,pos.y,pos.z, ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED(network.get_selected_player())), 10)
-        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 18, 777)
-        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 17, 888)
-        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 16, 999)
-        script_util:sleep(500)
-    end
-
-end)
-]]
---------------------------------------------------------------------------------------- Players 页面
---------------------------------------------------------------------------------------- Players 页面
---[[
-script.register_looped("refreshpid", function()
-    pid = network.get_selected_player()
-  end)
-
-gui.get_tab(""):add_button("TSE C", function()
-
-    if pid == PLAYER.PLAYER_ID() then
-        gui.show_message("提示","不可对自己使用")
-        return
-     end
-     local int_min = -2147483647
-     local int_max = 2147483647
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {548471420, pid, 804923209, 1128590390, 136699892, -168325547, -814593329, 1630974017, 1101362956, 1510529262, 2, 1875285955, 633832161, -1097780228})
-     network.trigger_script_event(1 << pid, {2765370640, pid, 3747643341, math.random(int_min, int_max), math.random(int_min, int_max), 
-     math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-     math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-     network.trigger_script_event(1 << pid, { -555356783, pid ,85952,99999,52682274855,526822745 })
-     network.trigger_script_event(1 << pid, { 526822748, pid ,78552,99999 ,7949161,789454312})
-     network.trigger_script_event(1 << pid, { -66669983, pid ,526822748,555555, math.random(80521,2959749521) })
-     network.trigger_script_event(1 << pid, { -1733737974, pid ,789522 ,59486,48512151,-9545440,5845131,848153,math.random(1,2959749),189958})
-     network.trigger_script_event(1 << pid, { -1529596656, pid ,795221,59486,48512151,-9545440 , math.random(1,2959749) })
-     network.trigger_script_event(1 << pid, { -8965204809, pid ,795221,59486,48512151,-9545440 })
-     gui.show_message("正在发送脚本事件崩溃",pid)
-     network.trigger_script_event(1 << pid, {495813132, pid, 0, 0, -12988, -99097, 0})
-     network.trigger_script_event(1 << pid, {495813132, pid, -4640169, 0, 0, 0, -36565476, -53105203})
-     network.trigger_script_event(1 << pid, {495813132, pid,  0, 1, 23135423, 3, 3, 4, 827870001, 5, 2022580431, 6, -918761645, 7, 1754244778, 8, 827870001, 9, 17})
- 
- 
-     for i = 1, 50 do
-        --network.trigger_script_event(1 << pid,{-642704387, pid, 782258655, math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max) })
-     end
-
-
-    for i = 1, 15 do
-        network.trigger_script_event(1 << pid, {891653640, 0, 81468, 96773, 84776, 2939, 20158,  14219,  38254,  22206})
-        network.trigger_script_event(1 << pid, {1348481963, pid, math.random(int_min, int_max)})
-        network.trigger_script_event(1 << pid,{-642704387, pid, 782258655, math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max) })
-
-        network.trigger_script_event(1 << pid, {-992162568, 0, 40778, 85683, 32561, 49696, 24000,  78834,  1860,  37655, math.random(int_min, int_max), math.random(int_min, int_max), -- Crash Event S1
-        math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-        math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-        network.trigger_script_event(1 << pid, {891653640, 0, 81468, 96773, 84776, 2939, 20158,  14219,  38254,  22206})
-    end
-    network.trigger_script_event(1 << pid, {495813132, pid, 0, 0, -12988, -99097, 0})
-    network.trigger_script_event(1 << pid, {495813132, pid, -4640169, 0, 0, 0, -36565476, -53105203})
-    network.trigger_script_event(1 << pid, {495813132, pid,  0, 1, 23135423, 3, 3, 4, 827870001, 5, 2022580431, 6, -918761645, 7, 1754244778, 8, 827870001, 9, 17})
-
-end)
-]]
 
 gui.add_tab(""):add_sameline()
 
 local checkspped = gui.get_tab(""):add_checkbox("循环刷PED")
+
+gui.add_tab(""):add_button("碎片崩溃", function()
+    for i=1,10 do
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        ENTITY.DELETE_ENTITY(object)
+        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        script_util:sleep(100)
+        ENTITY.DELETE_ENTITY(object)
+    end
+
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_separator()
+gui.add_tab("sch-lua-Alpha"):add_text("全局选项") 
+
+gui.add_tab("sch-lua-Alpha"):add_button("全局爆炸", function()
+    for i = 0, 31 do
+            FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("赠送暴君MK2", function()
+    STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
+    while STREAMING.HAS_MODEL_LOADED(MISC.GET_HASH_KEY("oppressor2")) ~= 1 do
+        STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
+        script_util:sleep(100)
+    end   
+    for i = 0, 31 do
+        veh = VEHICLE.CREATE_VEHICLE(MISC.GET_HASH_KEY("oppressor2"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 0 , true, true, true)
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("公寓邀请", function()
+    for pid = 0, 31 do
+    network.trigger_script_event(1 << pid, {3592101251, 1, 0, -1, 4, 127, 0, 0, 0,PLAYER.GET_PLAYER_INDEX(), pid})
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("PED伞崩", function() --恶毒的东西
+    local spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
+    local ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
+    for n = 0 , 5 do
+        local object_hash = joaat("prop_logpile_06b")
+        STREAMING.REQUEST_MODEL(object_hash)
+          while not STREAMING.HAS_MODEL_LOADED(object_hash) do
+           script_util:yield()
+        end
+        PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, false, true, true)
+        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
+        script_util:sleep(1000)
+        for i = 0 , 20 do
+            PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
+        end
+        script_util:sleep(1000)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
+
+        local object_hash2 = joaat("prop_beach_parasol_03")
+        STREAMING.REQUEST_MODEL(object_hash2)
+          while not STREAMING.HAS_MODEL_LOADED(object_hash2) do
+            script_util:yield()
+        end
+        PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash2)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, 0, 0, 1)
+        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
+        script_util:sleep(1000)
+        for i = 0 , 20 do
+            PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
+        end
+        script_util:sleep(1000)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
+    end
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
+end)
+
+
+
+
+--------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
+
+script.register_looped("recoveryservice", function() 
+    if  checkxsdped:is_enabled() then --NPC掉落2000元循环
+        PED.SET_AMBIENT_PEDS_DROP_MONEY(true) --自由模式NPC是否掉钱
+        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+        TargetPPos.z=TargetPPos.z+10 --让 席桑达 生成在空中然后摔下来
+        local PED1  = CreatePed(28,3552233440,TargetPPos,0) --刷出的NPC是 席桑达
+        PED.SET_PED_MONEY(PED1,2000) --上限就是2000,不能超过
+        ENTITY.SET_ENTITY_HEALTH(PED1,1,true)--刷出的NPC 席桑达 血量只有 1
+        script_util:sleep(300) --间隔 300 毫秒
+    end
+end)
+
+script.register_looped("dataservice", function() 
+
+    if  check1:is_enabled() then --移除交易错误警告
+        globals.set_int(4536677,0)   -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
+        globals.set_int(4536679,0)   -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
+        globals.set_int(4536678,0)  -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
+    end
+
+    if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
+        if inputCEOcargo:get_value() <= 111 then --判断一下有没有人一次进天文数字箱货物、或者乱按的
+
+        globals.set_int(1890714+12,inputCEOcargo:get_value()) --核心代码 --freemode.c      func_17512("SRC_CRG_TICKER_1" /*~a~ Staff has sourced: ~n~1 Crate: ~a~*/, func_6676(hParam0), func_17513(Global_1890714.f_15), HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE);
+
+        else
+            gui.show_error("超过限额", "进货数超过仓库容量上限")
+            checkCEOcargo:set_enabled(nil)
+        end
+    end
+
+    if  check4:is_enabled() then--锁定机库仓库进货数
+        globals.set_int(1890730+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
+
+    end
+
+    if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘奖品--只影响实际结果，不影响转盘显示
+        locals.set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
+        --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
+        --你可以自定义代码中的18来获取其他物品。设定为18是展台载具，16衣服，17经验，19现金，4载具折扣，11神秘礼品，15 chips不认识是什么
+    end
+
+    if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
+        globals.set_int(262145 + 30394, 0) --tuneables_processing.c IH_SUBMARINE_MISSILES_COOLDOWN
+        globals.set_int(262145 + 30395, 80000) --tuneables_processing.c IH_SUBMARINE_MISSILES_DISTANCE
+    end
+
+    if checkbypassconv:is_enabled() then  --跳过NPC对话
+        if AUDIO.IS_SCRIPTED_CONVERSATION_ONGOING() then
+            AUDIO.STOP_SCRIPTED_CONVERSATION(false)
+        end
+    end
+
+    if checkzhongjia:is_enabled() then --锁定请求重甲花费
+        if iputintzhongjia:get_value() <= 1000 then --防止有人拿删除钱设置为负反向刷钱  乐
+            gui.show_error("错误", "金额需要大于1000")
+            checkzhongjia:set_enabled(nil)
+            else
+                globals.set_int(262145 + 20468, iputintzhongjia:get_value())--核心代码 --am_pi_menu.c  func_1277("PIM_TBALLI" /*BALLISTIC EQUIPMENT SERVICES*/);
+            end
+    end
+end)
+
+
+defpttable = {}
+defpscount2 = 1
+defpscount = 200 --刷200个模型
+
+script.register_looped("defps", function() 
+
+    if  checkspped:is_enabled() then--刷模型
+        if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+            request_model(0x705E61F2)
+            local pc = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+            local ped = PED.CREATE_PED(26, 0x705E61F2, pc.x, pc.y, pc.z -1 , 0, true, false)
+            MISC.SET_RIOT_MODE_ENABLED(true)
+            script_util:sleep(30)
+    
+        else
+            gui.show_message("掉帧攻击已停止", "你在攻击自己!")
+            checkspped:set_enabled(nil) --目标是自己，自动关掉开关
+
+        end
+    end
+    
+    if  check2:is_enabled() then--卡死玩家
+        local defpstarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+        local targetcoords = ENTITY.GET_ENTITY_COORDS(defpstarget)
+        
+        local hash = joaat("tug")
+        STREAMING.REQUEST_MODEL(hash)
+        while not STREAMING.HAS_MODEL_LOADED(hash) do script_util:yield() end
+        
+        for i = 1, defpscount do
+            if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+            
+            defpttable[defpscount2] = VEHICLE.CREATE_VEHICLE(hash, targetcoords.x, targetcoords.y, targetcoords.z, 0, true, true, true)
+        
+            local netID = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(defpttable[defpscount2])
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(defpttable[defpscount2])
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_NETWORK_ID(netID)
+            NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(netID)
+            NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netID, false)
+            NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(netID, pid, true)
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(defpttable[defpscount2], true, false)
+            ENTITY.SET_ENTITY_VISIBLE(defpttable[defpscount2], false, 0)
+            else
+                gui.show_message("掉帧攻击已停止", "你在攻击自己!")
+                check2:set_enabled(nil)--目标是自己，自动关掉开关
+            end
+        end
+        end
+
+        if  check5:is_enabled() then --粒子效果轰炸
+            local defpstarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+            local tar1 = ENTITY.GET_ENTITY_COORDS(defpstarget)
+            local ptfx = {dic = 'scr_rcbarry2', name = 'scr_clown_appears'}
+        
+            if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                STREAMING.REQUEST_NAMED_PTFX_ASSET(ptfx.dic)
+                while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(ptfx.dic) do
+                    script_util:yield()
+                end
+                GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx.dic)
+                GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD( ptfx.name, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 10.0, true, true, true)
+            else
+                gui.show_message("ptfx轰炸已停止", "你在攻击自己!")
+                check5:set_enabled(nil)--目标是自己，自动关掉开关
+            end
+        
+        end
+
+        if  check8:is_enabled() then --水柱
+
+            local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
+            FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z - 2.0, 13, 1, true, false, 0, false)
+        end
+
+end)
+
+script.register_looped("swimeveryw", function() --随处游泳
+    if  check6:is_enabled() then
+        PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 65, 81) --锁定玩家状态为游泳
+    end
+end)
+
+
+
+script.register_looped("ptfxservice", function() 
+    if  checkfirebreath:is_enabled() then --不太好用的喷火功能
+        STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
+            STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
+            script_util:yield()
+            
+        end
+
+        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+        local ptfxx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE('muz_xs_turret_flamethrower_looping', PLAYER.PLAYER_PED_ID(), 0, 0.12, 0.58, 30, 0, 0, 0x8b93, 1.0 , false, false, false)
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(ptfxx, 255, 127, 80)
+    else
+    end
+
+    if  checkfirew:is_enabled() then --不太好用的火焰翅膀功能
+        ENTITY.SET_ENTITY_PROOFS(PLAYER.PLAYER_PED_ID(), false, true, false, false, false, false, 1, false)
+        if  ptfxAegg == nil then
+            local obj1 = 1803116220  --外星蛋,用于附加火焰ptfx
+    
+            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+
+            STREAMING.REQUEST_MODEL(obj1)
+            while not STREAMING.HAS_MODEL_LOADED(obj1) do
+                STREAMING.REQUEST_MODEL(obj1)
+                script_util:yield() 
+            end
+
+            ptfxAegg = OBJECT.CREATE_OBJECT(obj1, pos.x, pos.y, pos.z, true, false, false)
+
+            ENTITY.SET_ENTITY_COLLISION(ptfxAegg, false, false)
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(obj1)
+        end
+        for i = 1, #bigfireWings do
+            STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
+            while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
+                STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
+                script_util:sleep(20)
+            end
+            GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+            bigfireWings[i].ptfx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("muz_xs_turret_flamethrower_looping", ptfxAegg, 0, 0, 0.1, bigfireWings[i].pos[1], 0, bigfireWings[i].pos[2], 1, false, false, false)
+    
+            local rot = ENTITY.GET_ENTITY_ROTATION(PLAYER.PLAYER_PED_ID(), 2)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(ptfxAegg, PLAYER.PLAYER_PED_ID(), -1, 0, 0, 0, rot.x, rot.y, rot.z, false, false, false, false, 0, false)
+            ENTITY.SET_ENTITY_ROTATION(ptfxAegg, rot.x, rot.y, rot.z, 2, true)
+                for i = 1, #bigfireWings do
+                    GRAPHICS.SET_PARTICLE_FX_LOOPED_SCALE(bigfireWings[i].ptfx, 0.6)
+                    GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(bigfireWings[i].ptfx, 255, 127, 80)
+    
+                end
+            ENTITY.SET_ENTITY_VISIBLE(ptfxAegg, false) 
+    
+            
+        end
+    
+    
+    else
+
+    end
+
+end)
+--------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
+
+---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
+--[[
+    	Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
+
+        if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
+   gui.show_error("SCH LUA", "游戏版本不受支持!仍然使用可能损坏游戏")
+end
+]]
+---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
+
+
+---------------------------------------------------------------------------------------以下是废弃的但又不想删的东西
+
+--[[
+script.register_looped("freemove", function() --阻止看云 --存在恶性bug
+    if  checkmovefree:is_enabled() then
+        if STREAMING.IS_PLAYER_SWITCH_IN_PROGRESS() then
+            PLAYER.SET_PLAYER_CONTROL(PLAYER.PLAYER_PED_ID(),true,0)
+            STREAMING.STOP_PLAYER_SWITCH()
+            GRAPHICS.ANIMPOSTFX_STOP_ALL()
+        end
+    end
+
+end)
+]]
+
+--[[
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("测试2", function()
+
+    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
+    while STREAMING.HAS_MODEL_LOADED(3613262246) ~= 1 do
+        STREAMING.REQUEST_MODEL(3613262246)
+        script_util:sleep(100)
+    end
+    while STREAMING.HAS_MODEL_LOADED(2155335200) ~= 1 do
+        STREAMING.REQUEST_MODEL(2155335200)
+        script_util:sleep(100)
+    end
+    while STREAMING.HAS_MODEL_LOADED(3026699584) ~= 1 do
+        STREAMING.REQUEST_MODEL(3026699584)
+        script_util:sleep(100)
+    end
+    while STREAMING.HAS_MODEL_LOADED(-1348598835) ~= 1 do
+        STREAMING.REQUEST_MODEL(-1348598835)
+        script_util:sleep(100)
+    end
+    local Object_pizza1 = OBJECT.CREATE_OBJECT(3613262246, pos.x,pos.y,pos.z, true, false, false)
+    local Object_pizza2 = OBJECT.CREATE_OBJECT(2155335200, pos.x,pos.y,pos.z, true, false, false)
+    local Object_pizza3 = OBJECT.CREATE_OBJECT(3026699584, pos.x,pos.y,pos.z, true, false, false)
+    local Object_pizza4 = OBJECT.CREATE_OBJECT(-1348598835, pos.x,pos.y,pos.z, true, false, false)
+    for i = 0, 100 do 
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza1, pos.x, pos.y, pos.z, false, true, true)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza2, pos.x, pos.y, pos.z, false, true, true)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza3, pos.x, pos.y, pos.z, false, true, true)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza4, pos.x, pos.y, pos.z, false, true, true)
+        script_util:yield()
+    end
+
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("测试3", function()
+
+    local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
+    local PED1 =     PED.CREATE_PED(26,MISC.GET_HASH_KEY("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
+    ENTITY.SET_ENTITY_VISIBLE(PED1, false, 0)
+    script_util:sleep(100)
+    WEAPON.GIVE_WEAPON_TO_PED(PED1,-270015777,80,true,true)
+    script_util:sleep(100)
+    FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, 2, 50, true, false, 0.0)
+
+end)
+]]
+
 --[[
 gui.get_tab(""):add_sameline()
 
@@ -1593,387 +1901,119 @@ end)
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 ]]--
 
-gui.add_tab(""):add_button("碎片崩溃", function()
-    for i=1,10 do
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        script_util:sleep(100)
-        ENTITY.DELETE_ENTITY(object)
-    end
-
-end)
 --[[
-gui.add_tab("sch-lua-Alpha"):add_sameline()
+gui.add_tab(""):add_button("载具状态崩溃", function()
 
-gui.add_tab("sch-lua-Alpha"):add_button("测试2", function()
-
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
-    while STREAMING.HAS_MODEL_LOADED(3613262246) ~= 1 do
-        STREAMING.REQUEST_MODEL(3613262246)
-        script_util:sleep(100)
-    end
-    while STREAMING.HAS_MODEL_LOADED(2155335200) ~= 1 do
-        STREAMING.REQUEST_MODEL(2155335200)
-        script_util:sleep(100)
-    end
-    while STREAMING.HAS_MODEL_LOADED(3026699584) ~= 1 do
-        STREAMING.REQUEST_MODEL(3026699584)
-        script_util:sleep(100)
-    end
-    while STREAMING.HAS_MODEL_LOADED(-1348598835) ~= 1 do
-        STREAMING.REQUEST_MODEL(-1348598835)
-        script_util:sleep(100)
-    end
-    local Object_pizza1 = OBJECT.CREATE_OBJECT(3613262246, pos.x,pos.y,pos.z, true, false, false)
-    local Object_pizza2 = OBJECT.CREATE_OBJECT(2155335200, pos.x,pos.y,pos.z, true, false, false)
-    local Object_pizza3 = OBJECT.CREATE_OBJECT(3026699584, pos.x,pos.y,pos.z, true, false, false)
-    local Object_pizza4 = OBJECT.CREATE_OBJECT(-1348598835, pos.x,pos.y,pos.z, true, false, false)
-    for i = 0, 100 do 
-        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza1, pos.x, pos.y, pos.z, false, true, true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza2, pos.x, pos.y, pos.z, false, true, true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza3, pos.x, pos.y, pos.z, false, true, true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza4, pos.x, pos.y, pos.z, false, true, true)
-        script_util:yield()
+    if PLAYER.GET_PLAYER_PED(network.get_selected_player()) ==PLAYER.PLAYER_PED_ID() then
+        gui.show_message("提示","你正试图崩溃自己")
+        return
     end
 
-end)
-
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("测试3", function()
-
-    local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
-    local PED1 =     PED.CREATE_PED(26,MISC.GET_HASH_KEY("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
-    ENTITY.SET_ENTITY_VISIBLE(PED1, false, 0)
-    script_util:sleep(100)
-    WEAPON.GIVE_WEAPON_TO_PED(PED1,-270015777,80,true,true)
-    script_util:sleep(100)
-    FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, 2, 50, true, false, 0.0)
-
-end)
-]]
-gui.add_tab("sch-lua-Alpha"):add_separator()
-gui.add_tab("sch-lua-Alpha"):add_text("全局选项") 
-
-gui.add_tab("sch-lua-Alpha"):add_button("全局爆炸", function()
-    for i = 0, 31 do
-            FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
-    end
-end)
-
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("赠送暴君MK2", function()
-    STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
-    while STREAMING.HAS_MODEL_LOADED(MISC.GET_HASH_KEY("oppressor2")) ~= 1 do
-        STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
-        script_util:sleep(100)
-    end   
-    for i = 0, 31 do
-        veh = VEHICLE.CREATE_VEHICLE(MISC.GET_HASH_KEY("oppressor2"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 0 , true, true, true)
-    end
-end)
-
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("公寓邀请", function()
-    for pid = 0, 31 do
-    network.trigger_script_event(1 << pid, {3592101251, 1, 0, -1, 4, 127, 0, 0, 0,PLAYER.GET_PLAYER_INDEX(), pid})
-    end
-end)
-
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("PED伞崩", function()
-    local spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
-    local ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
-    for n = 0 , 5 do
-        local object_hash = joaat("prop_logpile_06b")
-        STREAMING.REQUEST_MODEL(object_hash)
-          while not STREAMING.HAS_MODEL_LOADED(object_hash) do
-           script_util:yield()
-        end
-        PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, false, true, true)
-        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
-        script_util:sleep(1000)
-        for i = 0 , 20 do
-            PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
-        end
-        script_util:sleep(1000)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
-
-        local object_hash2 = joaat("prop_beach_parasol_03")
-        STREAMING.REQUEST_MODEL(object_hash2)
-          while not STREAMING.HAS_MODEL_LOADED(object_hash2) do
-            script_util:yield()
-        end
-        PLAYER.SET_PLAYER_PARACHUTE_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),object_hash2)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, 0,0,500, 0, 0, 1)
-        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(spped, 0xFBAB5776, 1000, false)
-        script_util:sleep(1000)
-        for i = 0 , 20 do
-            PED.FORCE_PED_TO_OPEN_PARACHUTE(spped)
-        end
-        script_util:sleep(1000)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
-    end
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
-end)
-
-
-
-
---------------------------------------------------------------------------------------- looped
---[[
-script.register_looped("freemove", function() --阻止看云
-    if  checkmovefree:is_enabled() then
-        if STREAMING.IS_PLAYER_SWITCH_IN_PROGRESS() then
-            PLAYER.SET_PLAYER_CONTROL(PLAYER.PLAYER_PED_ID(),true,0)
-            STREAMING.STOP_PLAYER_SWITCH()
-            GRAPHICS.ANIMPOSTFX_STOP_ALL()
-        end
+    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+    for i = 0, 30 do
+        vehw = CreateVehicle(joaat("banshee"),pos,ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())) - 180)
+        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehw)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehw, pos.x,pos.y,pos.z, ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED(network.get_selected_player())), 10)
+        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 18, 777)
+        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 17, 888)
+        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 16, 999)
+        script_util:sleep(500)
     end
 
 end)
 ]]
-script.register_looped("recoveryservice", function() 
-    if  checkxsdped:is_enabled() then --NPC掉落2000元循环
-        PED.SET_AMBIENT_PEDS_DROP_MONEY(true)
-        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
-        TargetPPos.z=TargetPPos.z+10
-        local PED1  = CreatePed(28,3552233440,TargetPPos,0) --席桑达
-        PED.SET_PED_MONEY(PED1,2000)
-        ENTITY.SET_ENTITY_HEALTH(PED1,1,true)
-        script_util:sleep(300)
-    end
-end)
 
-script.register_looped("dataservice", function() 
-
-    if  check1:is_enabled() then --移除交易错误警告
-        globals.set_int(4536677,0)   -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
-        globals.set_int(4536679,0)   -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
-        globals.set_int(4536678,0)  -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
-    end
-
-    if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
-        if inputCEOcargo:get_value() <= 111 then 
-        globals.set_int(1890714+12,inputCEOcargo:get_value()) --freemode.c      func_17512("SRC_CRG_TICKER_1" /*~a~ Staff has sourced: ~n~1 Crate: ~a~*/, func_6676(hParam0), func_17513(Global_1890714.f_15), HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE);
-
-        else
-            gui.show_error("超过限额", "进货数超过仓库容量上限")
-            checkCEOcargo:set_enabled(nil)
-        end
-    end
-
-    if  check4:is_enabled() then--锁定机库仓库进货数
-        globals.set_int(1890730+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
-
-    end
-
-    if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘-载具
-        locals.set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
-        --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
-    end
-
-    if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
-        globals.set_int(262145 + 30394, 0) --tuneables_processing.c IH_SUBMARINE_MISSILES_COOLDOWN
-        globals.set_int(262145 + 30395, 80000) --tuneables_processing.c IH_SUBMARINE_MISSILES_DISTANCE
-    end
-
-    if checkbypassconv:is_enabled() then  --跳过NPC对话
-        if AUDIO.IS_SCRIPTED_CONVERSATION_ONGOING() then
-            AUDIO.STOP_SCRIPTED_CONVERSATION(false)
-        end
-    end
-
-    if checkzhongjia:is_enabled() then --锁定请求重甲花费
-        if iputintzhongjia:get_value() <= 1000 then 
-            gui.show_error("错误", "金额需要大于1000")
-            checkzhongjia:set_enabled(nil)
-            else
-                globals.set_int(262145 + 20468, iputintzhongjia:get_value()) --am_pi_menu.c  func_1277("PIM_TBALLI" /*BALLISTIC EQUIPMENT SERVICES*/);
-            end
-    end
-end)
-
-
-defpttable = {}
-defpscount2 = 1
-defpscount = 200
-
-script.register_looped("defps", function() 
-
-    if  checkspped:is_enabled() then--刷模型
-        if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
-            request_model(0x705E61F2)
-            local pc = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-            local ped = PED.CREATE_PED(26, 0x705E61F2, pc.x, pc.y, pc.z -1 , 0, true, false)
-            MISC.SET_RIOT_MODE_ENABLED(true)
-            script_util:sleep(30)
-    
-        else
-            gui.show_message("掉帧攻击已停止", "你在攻击自己!")
-            checkspped:set_enabled(nil)
-
-        end
-    end
-    
-    if  check2:is_enabled() then--卡死玩家
-        local defpstarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-        local targetcoords = ENTITY.GET_ENTITY_COORDS(defpstarget)
-        
-        local hash = joaat("tug")
-        STREAMING.REQUEST_MODEL(hash)
-        while not STREAMING.HAS_MODEL_LOADED(hash) do script_util:yield() end
-        
-        for i = 1, defpscount do
-            if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
-            
-            defpttable[defpscount2] = VEHICLE.CREATE_VEHICLE(hash, targetcoords.x, targetcoords.y, targetcoords.z, 0, true, true, true)
-        
-            local netID = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(defpttable[defpscount2])
-            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(defpttable[defpscount2])
-            NETWORK.NETWORK_REQUEST_CONTROL_OF_NETWORK_ID(netID)
-            NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(netID)
-            NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netID, false)
-            NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(netID, pid, true)
-            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(defpttable[defpscount2], true, false)
-            ENTITY.SET_ENTITY_VISIBLE(defpttable[defpscount2], false, 0)
-            else
-                gui.show_message("掉帧攻击已停止", "你在攻击自己!")
-                check2:set_enabled(nil)
-            end
-        end
-        end
-
-        if  check5:is_enabled() then --粒子效果轰炸
-            local defpstarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-            local tar1 = ENTITY.GET_ENTITY_COORDS(defpstarget)
-            local ptfx = {dic = 'scr_rcbarry2', name = 'scr_clown_appears'}
-        
-            if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
-                STREAMING.REQUEST_NAMED_PTFX_ASSET(ptfx.dic)
-                while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(ptfx.dic) do
-                    script_util:yield()
-                end
-                GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx.dic)
-                GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD( ptfx.name, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 10.0, true, true, true)
-            else
-                gui.show_message("ptfx轰炸已停止", "你在攻击自己!")
-                check5:set_enabled(nil)
-            end
-        
-        end
-
-        if  check8:is_enabled() then --水柱
-
-            local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-            FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z - 2.0, 13, 1, true, false, 0, false)
-        end
-
-end)
-
-script.register_looped("swimeveryw", function() --随处游泳
-    if  check6:is_enabled() then
-        PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 65, 81)
-    end
-end)
-
-
-
-script.register_looped("ptfxservice", function() 
-    if  checkfirebreath:is_enabled() then
-        STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
-            STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-            script_util:yield()
-            
-        end
-
-        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
-        local ptfxx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE('muz_xs_turret_flamethrower_looping', PLAYER.PLAYER_PED_ID(), 0, 0.12, 0.58, 30, 0, 0, 0x8b93, 1.0 , false, false, false)
-        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(ptfxx, 255, 127, 80)
-    else
-    end
-
-    if  checkfirew:is_enabled() then
-        ENTITY.SET_ENTITY_PROOFS(PLAYER.PLAYER_PED_ID(), false, true, false, false, false, false, 1, false)
-        if  ptfxAegg == nil then
-            local obj1 = 1803116220  --外星蛋
-    
-            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-
-            STREAMING.REQUEST_MODEL(obj1)
-            while not STREAMING.HAS_MODEL_LOADED(obj1) do
-                STREAMING.REQUEST_MODEL(obj1)
-                script_util:yield() 
-            end
-
-            ptfxAegg = OBJECT.CREATE_OBJECT(obj1, pos.x, pos.y, pos.z, true, false, false)
-
-            ENTITY.SET_ENTITY_COLLISION(ptfxAegg, false, false)
-            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(obj1)
-        end
-        for i = 1, #bigfireWings do
-            STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-            while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
-                STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-                script_util:sleep(20)
-            end
-            GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
-            bigfireWings[i].ptfx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("muz_xs_turret_flamethrower_looping", ptfxAegg, 0, 0, 0.1, bigfireWings[i].pos[1], 0, bigfireWings[i].pos[2], 1, false, false, false)
-    
-            local rot = ENTITY.GET_ENTITY_ROTATION(PLAYER.PLAYER_PED_ID(), 2)
-            ENTITY.ATTACH_ENTITY_TO_ENTITY(ptfxAegg, PLAYER.PLAYER_PED_ID(), -1, 0, 0, 0, rot.x, rot.y, rot.z, false, false, false, false, 0, false)
-            ENTITY.SET_ENTITY_ROTATION(ptfxAegg, rot.x, rot.y, rot.z, 2, true)
-                for i = 1, #bigfireWings do
-                    GRAPHICS.SET_PARTICLE_FX_LOOPED_SCALE(bigfireWings[i].ptfx, 0.6)
-                    GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(bigfireWings[i].ptfx, 255, 127, 80)
-    
-                end
-            ENTITY.SET_ENTITY_VISIBLE(ptfxAegg, false)
-    
-            
-        end
-    
-    
-    else
-
-    end
-
-end)
-
----------------------------------------------------------------------------------------
 --[[
-    	Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
+script.register_looped("refreshpid", function()
+    pid = network.get_selected_player()
+  end)
+
+gui.get_tab(""):add_button("TSE C", function()
+
+    if pid == PLAYER.PLAYER_ID() then
+        gui.show_message("提示","不可对自己使用")
+        return
+     end
+     local int_min = -2147483647
+     local int_max = 2147483647
+     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
+     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
+     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
+     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
+     network.trigger_script_event(1 << pid, {548471420, pid, 804923209, 1128590390, 136699892, -168325547, -814593329, 1630974017, 1101362956, 1510529262, 2, 1875285955, 633832161, -1097780228})
+     network.trigger_script_event(1 << pid, {2765370640, pid, 3747643341, math.random(int_min, int_max), math.random(int_min, int_max), 
+     math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
+     math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
+     network.trigger_script_event(1 << pid, { -555356783, pid ,85952,99999,52682274855,526822745 })
+     network.trigger_script_event(1 << pid, { 526822748, pid ,78552,99999 ,7949161,789454312})
+     network.trigger_script_event(1 << pid, { -66669983, pid ,526822748,555555, math.random(80521,2959749521) })
+     network.trigger_script_event(1 << pid, { -1733737974, pid ,789522 ,59486,48512151,-9545440,5845131,848153,math.random(1,2959749),189958})
+     network.trigger_script_event(1 << pid, { -1529596656, pid ,795221,59486,48512151,-9545440 , math.random(1,2959749) })
+     network.trigger_script_event(1 << pid, { -8965204809, pid ,795221,59486,48512151,-9545440 })
+     gui.show_message("正在发送脚本事件崩溃",pid)
+     network.trigger_script_event(1 << pid, {495813132, pid, 0, 0, -12988, -99097, 0})
+     network.trigger_script_event(1 << pid, {495813132, pid, -4640169, 0, 0, 0, -36565476, -53105203})
+     network.trigger_script_event(1 << pid, {495813132, pid,  0, 1, 23135423, 3, 3, 4, 827870001, 5, 2022580431, 6, -918761645, 7, 1754244778, 8, 827870001, 9, 17})
+ 
+ 
+     for i = 1, 50 do
+        --network.trigger_script_event(1 << pid,{-642704387, pid, 782258655, math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max) })
+     end
+
+
+    for i = 1, 15 do
+        network.trigger_script_event(1 << pid, {891653640, 0, 81468, 96773, 84776, 2939, 20158,  14219,  38254,  22206})
+        network.trigger_script_event(1 << pid, {1348481963, pid, math.random(int_min, int_max)})
+        network.trigger_script_event(1 << pid,{-642704387, pid, 782258655, math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max) })
+
+        network.trigger_script_event(1 << pid, {-992162568, 0, 40778, 85683, 32561, 49696, 24000,  78834,  1860,  37655, math.random(int_min, int_max), math.random(int_min, int_max), -- Crash Event S1
+        math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
+        math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
+        network.trigger_script_event(1 << pid, {891653640, 0, 81468, 96773, 84776, 2939, 20158,  14219,  38254,  22206})
+    end
+    network.trigger_script_event(1 << pid, {495813132, pid, 0, 0, -12988, -99097, 0})
+    network.trigger_script_event(1 << pid, {495813132, pid, -4640169, 0, 0, 0, -36565476, -53105203})
+    network.trigger_script_event(1 << pid, {495813132, pid,  0, 1, 23135423, 3, 3, 4, 827870001, 5, 2022580431, 6, -918761645, 7, 1754244778, 8, 827870001, 9, 17})
+
+end)
 ]]
+
+-- local checkmovefree = gui.add_tab("sch-lua-Alpha"):add_checkbox("战局切换时自由移动")
+
+--[[
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("测试4", function()
+    local start_time = os.time()
+    local duration = 5  
+    
+    while os.time() - start_time < duration do
+    local scaleForm = GRAPHICS.REQUEST_SCALEFORM_MOVIE("POPUP_WARNING")
+    GRAPHICS.DRAW_RECT(.5, .5, 1, 1, 255, 158, 177, 255)
+    GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleForm, "SHOW_POPUP_WARNING")
+    GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleForm, 0, 0, 0, 0, 0)
+    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT(500.0)
+    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("YIMMENU")
+    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("欢迎使用SCH LUA")
+
+    GRAPHICS.END_SCALEFORM_MOVIE_METHOD(scaleForm)
+
+    script_util:sleep(5)
+    end
+end)
+]]--
+
+--[[  已被检测
+gui.add_tab("sch-lua-Alpha"):add_button("移除赌场轮盘冷却", function()
+    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+
+local mpx = "MP0_"
+if playerid == 1 then 
+    mpx = "MP1_" 
+
+end
+    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."LUCKY_WHEEL_NUM_SPIN"), 0, true)
+    globals.set_int(262145+27382,1) -- 9960150 
+    globals.set_int(262145+27383,1) -- -312420223
+end)
+]]--

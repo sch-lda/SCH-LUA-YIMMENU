@@ -1,4 +1,4 @@
--- v1.12 -- 
+-- v1.13 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -29,7 +29,7 @@ end
 
 function run_script(name) 
     SCRIPT.REQUEST_SCRIPT(name)  
-    repeat script_util:yield() until SCRIPT.HAS_SCRIPT_LOADED(name)
+    repeat script_util:sleep(50) until SCRIPT.HAS_SCRIPT_LOADED(name)
     SYSTEM.START_NEW_SCRIPT(name, 5000)
     SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(name)
 end
@@ -129,15 +129,13 @@ end
 
 --gui.show_message("Debugmpx", mpx.."H4_")
 
---[[
+
 gui.add_tab("sch-lua-Alpha"):add_button("测试6", function()
 
-    local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
-    gui.show_message("DebugX", pos.x)
-    create_object(200846641, pos)
+    script_util:yield()
 
 end)
-]]    
+
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 
@@ -531,48 +529,9 @@ local objectsix1 --注册为全局变量以便后续移除666
 local objectsix2--注册为全局变量以便后续移除666
 local objectsix3--注册为全局变量以便后续移除666
 
-gui.add_tab("sch-lua-Alpha"):add_button("头顶666", function()
-    local md6 = "prop_mp_num_6"
-    local user_ped = PLAYER.PLAYER_PED_ID()
-    md6hash = joaat(md6)
-
-    STREAMING.REQUEST_MODEL(md6hash)
-    while not STREAMING.HAS_MODEL_LOADED(md6hash) do		
-        script_util:yield()
-    end
-    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(md6hash)
-
-    objectsix1 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix1, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), 0.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
-
-    STREAMING.REQUEST_MODEL(md6hash)
-    while not STREAMING.HAS_MODEL_LOADED(md6hash) do		
-        script_util:yield()
-    end
-    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(md6hash)
-
-    objectsix2 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix2, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), 1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
-
-    STREAMING.REQUEST_MODEL(md6hash)
-    while not STREAMING.HAS_MODEL_LOADED(md6hash) do		
-        script_util:yield()
-    end
-    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(md6hash)
-
-    objectsix3 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix3, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), -1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
-
-end)
+local check666 = gui.add_tab("sch-lua-Alpha"):add_checkbox("头顶666") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("移除666", function()
-    ENTITY.DELETE_ENTITY(objectsix1)
-    ENTITY.DELETE_ENTITY(objectsix2)
-    ENTITY.DELETE_ENTITY(objectsix3)
-
-end)
 
 local check6 = gui.add_tab("sch-lua-Alpha"):add_checkbox("游泳模式") --这只是一个复选框,代码往最后的循环脚本部分找
 
@@ -1003,6 +962,8 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local iputintzhongjia = gui.add_tab("sch-lua-Alpha"):add_input_int("元")
 
+local checkfootaudio = gui.add_tab("sch-lua-Alpha"):add_checkbox("关闭脚步声") --只是一个开关，代码往后面找
+
 --------------------------------------------------------------------------------------- Players 页面
 
 gui.get_tab(""):add_separator()
@@ -1265,6 +1226,14 @@ gui.get_tab(""):add_sameline()
 
 local check8 = gui.get_tab(""):add_checkbox("循环水柱")
 
+gui.get_tab(""):add_sameline()
+
+local checknodmgexp = gui.get_tab(""):add_checkbox("无伤爆炸")
+
+gui.get_tab(""):add_sameline()
+
+local checkcollection1 = gui.get_tab(""):add_checkbox("循环刷纸牌")
+
 local check2 = gui.get_tab(""):add_checkbox("掉帧攻击(尽可能远离目标)")
 
 gui.get_tab(""):add_sameline()
@@ -1380,13 +1349,15 @@ gui.add_tab("sch-lua-Alpha"):add_button("PED伞崩", function() --恶毒的东�
     end
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
 end)
-
-
+--------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
+--存放一些变量，阻止无限循环
+local loopa1 = 0  --控制PED脚步声有无
+local loopa2 = 0  --控制头顶666
 
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
-script.register_looped("recoveryservice", function() 
+script.register_looped("schlua-recoveryservice", function() 
     if  checkxsdped:is_enabled() then --NPC掉落2000元循环
         PED.SET_AMBIENT_PEDS_DROP_MONEY(true) --自由模式NPC是否掉钱
         local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
@@ -1396,9 +1367,20 @@ script.register_looped("recoveryservice", function()
         ENTITY.SET_ENTITY_HEALTH(PED1,1,true)--刷出的NPC 席桑达 血量只有 1
         script_util:sleep(300) --间隔 300 毫秒
     end
+
+    if  checkcollection1:is_enabled() then --循环刷纸牌给玩家
+
+        local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
+        coords.z = coords.z + 2.0
+ 
+        create_object(joaat("vw_prop_vw_lux_card_01a"),coords)
+
+        OBJECT.CREATE_AMBIENT_PICKUP(-1009939663, coords.x, coords.y, coords.z, 0, 1, joaat("vw_prop_vw_lux_card_01a"), false, true)
+    end
+
 end)
 
-script.register_looped("dataservice", function() 
+script.register_looped("schlua-dataservice", function() 
 
     if  check1:is_enabled() then --移除交易错误警告
         globals.set_int(4536677,0)   -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
@@ -1454,7 +1436,7 @@ defpttable = {}
 defpscount2 = 1
 defpscount = 200 --刷200个模型
 
-script.register_looped("defps", function() 
+script.register_looped("schlua-defps", function() 
 
     if  checkspped:is_enabled() then--刷模型
         if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
@@ -1524,17 +1506,82 @@ script.register_looped("defps", function()
             FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z - 2.0, 13, 1, true, false, 0, false)
         end
 
+        if  checknodmgexp:is_enabled() then --循环无伤爆炸
+
+            local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
+            FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 1, 1, true, true, 1, true)
+        end
 end)
 
-script.register_looped("swimeveryw", function() --随处游泳
-    if  check6:is_enabled() then
+script.register_looped("schlua-miscservice", function() 
+    if  checkfootaudio:is_enabled() then --控制自己是否产生脚步声
+        AUDIO.SET_PED_FOOTSTEPS_EVENTS_ENABLED(PLAYER.PLAYER_PED_ID(),false)
+        if loopa1 == 0 then
+            gui.show_message("脚步声控制","静音")
+        end
+        loopa1 = 1
+    else
+        if loopa1 == 1 then                    
+        AUDIO.SET_PED_FOOTSTEPS_EVENTS_ENABLED(PLAYER.PLAYER_PED_ID(),true)
+        gui.show_message("脚步声控制","有声")
+        loopa1 = 0
+        end
+    end
+
+    if  check666:is_enabled() then --控制头顶666生成与移除
+        if loopa2 == 0 then
+            local md6 = "prop_mp_num_6"
+            local user_ped = PLAYER.PLAYER_PED_ID()
+            md6hash = joaat(md6)
+        
+            STREAMING.REQUEST_MODEL(md6hash)
+            while not STREAMING.HAS_MODEL_LOADED(md6hash) do		
+                script_util:yield()
+            end
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(md6hash)
+        
+            objectsix1 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix1, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), 0.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
+        
+            STREAMING.REQUEST_MODEL(md6hash)
+            while not STREAMING.HAS_MODEL_LOADED(md6hash) do		
+                script_util:yield()
+            end
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(md6hash)
+        
+            objectsix2 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix2, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), 1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
+        
+            STREAMING.REQUEST_MODEL(md6hash)
+            while not STREAMING.HAS_MODEL_LOADED(md6hash) do		
+                script_util:yield()
+            end
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(md6hash)
+        
+            objectsix3 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix3, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), -1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
+        
+            gui.show_message("头顶666","生成")
+        end
+        loopa2 = 1
+    else
+        if loopa2 == 1 then 
+            ENTITY.DELETE_ENTITY(objectsix1)
+            ENTITY.DELETE_ENTITY(objectsix2)
+            ENTITY.DELETE_ENTITY(objectsix3)
+            gui.show_message("头顶666","移除")
+            loopa2 = 0
+        end
+    end
+
+    if  check6:is_enabled() then --随处游泳
         PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 65, 81) --锁定玩家状态为游泳
     end
 end)
 
 
 
-script.register_looped("ptfxservice", function() 
+script.register_looped("schlua-ptfxservice", function() 
     if  checkfirebreath:is_enabled() then --不太好用的喷火功能
         STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do

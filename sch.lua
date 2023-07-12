@@ -1,4 +1,4 @@
--- v1.13 -- 
+-- v1.20 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -129,13 +129,13 @@ end
 
 --gui.show_message("Debugmpx", mpx.."H4_")
 
-
+--[[
 gui.add_tab("sch-lua-Alpha"):add_button("测试6", function()
 
     script_util:yield()
 
 end)
-
+]]
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 
@@ -964,6 +964,11 @@ local iputintzhongjia = gui.add_tab("sch-lua-Alpha"):add_input_int("元")
 
 local checkfootaudio = gui.add_tab("sch-lua-Alpha"):add_checkbox("关闭脚步声") --只是一个开关，代码往后面找
 
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local checkpedaudio = gui.add_tab("sch-lua-Alpha"):add_checkbox("关闭自身PED声音") --只是一个开关，代码往后面找
+
+
 --------------------------------------------------------------------------------------- Players 页面
 
 gui.get_tab(""):add_separator()
@@ -1353,6 +1358,7 @@ end)
 --存放一些变量，阻止无限循环
 local loopa1 = 0  --控制PED脚步声有无
 local loopa2 = 0  --控制头顶666
+local loopa3 = 0  --控制PED所有声音有无
 
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
@@ -1525,6 +1531,20 @@ script.register_looped("schlua-miscservice", function()
         AUDIO.SET_PED_FOOTSTEPS_EVENTS_ENABLED(PLAYER.PLAYER_PED_ID(),true)
         gui.show_message("脚步声控制","有声")
         loopa1 = 0
+        end
+    end
+
+    if  checkpedaudio:is_enabled() then --控制自己的PED是否产生声音
+        PLAYER.SET_PLAYER_NOISE_MULTIPLIER(PLAYER.PLAYER_ID(), 0.0)
+        if loopa3 == 0 then
+            gui.show_message("PED声音控制","静音")
+        end
+        loopa3 = 1
+    else
+        if loopa3 == 1 then                    
+        PLAYER.SET_PLAYER_NOISE_MULTIPLIER(PLAYER.PLAYER_ID(), 1.0)
+        gui.show_message("PED声音控制","有声")
+        loopa3 = 0
         end
     end
 

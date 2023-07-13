@@ -1,4 +1,4 @@
--- v1.22 -- 
+-- v1.30 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -19,6 +19,10 @@
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
+function createthread(arg)
+    local thread = coroutine.create(arg)
+    coroutine.resume(thread)
+end
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -28,10 +32,12 @@ function upgrade_vehicle(vehicle)
 end
 
 function run_script(name) 
+    script.run_in_fiber(function (script)
     SCRIPT.REQUEST_SCRIPT(name)  
-    repeat script_util:sleep(50) until SCRIPT.HAS_SCRIPT_LOADED(name)
+    repeat script:yield() until SCRIPT.HAS_SCRIPT_LOADED(name)
     SYSTEM.START_NEW_SCRIPT(name, 5000)
     SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(name)
+    end)
 end
 
 function StatGetInt(stathash)
@@ -64,33 +70,38 @@ function CreatePed(index, Hash, Pos, Heading)
 end
 
 function CreateObject(Hash, Pos, static)
+    script.run_in_fiber(function (script)
     STREAMING.REQUEST_MODEL(Hash)
-    while not STREAMING.HAS_MODEL_LOADED(Hash) do script_util:yield() end
+    while not STREAMING.HAS_MODEL_LOADED(Hash) do script:yield() end
     local SpawnedVehicle = create_object(Hash, Pos)
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
     if static then
         ENTITY.FREEZE_ENTITY_POSITION(SpawnedVehicle, true)
     end
     return SpawnedVehicle
+    end)
 end
 
 function create_object(hash, pos)
-   --gui.show_message("Debughash", hash)
-   -- gui.show_message("DebugX", pos.x)
+    script.run_in_fiber(function (script)
     STREAMING.REQUEST_MODEL(hash)
-    while not STREAMING.HAS_MODEL_LOADED(hash) do script_util:yield() end
+    while not STREAMING.HAS_MODEL_LOADED(hash) do script:yield() end
     local obj = OBJECT.CREATE_OBJECT(hash, pos.x, pos.y, pos.z, true, false, false)
-    --STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
+
     return obj
+
+    end)
 end
 
 function request_model(hash)
-    local end_time = os.time() + 5
+script.run_in_fiber(function (script)
+
     STREAMING.REQUEST_MODEL(hash)
-    while not STREAMING.HAS_MODEL_LOADED(hash) and end_time >= os.time() do
-        script_util:yield()
+    while not STREAMING.HAS_MODEL_LOADED(hash) do
+        script:yield()
     end
     return STREAMING.HAS_MODEL_LOADED(hash)
+end)
 end
 
 function Create_Network_Ped(pedType, modelHash, x, y, z, heading)
@@ -131,9 +142,12 @@ end
 
 --[[
 gui.add_tab("sch-lua-Alpha"):add_button("测试6", function()
+script.run_in_fiber(function (script)
 
-    script_util:yield()
-
+         script:yield()
+        gui.show_message("Debugmpx", "H4_")
+       
+end)
 end)
 ]]
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
@@ -1354,6 +1368,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("PED伞崩", function() --恶毒的东�
     end
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
 end)
+
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 --存放一些变量，阻止无限循环
 local loopa1 = 0  --控制PED脚步声有无
@@ -1663,7 +1678,6 @@ script.register_looped("schlua-ptfxservice", function()
 
 end)
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
-
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 --[[
     	Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c

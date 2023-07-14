@@ -1685,6 +1685,64 @@ end)
         if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
    gui.show_error("SCH LUA", "游戏版本不受支持!仍然使用可能损坏游戏")
 end
+
+------------------------------------------------技工 呼叫 载具资产 freemode.c Begian
+
+void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip* pblParam4, Blip* pblParam5, Blip* pblParam6, Blip* pblParam7, Blip* pblParam8) // Position - 0x42ED1D
+{
+	if (Global_2794162.f_928)
+		if (Global_2794162.f_942)
+			func_12267(uParam0, false, true, false, false, false, false, false, false);
+		else
+			func_12267(uParam0, false, false, false, false, false, false, false, false);
+
+	if (Global_2794162.f_930 && !func_6130() || *uParam1 == 5 && Global_1648646 == 3)
+		func_12267(uParam1, true, false, false, false, false, false, false, false);  //MOC
+
+	func_12264(pblParam2);
+
+	if (Global_2794162.f_938 && !func_5730() || *uParam1 == 5)
+		func_12267(uParam1, false, false, true, false, false, false, false, false); //复仇者
+
+	func_12258(pblParam3);
+
+	if (Global_2794162.f_943 && !func_5020() || *uParam1 == 5 && Global_1648646 == 5)
+		func_12267(uParam1, false, false, false, true, false, false, false, false);  //恐霸
+
+	func_12255(pblParam4);
+
+	if (Global_2794162.f_960 && !func_3870() || *uParam1 == 5 && Global_1648646 == 6)
+		func_12267(uParam1, false, false, false, false, true, false, false, false);  //虎鲸
+
+	func_12252(pblParam5);
+
+	if (Global_2794162.f_972 && !func_10792() || *uParam1 == 5 && Global_1648646 == 7)
+		func_12267(uParam1, false, false, false, false, false, true, false, false);
+
+	func_12250(pblParam6);
+
+	if (Global_2794162.f_944 && !func_2870() || *uParam1 == 5 && Global_1648646 == 8)
+		func_12267(uParam1, false, false, false, false, false, false, false, true);  //致幻剂实验室
+
+	func_12242(pblParam8);
+
+	if (Global_2794162.f_994 && !func_10779() || *uParam1 == 5 && Global_1648646 == 9)
+	{
+		if (func_12240(PLAYER::PLAYER_ID()))
+		{
+			*uParam1 = 5;
+			func_12239(false, false, true, false, true, false, false);  //致幻剂实验室 摩托车
+			func_10001(false);
+		}
+	
+		func_12267(uParam1, false, false, false, false, false, false, true, false);  
+	}
+
+	func_12235(pblParam7);
+	return;
+}
+------------------------------------------------技工 呼叫 载具资产 end
+
 ]]
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 

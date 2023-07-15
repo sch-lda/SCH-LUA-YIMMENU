@@ -1,4 +1,4 @@
--- v1.30 -- 
+-- v1.31 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -45,6 +45,7 @@ function StatGetInt(stathash)
     return statvalue
 end
 
+--[[  暂未使用
 function attach_to_player(hash, bone, x, y, z, xrot, yrot, zrot)     --附加实体到自己
     local user_ped = PLAYER.PLAYER_PED_ID()
     hash = joaat(hash)
@@ -59,7 +60,7 @@ function attach_to_player(hash, bone, x, y, z, xrot, yrot, zrot)     --附加实
     ENTITY.ATTACH_ENTITY_TO_ENTITY(object, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), bone), x, y, z, xrot, yrot, zrot, false, false, false, false, 2, true) 
 
 end
-
+]]
 
 function CreatePed(index, Hash, Pos, Heading)
     STREAMING.REQUEST_MODEL(Hash)
@@ -686,6 +687,8 @@ local iputint3 = gui.add_tab("sch-lua-Alpha"):add_input_int("箱")
 
 
 gui.add_tab("sch-lua-Alpha"):add_button("夜总会保险箱30万循环10次", function()
+    script.run_in_fiber(function (script)
+
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     local mpx = "MP0_"
@@ -705,6 +708,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("夜总会保险箱30万循环10次", fu
         gui.show_message("警告", "此方法仅用于偶尔小额恢复")
         script_util:sleep(10000) --执行间隔，单位ms
     end
+    end)
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
@@ -725,6 +729,8 @@ function tpfac() --传送到设施
 end
 
 gui.add_tab("sch-lua-Alpha"):add_button("虎鲸计划面板", function()
+    script.run_in_fiber(function (script)
+
     local SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
     local SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
 
@@ -742,7 +748,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("虎鲸计划面板", function()
 
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),1561.2369, 385.8771, -49.689915)
     PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 175)
-
+    end)
 
 end)
 
@@ -1026,6 +1032,8 @@ end)
 gui.get_tab(""):add_sameline()
 
 gui.get_tab(""):add_button("竞技管笼子", function()
+    script.run_in_fiber(function (script)
+
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     STREAMING.REQUEST_MODEL(2081936690)
 
@@ -1047,12 +1055,14 @@ gui.get_tab(""):add_button("竞技管笼子", function()
     rot.x = 90 
     ENTITY.SET_ENTITY_ROTATION(cage_object2, rot.x,rot.y,rot.z,2,true)
 
-
+end)
 end)
 
 gui.get_tab(""):add_sameline()
 
 gui.get_tab(""):add_button("保险箱笼子", function()
+    script.run_in_fiber(function (script)
+
 	local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
 	local hash = 1089807209
 	STREAMING.REQUEST_MODEL(hash)
@@ -1077,7 +1087,7 @@ gui.get_tab(""):add_button("保险箱笼子", function()
 	ENTITY.FREEZE_ENTITY_POSITION(cage_object5, true)
     script_util:sleep(100)
 	STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(cage_object)
-
+end)
 end)
 
 gui.get_tab(""):add_sameline()
@@ -1092,6 +1102,7 @@ end)
 gui.get_tab(""):add_sameline()
 
 gui.get_tab(""):add_button("轰炸", function()
+    script.run_in_fiber(function (script)
 
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     airshash = MISC.GET_HASH_KEY("vehicle_weapon_trailer_dualaa")
@@ -1238,7 +1249,7 @@ gui.get_tab(""):add_button("轰炸", function()
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z+ 45 , pos.x-2, pos.y, pos.z + 45, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y-2, pos.z+ 45 , pos.x-2, pos.y-2, pos.z + 45, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y+2, pos.z+ 45 , pos.x-2, pos.y+2, pos.z + 45, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
-
+end)
 end)
 
 gui.get_tab(""):add_sameline()
@@ -1264,6 +1275,8 @@ gui.add_tab(""):add_sameline()
 local checkspped = gui.get_tab(""):add_checkbox("循环刷PED")
 
 gui.add_tab(""):add_button("碎片崩溃", function()
+    script.run_in_fiber(function (script)
+
     for i=1,10 do
         local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
         OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
@@ -1297,7 +1310,7 @@ gui.add_tab(""):add_button("碎片崩溃", function()
         script_util:sleep(100)
         ENTITY.DELETE_ENTITY(object)
     end
-
+    end)
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_separator()

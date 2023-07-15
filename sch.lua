@@ -1,4 +1,4 @@
--- v1.32 -- 
+-- v1.33 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -15,7 +15,7 @@
 无任何保障(我只能保证编写时无主观恶意,造成各种意想不到的后果概不负责)
 
 另请确保通过小助手官方discord用户yeahsch(sch)发布的文件下载，其他任何方式均有可能是恶意脚本
-
+Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
@@ -38,6 +38,19 @@ function run_script(name)
     SYSTEM.START_NEW_SCRIPT(name, 5000)
     SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(name)
     end)
+end
+
+function screen_draw_text(text, x, y, p0 , size) --在屏幕上绘制文字
+	HUD.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING") --The following were found in the decompiled script files: STRING, TWOSTRINGS, NUMBER, PERCENTAGE, FO_TWO_NUM, ESMINDOLLA, ESDOLLA, MTPHPER_XPNO, AHD_DIST, CMOD_STAT_0, CMOD_STAT_1, CMOD_STAT_2, CMOD_STAT_3, DFLT_MNU_OPT, F3A_TRAFDEST, ES_HELP_SOC3
+	HUD.SET_TEXT_FONT(0)
+	HUD.SET_TEXT_SCALE(p0, size) --Size range : 0F to 1.0F --p0 is unknown and doesn't seem to have an effect, yet in the game scripts it changes to 1.0F sometimes.
+	HUD.SET_TEXT_DROP_SHADOW()
+	HUD.SET_TEXT_WRAP(0.0, 1.0) --限定行宽，超出自动换行 start - left boundry on screen position (0.0 - 1.0)  end - right boundry on screen position (0.0 - 1.0)
+	HUD.SET_TEXT_DROPSHADOW(1, 0, 0, 0, 0) --distance - shadow distance in pixels, both horizontal and vertical    -- r, g, b, a - color
+	HUD.SET_TEXT_OUTLINE()
+	HUD.SET_TEXT_EDGE(1, 0, 0, 0, 0)
+	HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text)
+	HUD.END_TEXT_COMMAND_DISPLAY_TEXT(x, y) --占坐标轴的比例
 end
 
 function StatGetInt(stathash)
@@ -141,22 +154,18 @@ end
 
 --gui.show_message("Debugmpx", mpx.."H4_")
 
---[[
 gui.add_tab("sch-lua-Alpha"):add_button("测试6", function()
-script.run_in_fiber(function (script)
 
-         script:yield()
-        gui.show_message("Debugmpx", "H4_")
-       
+        --gui.show_message("Debugmpx", "H4_")
+        screen_draw_text(string.format("test"),  0.167,0.882, 0.3 , 0.3)
+
 end)
-end)
-]]
+
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 
-gui.add_tab("sch-lua-Alpha"):add_separator()
 gui.add_tab("sch-lua-Alpha"):add_text("要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
 
 gui.add_tab("sch-lua-Alpha"):add_text("任务功能") 
@@ -988,6 +997,9 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local checkpedaudio = gui.add_tab("sch-lua-Alpha"):add_checkbox("关闭自身PED声音") --只是一个开关，代码往后面找
 
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local testcheck1 = gui.add_tab("sch-lua-Alpha"):add_checkbox("显示主机信息") --只是一个开关，代码往后面找
 
 --------------------------------------------------------------------------------------- Players 页面
 
@@ -1696,6 +1708,31 @@ script.register_looped("schlua-ptfxservice", function()
     end
 
 end)
+
+script.register_looped("schlua-drawservice", function() 
+    if  testcheck1:is_enabled() then
+        screen_draw_text(string.format("战局主机:".. PLAYER.GET_PLAYER_NAME(NETWORK.NETWORK_GET_HOST_PLAYER_INDEX())),0.180,0.8, 0.4 , 0.4)
+
+        
+        if SCRIPT.HAS_SCRIPT_LOADED("freemode") then
+        freemodehost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
+        screen_draw_text(string.format("战局脚本主机:".. PLAYER.GET_PLAYER_NAME(freemodehost)),  0.180, 0.828, 0.4 , 0.4)
+        end
+
+        if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") or SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller_2020") then
+            if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
+                fmmchost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
+                screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmchost)), 0.180, 0.910, 0.4 , 0.4)
+            end
+            if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
+                fmmc2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
+                screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmc2020host)), 0.180, 0.910, 0.4 , 0.4)
+            end
+            
+        end
+    end
+end)
+
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 --[[

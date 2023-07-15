@@ -1,4 +1,4 @@
--- v1.31 -- 
+-- v1.32 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -1325,6 +1325,8 @@ end)
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 gui.add_tab("sch-lua-Alpha"):add_button("赠送暴君MK2", function()
+    script.run_in_fiber(function (script)
+
     STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
     while STREAMING.HAS_MODEL_LOADED(MISC.GET_HASH_KEY("oppressor2")) ~= 1 do
         STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
@@ -1333,6 +1335,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("赠送暴君MK2", function()
     for i = 0, 31 do
         veh = VEHICLE.CREATE_VEHICLE(MISC.GET_HASH_KEY("oppressor2"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 0 , true, true, true)
     end
+    end)
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
@@ -1346,6 +1349,8 @@ end)
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 gui.add_tab("sch-lua-Alpha"):add_button("PED伞崩", function() --恶毒的东西
+    script.run_in_fiber(function (script)
+gui.show_message("伞崩","请持续按空格开伞")
     local spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
     local ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
     for n = 0 , 5 do
@@ -1380,6 +1385,7 @@ gui.add_tab("sch-lua-Alpha"):add_button("PED伞崩", function() --恶毒的东�
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
     end
     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spped, ppos.x, ppos.y, ppos.z, false, true, true)
+end)
 end)
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能

@@ -1,4 +1,4 @@
--- v1.33 -- 
+-- v1.34 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -595,23 +595,6 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local checkfirew = gui.add_tab("sch-lua-Alpha"):add_checkbox("火焰翅膀")
 
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("尝试移除火翅膀", function()
-    for i = 1, #bigfireWings do
-        if bigfireWings[i].ptfx then
-            GRAPHICS.REMOVE_PARTICLE_FX(bigfireWings[i].ptfx, true)
-            bigfireWings[i].ptfx = nil
-        end
-        if ptfxAegg then
-            ENTITY.DELETE_ENTITY(ptfxAegg)
-            ptfxAegg = nil
-        end
-    end
-    STREAMING.REMOVE_NAMED_PTFX_ASSET('weap_xs_vehicle_weapons')
-
-end)
-
 gui.add_tab("sch-lua-Alpha"):add_separator()
 
 gui.add_tab("sch-lua-Alpha"):add_text("产业功能-中高风险") 
@@ -996,6 +979,10 @@ local checkfootaudio = gui.add_tab("sch-lua-Alpha"):add_checkbox("关闭脚步�
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local checkpedaudio = gui.add_tab("sch-lua-Alpha"):add_checkbox("关闭自身PED声音") --只是一个开关，代码往后面找
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local checkSONAR = gui.add_tab("sch-lua-Alpha"):add_checkbox("小地图显示声纳") --只是一个开关，代码往后面找
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
@@ -1401,11 +1388,14 @@ end)
 end)
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
---存放一些变量，阻止无限循环
+--存放一些变量，阻止无限循环，间接实现 checkbox 的 on_enable() 、 on_disable()
+
 local loopa1 = 0  --控制PED脚步声有无
 local loopa2 = 0  --控制头顶666
 local loopa3 = 0  --控制PED所有声音有无
-
+local loopa4 = 0  --控制声纳开关
+local loopa5 = 0  --控制喷火
+local loopa6 = 0  --控制火焰翅膀
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -1580,6 +1570,20 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
+    if  checkSONAR:is_enabled() then --控制声纳开关
+        if loopa4 == 0 then
+            HUD.SET_MINIMAP_SONAR_SWEEP(true)
+            gui.show_message("声纳","开启")
+        end
+        loopa4 = 1
+    else
+        if loopa4 == 1 then           
+        HUD.SET_MINIMAP_SONAR_SWEEP(false)        
+        gui.show_message("声纳","关闭")
+        loopa4 = 0
+        end
+    end
+
     if  checkpedaudio:is_enabled() then --控制自己的PED是否产生声音
         PLAYER.SET_PLAYER_NOISE_MULTIPLIER(PLAYER.PLAYER_ID(), 0.0)
         if loopa3 == 0 then
@@ -1648,63 +1652,82 @@ end)
 
 
 script.register_looped("schlua-ptfxservice", function() 
+
     if  checkfirebreath:is_enabled() then --不太好用的喷火功能
-        STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
-            STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-            script_util:yield()
-            
-        end
-
-        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
-        local ptfxx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE('muz_xs_turret_flamethrower_looping', PLAYER.PLAYER_PED_ID(), 0, 0.12, 0.58, 30, 0, 0, 0x8b93, 1.0 , false, false, false)
-        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(ptfxx, 255, 127, 80)
-    else
-    end
-
-    if  checkfirew:is_enabled() then --不太好用的火焰翅膀功能
-        ENTITY.SET_ENTITY_PROOFS(PLAYER.PLAYER_PED_ID(), false, true, false, false, false, false, 1, false)
-        if  ptfxAegg == nil then
-            local obj1 = 1803116220  --外星蛋,用于附加火焰ptfx
-    
-            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-
-            STREAMING.REQUEST_MODEL(obj1)
-            while not STREAMING.HAS_MODEL_LOADED(obj1) do
-                STREAMING.REQUEST_MODEL(obj1)
-                script_util:yield() 
-            end
-
-            ptfxAegg = OBJECT.CREATE_OBJECT(obj1, pos.x, pos.y, pos.z, true, false, false)
-
-            ENTITY.SET_ENTITY_COLLISION(ptfxAegg, false, false)
-            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(obj1)
-        end
-        for i = 1, #bigfireWings do
+        if loopa5 == 0 then
+            gui.show_warning("注意","若打开后关不掉,请切换战局")
             STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
             while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
                 STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
-                script_util:sleep(20)
+                script_util:yield()               
             end
             GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
-            bigfireWings[i].ptfx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("muz_xs_turret_flamethrower_looping", ptfxAegg, 0, 0, 0.1, bigfireWings[i].pos[1], 0, bigfireWings[i].pos[2], 1, false, false, false)
-    
-            local rot = ENTITY.GET_ENTITY_ROTATION(PLAYER.PLAYER_PED_ID(), 2)
-            ENTITY.ATTACH_ENTITY_TO_ENTITY(ptfxAegg, PLAYER.PLAYER_PED_ID(), -1, 0, 0, 0, rot.x, rot.y, rot.z, false, false, false, false, 0, false)
-            ENTITY.SET_ENTITY_ROTATION(ptfxAegg, rot.x, rot.y, rot.z, 2, true)
-                for i = 1, #bigfireWings do
-                    GRAPHICS.SET_PARTICLE_FX_LOOPED_SCALE(bigfireWings[i].ptfx, 0.6)
-                    GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(bigfireWings[i].ptfx, 255, 127, 80)
-    
-                end
-            ENTITY.SET_ENTITY_VISIBLE(ptfxAegg, false) 
-    
-            
+            local ptfxx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE('muz_xs_turret_flamethrower_looping', PLAYER.PLAYER_PED_ID(), 0, 0.12, 0.58, 30, 0, 0, 0x8b93, 1.0 , false, false, false)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(ptfxx, 255, 127, 80)    
         end
-    
-    
+        loopa5 = 1
     else
+        if loopa5 == 1 then 
+            GRAPHICS.REMOVE_PARTICLE_FX(ptfxx, true)
+            STREAMING.REMOVE_NAMED_PTFX_ASSET('weap_xs_vehicle_weapons')    
+        end
+        loopa5 = 0
+    end 
 
+    if  checkfirew:is_enabled() then --不太好用的火焰翅膀功能
+        if loopa6 == 0 then
+            if  ptfxAegg == nil then
+                local obj1 = 1803116220  --外星蛋,用于附加火焰ptfx
+        
+                local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+    
+                STREAMING.REQUEST_MODEL(obj1)
+                while not STREAMING.HAS_MODEL_LOADED(obj1) do
+                    STREAMING.REQUEST_MODEL(obj1)
+                    script_util:yield() 
+                end
+    
+                ptfxAegg = OBJECT.CREATE_OBJECT(obj1, pos.x, pos.y, pos.z, true, false, false)
+    
+                ENTITY.SET_ENTITY_COLLISION(ptfxAegg, false, false)
+                STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(obj1)
+            end
+            for i = 1, #bigfireWings do
+                STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
+                while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
+                    STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
+                    script_util:sleep(20)
+                end
+                GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+                bigfireWings[i].ptfx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY("muz_xs_turret_flamethrower_looping", ptfxAegg, 0, 0, 0.1, bigfireWings[i].pos[1], 0, bigfireWings[i].pos[2], 1, false, false, false)
+        
+                local rot = ENTITY.GET_ENTITY_ROTATION(PLAYER.PLAYER_PED_ID(), 2)
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(ptfxAegg, PLAYER.PLAYER_PED_ID(), -1, 0, 0, 0, rot.x, rot.y, rot.z, false, false, false, false, 0, false)
+                ENTITY.SET_ENTITY_ROTATION(ptfxAegg, rot.x, rot.y, rot.z, 2, true)
+                    for i = 1, #bigfireWings do
+                        GRAPHICS.SET_PARTICLE_FX_LOOPED_SCALE(bigfireWings[i].ptfx, 0.6)
+                        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(bigfireWings[i].ptfx, 255, 127, 80)
+        
+                    end
+                ENTITY.SET_ENTITY_VISIBLE(ptfxAegg, false) 
+            end
+        end
+        loopa6 =1
+    else
+        if loopa6 == 1 then 
+            for i = 1, #bigfireWings do
+                if bigfireWings[i].ptfx then
+                    GRAPHICS.REMOVE_PARTICLE_FX(bigfireWings[i].ptfx, true)
+                    bigfireWings[i].ptfx = nil
+                end
+                if ptfxAegg then
+                    ENTITY.DELETE_ENTITY(ptfxAegg)
+                    ptfxAegg = nil
+                end
+            end
+            STREAMING.REMOVE_NAMED_PTFX_ASSET('weap_xs_vehicle_weapons')
+        end
+        loopa6 = 0
     end
 
 end)

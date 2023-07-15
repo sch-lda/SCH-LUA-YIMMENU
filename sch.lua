@@ -986,7 +986,7 @@ local checkSONAR = gui.add_tab("sch-lua-Alpha"):add_checkbox("小地图显示声
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
-local testcheck1 = gui.add_tab("sch-lua-Alpha"):add_checkbox("显示主机信息") --只是一个开关，代码往后面找
+local DrawHost = gui.add_tab("sch-lua-Alpha"):add_checkbox("显示主机信息") --只是一个开关，代码往后面找
 
 --------------------------------------------------------------------------------------- Players 页面
 
@@ -1387,6 +1387,11 @@ gui.show_message("伞崩","请持续按空格开伞")
 end)
 end)
 
+gui.add_tab("sch-lua-Alpha"):add_separator()
+gui.add_tab("sch-lua-Alpha"):add_text("调试") 
+
+local DrawInteriorID = gui.add_tab("sch-lua-Alpha"):add_checkbox("Show Interior ID") --只是一个开关，代码往后面找
+
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 --存放一些变量，阻止无限循环，间接实现 checkbox 的 on_enable() 、 on_disable()
 
@@ -1733,7 +1738,7 @@ script.register_looped("schlua-ptfxservice", function()
 end)
 
 script.register_looped("schlua-drawservice", function() 
-    if  testcheck1:is_enabled() then
+    if  DrawHost:is_enabled() then
         screen_draw_text(string.format("战局主机:".. PLAYER.GET_PLAYER_NAME(NETWORK.NETWORK_GET_HOST_PLAYER_INDEX())),0.180,0.8, 0.4 , 0.4)
 
         
@@ -1753,6 +1758,13 @@ script.register_looped("schlua-drawservice", function()
             end
             
         end
+    end
+
+    if  DrawInteriorID:is_enabled() then
+        local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0)
+        local Interior = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
+
+        screen_draw_text(string.format("Interior ID:".. Interior),0.875,0.2, 0.4 , 0.4)
     end
 end)
 

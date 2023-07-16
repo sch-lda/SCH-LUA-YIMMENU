@@ -1,4 +1,4 @@
--- v1.34 -- 
+-- v1.35 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -885,14 +885,11 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 gui.add_tab("sch-lua-Alpha"):add_button("移除达克斯冷却", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
-
     local mpx = "MP0_"
     if playerid == 1 then 
         mpx = "MP1_" 
-    
     end
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."XM22JUGGALOWORKCDTIMER"), -1, true)
-
 end)
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
@@ -982,12 +979,25 @@ local checkpedaudio = gui.add_tab("sch-lua-Alpha"):add_checkbox("关闭自身PED
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
+local disableAIdmg = gui.add_tab("sch-lua-Alpha"):add_checkbox("锁定NPC零伤害") --只是一个开关，代码往后面找
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
 local checkSONAR = gui.add_tab("sch-lua-Alpha"):add_checkbox("小地图显示声纳") --只是一个开关，代码往后面找
 
 gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 local DrawHost = gui.add_tab("sch-lua-Alpha"):add_checkbox("显示主机信息") --只是一个开关，代码往后面找
 
+local pedgun = gui.add_tab("sch-lua-Alpha"):add_checkbox("PED枪(射出NPC)") --只是一个开关，代码往后面找
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local drawcs = gui.add_tab("sch-lua-Alpha"):add_checkbox("绘制+准星") --只是一个开关，代码往后面找
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+local disablecops = gui.add_tab("sch-lua-Alpha"):add_checkbox("阻止派遣警察") --只是一个开关，代码往后面找
 --------------------------------------------------------------------------------------- Players 页面
 
 gui.get_tab(""):add_separator()
@@ -1401,6 +1411,7 @@ local loopa3 = 0  --控制PED所有声音有无
 local loopa4 = 0  --控制声纳开关
 local loopa5 = 0  --控制喷火
 local loopa6 = 0  --控制火焰翅膀
+local loopa7 = 0  --控制警察调度
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -1603,6 +1614,19 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
+    if  disableAIdmg:is_enabled() then --覆写NPC伤害
+        PED.SET_AI_WEAPON_DAMAGE_MODIFIER(0.0)
+        PED.SET_AI_MELEE_WEAPON_DAMAGE_MODIFIER(0.0)
+        loopa8 = 1
+    else
+    if loopa8 == 1 then 
+        PED.RESET_AI_WEAPON_DAMAGE_MODIFIER()
+        PED.RESET_AI_MELEE_WEAPON_DAMAGE_MODIFIER()
+        gui.show_message("提示","NPC伤害已还原")
+    loopa8 = 0
+    end
+    end
+
     if  check666:is_enabled() then --控制头顶666生成与移除
         if loopa2 == 0 then
             local md6 = "prop_mp_num_6"
@@ -1652,6 +1676,43 @@ script.register_looped("schlua-miscservice", function()
     if  check6:is_enabled() then --随处游泳
         PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 65, 81) --锁定玩家状态为游泳
     end
+
+    if  pedgun:is_enabled() then --NPC枪
+
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)
+    
+        if PED.IS_PED_SHOOTING(PLAYER.PLAYER_PED_ID()) then 
+    
+            peds = PED.CREATE_RANDOM_PED(pos.x, pos.y, pos.z)    
+            ENTITY.SET_ENTITY_ROTATION(peds, camrot.x, camrot.y, camrot.z, 1, false)    
+            ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(peds, 1, 0, 1000, 0, false, true, true, true)
+            ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+
+        end
+    end
+
+    if  drawcs:is_enabled() then --绘制准星
+        HUD.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING") --The following were found in the decompiled script files: STRING, TWOSTRINGS, NUMBER, PERCENTAGE, FO_TWO_NUM, ESMINDOLLA, ESDOLLA, MTPHPER_XPNO, AHD_DIST, CMOD_STAT_0, CMOD_STAT_1, CMOD_STAT_2, CMOD_STAT_3, DFLT_MNU_OPT, F3A_TRAFDEST, ES_HELP_SOC3
+        HUD.SET_TEXT_FONT(0)
+        HUD.SET_TEXT_SCALE(0.3, 0.3) --Size range : 0F to 1.0F --p0 is unknown and doesn't seem to have an effect, yet in the game scripts it changes to 1.0F sometimes.
+        HUD.SET_TEXT_OUTLINE()
+        HUD.SET_TEXT_CENTRE(1)
+        HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(string.format("+"))
+        HUD.END_TEXT_COMMAND_DISPLAY_TEXT(0.5,0.485) --占坐标轴的比例
+    end
+
+    if  disablecops:is_enabled() then --控制是否派遣警察
+            PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(PLAYER.PLAYER_ID(), false)
+            loopa7 = 1
+    else
+        if loopa7 == 1 then 
+            PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(PLAYER.PLAYER_ID(), true)
+        gui.show_message("提示","通缉时会派遣警察")
+        loopa7 = 0
+        end
+    end
+
 end)
 
 

@@ -1,4 +1,4 @@
--- v1.36 -- 
+-- v1.37 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -32,9 +32,9 @@ function upgrade_vehicle(vehicle)
 end
 
 function run_script(name) 
-    script.run_in_fiber(function (script)
+    script.run_in_fiber(function (runscript)
     SCRIPT.REQUEST_SCRIPT(name)  
-    repeat script:yield() until SCRIPT.HAS_SCRIPT_LOADED(name)
+    repeat runscript:yield() until SCRIPT.HAS_SCRIPT_LOADED(name)
     SYSTEM.START_NEW_SCRIPT(name, 5000)
     SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(name)
     end)
@@ -124,7 +124,7 @@ function Create_Network_Ped(pedType, modelHash, x, y, z, heading)
 
     ENTITY.SET_ENTITY_LOAD_COLLISION_FLAG(ped, true)
     ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ped, true, false)
-    ENTITY.SET_ENTITY_SHOULD_FREEZE_script_util:sleepING_ON_COLLISION(ped, true)
+    ENTITY.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION(ped, true)
 
     NETWORK.NETWORK_REGISTER_ENTITY_AS_NETWORKED(ped)
     local net_id = NETWORK.PED_TO_NET(ped)
@@ -152,17 +152,12 @@ end
 
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
---gui.show_message("Debugmpx", mpx.."H4_")
 --[[
 gui.add_tab("sch-lua-Alpha"):add_button("测试6", function()
-
-        --gui.show_message("Debugmpx", "H4_")
-        screen_draw_text(string.format("test"),  0.167,0.882, 0.3 , 0.3)
-
 end)
 ]]
---------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
+--------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 
@@ -463,13 +458,30 @@ gui.add_tab("sch-lua-Alpha"):add_button("显示恐霸主控面板", function()
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("apphackertruck")
-
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             run_script("apphackertruck")
         else
             gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
             run_script("apphackertruck")
+        end
+    end
+end)
+
+gui.add_tab("sch-lua-Alpha"):add_sameline()
+
+gui.add_tab("sch-lua-Alpha"):add_button("显示复仇者面板", function()
+    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
+    --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
+    if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
+        run_script("appAvengerOperations")
+    else
+        if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
+            run_script("appAvengerOperations")
+        else
+            gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+            run_script("appAvengerOperations")
         end
     end
 end)
@@ -1331,6 +1343,27 @@ gui.add_tab(""):add_button("碎片崩溃", function()
     end)
 end)
 
+--[[
+gui.get_tab(""):add_sameline()
+
+gui.add_tab(""):add_button("idvcrash", function()
+    script.run_in_fiber(function (idvcrash2)
+        PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),0xE5022D03)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player()))
+        idvcrash2:sleep(20)
+        local p_pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player()),p_pos.x,p_pos.y,p_pos.z,false,true,true)
+        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player()), 0xFBAB5776, 1000, false)
+        TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player()),-1087,-3012,13.94)
+        idvcrash2:sleep(500)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player()))
+        idvcrash2:sleep(1000)
+        PLAYER.CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID())
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player()))    
+    end)
+end)
+]]
+
 gui.add_tab("sch-lua-Alpha"):add_separator()
 gui.add_tab("sch-lua-Alpha"):add_text("全局选项") 
 
@@ -1839,6 +1872,27 @@ script.register_looped("schlua-drawservice", function()
     end
 end)
 
+script.register_looped("schlua-verckservice", function() 
+    script_util:sleep(60000)
+    if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
+        local start_time = os.time()
+        local duration = 10  
+        while os.time() - start_time < duration do
+        local scaleForm = GRAPHICS.REQUEST_SCALEFORM_MOVIE("POPUP_WARNING")
+        GRAPHICS.DRAW_RECT(.5, .5, 1, 1, 255, 20, 20, 255)
+        GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleForm, "SHOW_POPUP_WARNING")
+        GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleForm, 0, 0, 0, 0, 0)
+        GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT(500.0)
+        GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("SCH LUA警告")
+        GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("脚本不支持您的游戏版本,继续使用将损坏您的在线账户!")
+        GRAPHICS.END_SCALEFORM_MOVIE_METHOD(scaleForm)
+        script_util:sleep(10)
+        end
+    else
+        script_util:sleep(6000000)
+    end
+end)
+
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 --[[
@@ -2264,29 +2318,6 @@ end)
 ]]
 
 -- local checkmovefree = gui.add_tab("sch-lua-Alpha"):add_checkbox("战局切换时自由移动")
-
---[[
-gui.add_tab("sch-lua-Alpha"):add_sameline()
-
-gui.add_tab("sch-lua-Alpha"):add_button("测试4", function()
-    local start_time = os.time()
-    local duration = 5  
-    
-    while os.time() - start_time < duration do
-    local scaleForm = GRAPHICS.REQUEST_SCALEFORM_MOVIE("POPUP_WARNING")
-    GRAPHICS.DRAW_RECT(.5, .5, 1, 1, 255, 158, 177, 255)
-    GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleForm, "SHOW_POPUP_WARNING")
-    GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleForm, 0, 0, 0, 0, 0)
-    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT(500.0)
-    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("YIMMENU")
-    GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("欢迎使用SCH LUA")
-
-    GRAPHICS.END_SCALEFORM_MOVIE_METHOD(scaleForm)
-
-    script_util:sleep(5)
-    end
-end)
-]]--
 
 --[[  已被检测
 gui.add_tab("sch-lua-Alpha"):add_button("移除赌场轮盘冷却", function()

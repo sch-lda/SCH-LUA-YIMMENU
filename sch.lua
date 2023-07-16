@@ -1,4 +1,4 @@
--- v1.40 -- 
+-- v1.41 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -1845,7 +1845,7 @@ script.register_looped("schlua-drawservice", function()
         screen_draw_text(string.format("Interior ID:".. Interior),0.875,0.2, 0.4 , 0.4)
     end
 end)
-
+--[[
 script.register_looped("schlua-verckservice", function() 
     script_util:sleep(60000)
     if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
@@ -1866,7 +1866,7 @@ script.register_looped("schlua-verckservice", function()
         script_util:sleep(6000000)
     end
 end)
-
+]]
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 --[[

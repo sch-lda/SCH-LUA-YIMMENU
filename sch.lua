@@ -1,4 +1,4 @@
--- v1.35 -- 
+-- v1.36 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -1035,68 +1035,50 @@ gui.get_tab(""):add_button("栅栏笼子", function()
 
     for i = 1, 4 do ENTITY.FREEZE_ENTITY_POSITION(object[i], true) end
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(objHash)
-
 end)
 
 gui.get_tab(""):add_sameline()
 
 gui.get_tab(""):add_button("竞技管笼子", function()
-    script.run_in_fiber(function (script)
-
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    STREAMING.REQUEST_MODEL(2081936690)
-
-	while not STREAMING.HAS_MODEL_LOADED(2081936690) do		
-        script_util:sleep(100)
-	end
-    local cage_object = OBJECT.CREATE_OBJECT(2081936690, pos.x, pos.y, pos.z-5, true, true, false)
-
-    script_util:sleep(15)
-    local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object)
-    rot.y = 90
-    ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x,rot.y,rot.z,1,true)
-
-
-    local cage_object2 = OBJECT.CREATE_OBJECT(2081936690, pos.x-5, pos.y+5, pos.z-5, true, true, false)
-
-    script_util:sleep(15)
-    local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object2)
-    rot.x = 90 
-    ENTITY.SET_ENTITY_ROTATION(cage_object2, rot.x,rot.y,rot.z,2,true)
-
-end)
+    script.run_in_fiber(function (dubcage)
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        STREAMING.REQUEST_MODEL(2081936690)
+        while not STREAMING.HAS_MODEL_LOADED(2081936690) do		
+            dubcage:sleep(100)
+        end
+        local cage_object = OBJECT.CREATE_OBJECT(2081936690, pos.x, pos.y, pos.z-5, true, true, false)
+        local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object)
+        rot.y = 90
+        ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x,rot.y,rot.z,1,true)
+        local cage_object2 = OBJECT.CREATE_OBJECT(2081936690, pos.x-5, pos.y+5, pos.z-5, true, true, false)
+        local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object2)
+        rot.x = 90 
+        ENTITY.SET_ENTITY_ROTATION(cage_object2, rot.x,rot.y,rot.z,2,true)
+    end)
 end)
 
 gui.get_tab(""):add_sameline()
 
 gui.get_tab(""):add_button("保险箱笼子", function()
-    script.run_in_fiber(function (script)
-
-	local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-	local hash = 1089807209
-	STREAMING.REQUEST_MODEL(hash)
-
-	while not STREAMING.HAS_MODEL_LOADED(hash) do		
-        script_util:sleep(100)
-	end
-	local cage_object = OBJECT.CREATE_OBJECT(hash, pos.x - 1, pos.y, pos.z - .5, true, true, false) -- front
-	local cage_object2 = OBJECT.CREATE_OBJECT(hash, pos.x + 1, pos.y, pos.z - .5, true, true, false) -- back
-	local cage_object3 = OBJECT.CREATE_OBJECT(hash, pos.x, pos.y + 1, pos.z - .5, true, true, false) -- left
-	local cage_object4 = OBJECT.CREATE_OBJECT(hash, pos.x, pos.y - 1, pos.z - .5, true, true, false) -- right
-	local cage_object5 = OBJECT.CREATE_OBJECT(hash, pos.x, pos.y, pos.z + .75, true, true, false) -- above
-	cages[#cages + 1] = cage_object
-
-	local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object)
-	rot.y = 90
-
-	ENTITY.FREEZE_ENTITY_POSITION(cage_object, true)
-	ENTITY.FREEZE_ENTITY_POSITION(cage_object2, true)
-	ENTITY.FREEZE_ENTITY_POSITION(cage_object3, true)
-	ENTITY.FREEZE_ENTITY_POSITION(cage_object4, true)
-	ENTITY.FREEZE_ENTITY_POSITION(cage_object5, true)
-    script_util:sleep(100)
-	STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(cage_object)
-end)
+    script.run_in_fiber(function (safecage)
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        local hash = 1089807209
+        STREAMING.REQUEST_MODEL(hash)
+        while not STREAMING.HAS_MODEL_LOADED(hash) do		
+            STREAMING.REQUEST_MODEL(hash)
+            safecage:yield()
+        end
+        local cage_object = OBJECT.CREATE_OBJECT(hash, pos.x - 1, pos.y, pos.z - 1, true, true, false) -- front
+        local cage_object2 = OBJECT.CREATE_OBJECT(hash, pos.x + 1, pos.y, pos.z - 1, true, true, false) -- back
+        local cage_object3 = OBJECT.CREATE_OBJECT(hash, pos.x, pos.y + 1, pos.z - 1, true, true, false) -- left
+        local cage_object4 = OBJECT.CREATE_OBJECT(hash, pos.x, pos.y - 1, pos.z - 1, true, true, false) -- right
+        ENTITY.FREEZE_ENTITY_POSITION(cage_object, true)
+        ENTITY.FREEZE_ENTITY_POSITION(cage_object2, true)
+        ENTITY.FREEZE_ENTITY_POSITION(cage_object3, true)
+        ENTITY.FREEZE_ENTITY_POSITION(cage_object4, true)
+        safecage:sleep(100)
+        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(cage_object)
+    end)
 end)
 
 gui.get_tab(""):add_sameline()
@@ -1284,41 +1266,68 @@ gui.add_tab(""):add_sameline()
 local checkspped = gui.get_tab(""):add_checkbox("循环刷PED")
 
 gui.add_tab(""):add_button("碎片崩溃", function()
-    script.run_in_fiber(function (script)
-
-    for i=1,10 do
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        ENTITY.DELETE_ENTITY(object)
-        local object = CreateObject(joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        script_util:sleep(100)
-        ENTITY.DELETE_ENTITY(object)
-    end
+    script.run_in_fiber(function (fragcrash)
+        fraghash = joaat("prop_fragtest_cnst_04")
+        STREAMING.REQUEST_MODEL(fraghash)
+        local TargetCrds = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        local crashstaff1 = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        local crashstaff1 = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        local crashstaff1 = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        local crashstaff1 = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+        for i = 0, 100 do 
+            local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false, true, true)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false, true, true)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false, true, true)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false, true, true)
+            fragcrash:sleep(10)
+            ENTITY.DELETE_ENTITY(crashstaff1)
+            ENTITY.DELETE_ENTITY(crashstaff1)
+            ENTITY.DELETE_ENTITY(crashstaff1)
+            ENTITY.DELETE_ENTITY(crashstaff1)
+        end
+    end)
+    script.run_in_fiber(function (fragcrash2)
+        local TargetCrds = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        fraghash = joaat("prop_fragtest_cnst_04")
+        STREAMING.REQUEST_MODEL(fraghash)
+        for i=1,10 do
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            ENTITY.DELETE_ENTITY(object)
+            local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
+            OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+            fragcrash2:sleep(100)
+            ENTITY.DELETE_ENTITY(object)
+        end
     end)
 end)
 
@@ -1359,7 +1368,7 @@ gui.add_tab("sch-lua-Alpha"):add_sameline()
 
 gui.add_tab("sch-lua-Alpha"):add_button("PED伞崩", function() --恶毒的东西
     script.run_in_fiber(function (script)
-gui.show_message("伞崩","请持续按空格开伞")
+gui.show_message("伞崩","请多次短按空格开伞")
     local spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
     local ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
     for n = 0 , 5 do
@@ -1497,17 +1506,18 @@ defpscount = 200 --刷200个模型
 script.register_looped("schlua-defps", function() 
 
     if  checkspped:is_enabled() then--刷模型
-        if defpstarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+        local sppedtarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+        if sppedtarget ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
             request_model(0x705E61F2)
-            local pc = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-            local ped = PED.CREATE_PED(26, 0x705E61F2, pc.x, pc.y, pc.z -1 , 0, true, false)
+            local pcrds = ENTITY.GET_ENTITY_COORDS(sppedtarget, false)
+            local spped = PED.CREATE_PED(26, 0x705E61F2, pcrds.x, pcrds.y, pcrds.z -1 , 0, true, false)
+            WEAPON.GIVE_WEAPON_TO_PED(spped,-270015777,80,true,true)
+            ENTITY.SET_ENTITY_HEALTH(spped,1000,true)
             MISC.SET_RIOT_MODE_ENABLED(true)
             script_util:sleep(30)
-    
         else
             gui.show_message("掉帧攻击已停止", "你在攻击自己!")
             checkspped:set_enabled(nil) --目标是自己，自动关掉开关
-
         end
     end
     
@@ -1937,13 +1947,13 @@ gui.add_tab("sch-lua-Alpha"):add_button("测试2", function()
         script_util:sleep(100)
     end
     local Object_pizza1 = OBJECT.CREATE_OBJECT(3613262246, pos.x,pos.y,pos.z, true, false, false)
-    local Object_pizza2 = OBJECT.CREATE_OBJECT(2155335200, pos.x,pos.y,pos.z, true, false, false)
+    local crashstaff1 = OBJECT.CREATE_OBJECT(2155335200, pos.x,pos.y,pos.z, true, false, false)
     local Object_pizza3 = OBJECT.CREATE_OBJECT(3026699584, pos.x,pos.y,pos.z, true, false, false)
     local Object_pizza4 = OBJECT.CREATE_OBJECT(-1348598835, pos.x,pos.y,pos.z, true, false, false)
     for i = 0, 100 do 
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza1, pos.x, pos.y, pos.z, false, true, true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza2, pos.x, pos.y, pos.z, false, true, true)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, pos.x, pos.y, pos.z, false, true, true)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza3, pos.x, pos.y, pos.z, false, true, true)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza4, pos.x, pos.y, pos.z, false, true, true)
         script_util:yield()

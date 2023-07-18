@@ -1,4 +1,4 @@
--- v1.43 -- 
+-- v1.45 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -27,6 +27,8 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
+
+local gentab = gui.add_tab("sch-lua-Alpha-v1.43")
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -160,7 +162,7 @@ end
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 --[[
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("测试6", function()
+gentab:add_button("测试6", function()
 end)
 ]]
 
@@ -168,11 +170,11 @@ end)
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
+gentab:add_text("要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("任务功能") 
+gentab:add_text("任务功能") 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("佩里科终章一键完成", function()
+gentab:add_button("佩里科终章一键完成", function()
     script.run_in_fiber(function (pericoinstcpl)
         local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
         while not PLAYER.PLAYER_ID() == FMMC2020host do   --如果判断不是脚本主机则自动抢脚本主机
@@ -184,9 +186,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("佩里科终章一键完成", fun
     end)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置佩岛前置(猎豹雕像)", function()
+gentab:add_button("配置佩岛前置(猎豹雕像)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等  --用于判断当前是角色1还是角色2
     local mpx = "MP0_"--用于判断当前是角色1还是角色2
     if playerid == 1 then --用于判断当前是角色1还是角色2
@@ -213,9 +215,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置佩岛前置(猎豹雕像)"
     locals.set_int("heist_island_planning", 1526, 2) --刷新面板
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置佩岛前置(粉钻)", function()
+gentab:add_button("配置佩岛前置(粉钻)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -242,9 +244,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置佩岛前置(粉钻)", func
     locals.set_int("heist_island_planning", 1526, 2)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("重置佩岛", function()
+gentab:add_button("重置佩岛", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -272,7 +274,7 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("重置佩岛", function()
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置赌场前置(钻石)", function()
+gentab:add_button("配置赌场前置(钻石)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -297,9 +299,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置赌场前置(钻石)", func
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置赌场前置(黄金)", function()
+gentab:add_button("配置赌场前置(黄金)", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -324,9 +326,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("配置赌场前置(黄金)", func
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("重置赌场计划面板", function()
+gentab:add_button("重置赌场计划面板", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -347,7 +349,7 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("重置赌场计划面板", functi
 end)
 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("转换CEO/首领", function()
+gentab:add_button("转换CEO/首领", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
@@ -364,9 +366,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("转换CEO/首领", function()
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示事务所电脑", function()
+gentab:add_button("显示事务所电脑", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appfixersecurity")
@@ -382,9 +384,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示事务所电脑", function(
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示地堡电脑", function()
+gentab:add_button("显示地堡电脑", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appbunkerbusiness")
@@ -398,9 +400,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示地堡电脑", function()
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示机库电脑", function()
+gentab:add_button("显示机库电脑", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appsmuggler")
@@ -414,9 +416,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示机库电脑", function()
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示游戏厅产业总控电脑", function()
+gentab:add_button("显示游戏厅产业总控电脑", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("apparcadebusinesshub")
@@ -430,9 +432,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示游戏厅产业总控电脑
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示恐霸主控面板", function()
+gentab:add_button("显示恐霸主控面板", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("apphackertruck")
@@ -446,9 +448,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示恐霸主控面板", functi
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示复仇者面板", function()
+gentab:add_button("显示复仇者面板", function()
     local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appAvengerOperations")
@@ -462,10 +464,10 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("显示复仇者面板", function(
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_separator()
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("娱乐功能(稳定性不高,全是bug)") --不解释，我自己也搞不明白
+gentab:add_separator()
+gentab:add_text("娱乐功能(稳定性不高,全是bug)") --不解释，我自己也搞不明白
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("放烟花", function()
+gentab:add_button("放烟花", function()
     script.run_in_fiber(function (firew)
         
     local animlib = 'anim@mp_fireworks'
@@ -527,9 +529,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("放烟花", function()
     end)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("飞天扫帚", function()
+gentab:add_button("飞天扫帚", function()
     script.run_in_fiber(function (mk2ac1)
         local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
         local broomstick = joaat("prop_tool_broom")
@@ -550,21 +552,21 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("飞天扫帚", function()
     end)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
 local objectsix1 --注册为全局变量以便后续移除666
 local objectsix2--注册为全局变量以便后续移除666
 local objectsix3--注册为全局变量以便后续移除666
 
-local check666 = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("头顶666") --这只是一个复选框,代码往最后的循环脚本部分找
+local check666 = gentab:add_checkbox("头顶666") --这只是一个复选框,代码往最后的循环脚本部分找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local check6 = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("游泳模式") --这只是一个复选框,代码往最后的循环脚本部分找
+local check6 = gentab:add_checkbox("游泳模式") --这只是一个复选框,代码往最后的循环脚本部分找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local checkfirebreath = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("喷火")--这只是一个复选框,代码往最后的循环脚本部分找
+local checkfirebreath = gentab:add_checkbox("喷火")--这只是一个复选框,代码往最后的循环脚本部分找
 
 bigfireWings = {
     [1] = {pos = {[1] = 120, [2] =  75}},
@@ -594,42 +596,46 @@ bigfireWings = {
 }
 local ptfxAegg
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local checkfirew = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("火焰翅膀")
+local checkfirew = gentab:add_checkbox("火焰翅膀")
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_separator()
+gentab:add_separator()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("产业功能-中高风险") 
+gentab:add_text("产业功能-中高风险") 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("CEO仓库出货一键完成", function()
+gentab:add_button("CEO仓库出货一键完成", function()
     locals.set_int("gb_contraband_sell","542","99999")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("摩托帮出货一键完成", function()
+gentab:add_button("摩托帮出货一键完成(不稳定)", function()
     locals.set_int("gb_biker_contraband_sell","821","30")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("地堡出货一键完成", function()
+local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
+
+gentab:add_sameline()
+
+gentab:add_button("地堡出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     locals.set_int("gb_gunrunning","1980","0") --bunkerAutoComplete: {('1206', '774')}  LOCAL gb_gunrunning set to 0 to autocomplete 
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("机库(空运)出货一键完成", function()
+gentab:add_button("机库(空运)出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     local integer = locals.get_int("gb_smuggler", "3007")
     locals.set_int("gb_smuggler","2964",integer)
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("摩托帮产业满原材料", function()
+gentab:add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
     globals.set_int(1648657+1+2,1) --冰毒
     globals.set_int(1648657+1+3,1) --大麻
@@ -638,16 +644,16 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("摩托帮产业满原材料", fun
     gui.show_message("自动补货","全部完成")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("地堡满原材料", function()
+gentab:add_button("地堡满原材料", function()
     globals.set_int(1648657+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("CEO仓库员工进货一次", function()
+gentab:add_button("CEO仓库员工进货一次", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
@@ -657,31 +663,31 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("CEO仓库员工进货一次", fun
     STATS.SET_PACKED_STAT_BOOL_CODE(32363,1,playerid)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("机库员工进货一次", function()
+gentab:add_button("机库员工进货一次", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
     STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
 end)
 
-local checkCEOcargo = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("锁定仓库员工单次进货数量为")
+local checkCEOcargo = gentab:add_checkbox("锁定仓库员工单次进货数量为")
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local inputCEOcargo = gui.add_tab("sch-lua-Alpha-v1.43"):add_input_int("个板条箱")
-
-
-
-local check4 = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("锁定机库员工单次进货数量为")
-
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
-
-local iputint3 = gui.add_tab("sch-lua-Alpha-v1.43"):add_input_int("箱")
+local inputCEOcargo = gentab:add_input_int("个板条箱")
 
 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("夜总会保险箱30万循环10次", function()
+local check4 = gentab:add_checkbox("锁定机库员工单次进货数量为")
+
+gentab:add_sameline()
+
+local iputint3 = gentab:add_input_int("箱")
+
+
+
+gentab:add_button("夜总会保险箱30万循环10次", function()
     script.run_in_fiber(function (ncsafeloop)
         local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
         local mpx = "MP0_"
@@ -703,14 +709,14 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("夜总会保险箱30万循环10�
     end)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local checklkw = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具)")
+local checklkw = gentab:add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具)")
 
-local checkxsdped = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("NPC掉落2000元循环(高危)")
+local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(高危)")
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_separator()
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("传送")
+gentab:add_separator()
+gentab:add_text("传送")
 
 function tpfac() --传送到设施
     local Pos = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(590))
@@ -720,7 +726,7 @@ function tpfac() --传送到设施
 
 end
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("虎鲸计划面板", function()
+gentab:add_button("虎鲸计划面板", function()
     script.run_in_fiber(function (callkos)
         local SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
         local SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
@@ -739,7 +745,7 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("虎鲸计划面板", function()
     end)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("设施", function()
+gentab:add_button("设施", function()
     local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
 
@@ -750,9 +756,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("设施", function()
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("设施计划屏幕", function()
+gentab:add_button("设施计划屏幕", function()
     local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
     if intr == 269313 then 
@@ -815,17 +821,17 @@ function tpnc() --传送到夜总会
     end
 end
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("夜总会", function()
+gentab:add_button("夜总会", function()
     tpnc()
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("夜总会保险箱(先进入夜总会)", function()
+gentab:add_button("夜总会保险箱(先进入夜总会)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -1615.6832, -3015.7546, -75.204994)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("游戏厅", function()
+gentab:add_button("游戏厅", function()
 
     local Blip = HUD.GET_FIRST_BLIP_INFO_ID(740) -- Arcade Blip
     local Pos = HUD.GET_BLIP_COORDS(Blip)
@@ -861,24 +867,24 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("游戏厅", function()
 
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("游戏厅计划面板(先进游戏厅)", function()
+gentab:add_button("游戏厅计划面板(先进游戏厅)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  2711.773, -369.458, -54.781)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_separator()
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("杂项")
+gentab:add_separator()
+gentab:add_text("杂项")
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("预览万圣节猎鬼活动", function()
+gentab:add_button("预览万圣节猎鬼活动", function()
     globals.set_int(262145+35064,1) --Ghost hunt enable
     globals.set_int(262145+35158,50000) --Ghost hunt GHOSTHUNT_CASH_REWARD
     gui.show_message("鬼将随机生成在某个位置","该活动只发生在晚八点至次日凌晨六点")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("移除达克斯冷却", function()
+gentab:add_button("移除达克斯冷却", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -887,130 +893,130 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("移除达克斯冷却", function(
     STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."XM22JUGGALOWORKCDTIMER"), -1, true)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("移除安保合约/电话暗杀冷却", function()
+gentab:add_button("移除安保合约/电话暗杀冷却", function()
     globals.set_int(262145 + 31908, 0)   --tuneables_processing.c   	func_6(iParam0, iParam1, joaat("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME") /* collision: FIXER_SECURITY_CONTRACT_COOLDOWN_TIME */, &(Global_262145.f_31908), true);
     globals.set_int(262145 + 31973, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, -2036534141, &(Global_262145.f_31973), true);    	Global_262145.f_31973 = 500;
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("移除CEO载具冷却", function()
+gentab:add_button("移除CEO载具冷却", function()
     globals.set_int(262145 + 13005, 0)   --tuneables_processing.c 	func_6(iParam0, iParam1, joaat("GB_CALL_VEHICLE_COOLDOWN") /* collision: GB_CALL_VEHICLE_COOLDOWN */, &(Global_262145.f_13005), true);
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("移除自身悬赏", function()
+gentab:add_button("移除自身悬赏", function()
     globals.set_int(1+2359296+5150+13,2880000)   
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("卡云退线下", function()
+gentab:add_button("卡云退线下", function()
     if NETWORK.NETWORK_CAN_BAIL() then
         NETWORK.NETWORK_BAIL(0, 0, 0)
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("跳过一条NPC对话", function()
+gentab:add_button("跳过一条NPC对话", function()
     AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE()
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local checkbypassconv = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("自动跳过NPC对话")
+local checkbypassconv = gentab:add_checkbox("自动跳过NPC对话")
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("停止本地所有声音", function()
+gentab:add_button("停止本地所有声音", function()
     for i=-1,100 do
         AUDIO.STOP_SOUND(i)
         AUDIO.RELEASE_SOUND_ID(i)
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("视觉效果")
+gentab:add_text("视觉效果")
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("移除所有视觉效果", function()
+gentab:add_button("移除所有视觉效果", function()
     GRAPHICS.ANIMPOSTFX_STOP_ALL()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("DEFAULT")
 
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("视觉效果:吸毒", function()
+gentab:add_button("视觉效果:吸毒", function()
     GRAPHICS.ANIMPOSTFX_PLAY("DrugsDrivingIn", 5, true)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("模糊", function()
+gentab:add_button("模糊", function()
     GRAPHICS.ANIMPOSTFX_PLAY("MenuMGSelectionIn", 5, true)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("提升亮度", function()
+gentab:add_button("提升亮度", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("AmbientPush")
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("大雾", function()
+gentab:add_button("大雾", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("casino_main_floor_heist")
 end)
 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("醉酒", function()
+gentab:add_button("醉酒", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("Drunk")
 end)
 
-local check1 = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
+local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local checkmiss = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("移除虎鲸导弹冷却并提升射程")--只是一个开关，代码往后面找
+local checkmiss = gentab:add_checkbox("移除虎鲸导弹冷却并提升射程")--只是一个开关，代码往后面找
  
-local checkzhongjia = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("请求重甲花费(用于删除黑钱)")--只是一个开关，代码往后面找
+local checkzhongjia = gentab:add_checkbox("请求重甲花费(用于删除黑钱)")--只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local iputintzhongjia = gui.add_tab("sch-lua-Alpha-v1.43"):add_input_int("元")
+local iputintzhongjia = gentab:add_input_int("元")
 
-local checkfootaudio = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("关闭脚步声") --只是一个开关，代码往后面找
+local checkfootaudio = gentab:add_checkbox("关闭脚步声") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local checkpedaudio = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("关闭自身PED声音") --只是一个开关，代码往后面找
+local checkpedaudio = gentab:add_checkbox("关闭自身PED声音") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local disableAIdmg = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("锁定NPC零伤害") --只是一个开关，代码往后面找
+local disableAIdmg = gentab:add_checkbox("锁定NPC零伤害") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local checkSONAR = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("小地图显示声纳") --只是一个开关，代码往后面找
+local checkSONAR = gentab:add_checkbox("小地图显示声纳") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local DrawHost = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("显示主机信息") --只是一个开关，代码往后面找
+local DrawHost = gentab:add_checkbox("显示主机信息") --只是一个开关，代码往后面找
 
-local pedgun = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("PED枪(射出NPC)") --只是一个开关，代码往后面找
+local pedgun = gentab:add_checkbox("PED枪(射出NPC)") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local drawcs = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("绘制+准星") --只是一个开关，代码往后面找
+local drawcs = gentab:add_checkbox("绘制+准星") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local disablecops = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("阻止派遣警察") --只是一个开关，代码往后面找
+local disablecops = gentab:add_checkbox("阻止派遣警察") --只是一个开关，代码往后面找
 
 --------------------------------------------------------------------------------------- Players 页面
 
@@ -1431,18 +1437,18 @@ gui.add_tab(""):add_button("idvcrash", function()
 end)
 ]]
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_separator()
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("全局选项") 
+gentab:add_separator()
+gentab:add_text("全局选项") 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("全局爆炸", function()
+gentab:add_button("全局爆炸", function()
     for i = 0, 31 do
             FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("赠送暴君MK2", function()
+gentab:add_button("赠送暴君MK2", function()
     script.run_in_fiber(function (giftmk2)
         STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
         while STREAMING.HAS_MODEL_LOADED(MISC.GET_HASH_KEY("oppressor2")) ~= 1 do
@@ -1455,25 +1461,25 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("赠送暴君MK2", function()
     end)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("防空警报", function()
+gentab:add_button("防空警报", function()
     for pid = 0, 31 do
         AUDIO.PLAY_SOUND_FROM_COORD(-1, "Air_Defences_Activated", ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, "DLC_sum20_Business_Battle_AC_Sounds", true, 999999999, true)
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("公寓邀请", function()
+gentab:add_button("公寓邀请", function()
     for pid = 0, 31 do
     network.trigger_script_event(1 << pid, {3592101251, 1, 0, -1, 4, 127, 0, 0, 0,PLAYER.GET_PLAYER_INDEX(), pid})
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("PED伞崩", function() --恶毒的东西
+gentab:add_button("PED伞崩", function() --恶毒的东西
     script.run_in_fiber(function (pedpacrash)
         gui.show_message("伞崩","请耐心等待直至人物落地")
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -74.94, -818.58, 327)
@@ -1516,22 +1522,22 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("PED伞崩", function() --恶毒�
     end)
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_separator()
-gui.add_tab("sch-lua-Alpha-v1.43"):add_text("调试") 
+gentab:add_separator()
+gentab:add_text("调试") 
 
-local DrawInteriorID = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("Show Interior ID") --只是一个开关，代码往后面找
+local DrawInteriorID = gentab:add_checkbox("Show Interior ID") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local desync = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("取消同步") --只是一个开关，代码往后面找
+local desync = gentab:add_checkbox("取消同步") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local ptfxrm = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("清理PTFX火焰水柱") --只是一个开关，代码往后面找
+local ptfxrm = gentab:add_checkbox("清理PTFX火焰水柱") --只是一个开关，代码往后面找
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-local DECALrm = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("清理物体表面痕迹") --只是一个开关，代码往后面找
+local DECALrm = gentab:add_checkbox("清理物体表面痕迹") --只是一个开关，代码往后面找
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 --存放一些变量，阻止无限循环，间接实现 checkbox 的 on_enable() 和 on_disable()
@@ -1617,6 +1623,10 @@ script.register_looped("schlua-dataservice", function()
         locals.set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
         --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
         --你可以自定义代码中的18来获取其他物品。设定为18是展台载具，16衣服，17经验，19现金，4载具折扣，11神秘礼品，15 chips不认识是什么
+    end
+
+    if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 
+        locals.set_int("gb_biker_contraband_sell","716","0") -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
     end
 
     if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
@@ -2123,9 +2133,9 @@ end)
 ]]
 
 --[[
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("测试2", function()
+gentab:add_button("测试2", function()
 
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
     while STREAMING.HAS_MODEL_LOADED(3613262246) ~= 1 do
@@ -2159,9 +2169,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("测试2", function()
 
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("测试3", function()
+gentab:add_button("测试3", function()
 
     local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
     local PED1 =     PED.CREATE_PED(26,MISC.GET_HASH_KEY("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
@@ -2330,7 +2340,7 @@ gui.get_tab(""):add_button("A C", function()
 end)
 ]]
 --[[
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("IN MD C", function()
+gentab:add_button("IN MD C", function()
     for i = 1, 10 do
 		local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         STREAMING.REQUEST_MODEL(-930879665)
@@ -2352,9 +2362,9 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("IN MD C", function()
     end
 end)
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("测试5", function()
+gentab:add_button("测试5", function()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     coords.z = coords.z + 63
     local ufoModel = MISC.GET_HASH_KEY("p_spinning_anus_s")
@@ -2381,7 +2391,7 @@ gui.add_tab("sch-lua-Alpha-v1.43"):add_button("测试5", function()
 end)
 
 
-gui.add_tab("sch-lua-Alpha-v1.43"):add_sameline()
+gentab:add_sameline()
 ]]--
 
 --[[
@@ -2461,10 +2471,10 @@ gui.get_tab(""):add_button("TSE C", function()
 end)
 ]]
 
--- local checkmovefree = gui.add_tab("sch-lua-Alpha-v1.43"):add_checkbox("战局切换时自由移动")
+-- local checkmovefree = gentab:add_checkbox("战局切换时自由移动")
 
 --[[  已被检测
-gui.add_tab("sch-lua-Alpha-v1.43"):add_button("移除赌场轮盘冷却", function()
+gentab:add_button("移除赌场轮盘冷却", function()
     local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
 
 local mpx = "MP0_"

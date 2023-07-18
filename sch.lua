@@ -28,7 +28,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.43")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.45")
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do

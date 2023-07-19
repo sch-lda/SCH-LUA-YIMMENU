@@ -1,4 +1,4 @@
--- v1.45 -- 
+-- v1.46 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,7 +28,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.45")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.46")
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -163,6 +163,7 @@ end
 
 --[[
 gentab:add_button("测试6", function()
+
 end)
 ]]
 
@@ -181,8 +182,8 @@ gentab:add_button("佩里科终章一键完成", function()
             network.force_script_host("fm_mission_controller_2020") --抢脚本主机
             pericoinstcpl:yield()
         end
-        locals.set_int("fm_mission_controller_2020","46829","50") --关键代码
-        locals.set_int("fm_mission_controller_2020","45450","9")  --关键代码    
+        locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
+        locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
     end)
 end)
 
@@ -194,24 +195,24 @@ gentab:add_button("配置佩岛前置(猎豹雕像)", function()
     if playerid == 1 then --用于判断当前是角色1还是角色2
         mpx = "MP1_" --用于判断当前是角色1还是角色2
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 5, true)  --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 131071, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 63, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_APPROACH"), -1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEAPONS"), 1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEP_DISRP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_ARM_DISRP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_HEL_DISRP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C"), 255, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C_SCOPED"), 255, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_SCOPED"), 127, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT"), 127, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_V"), 585151, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_V"), 438863, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_PROGRESS"), 124271, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_MISSIONS"), 65279, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I"), 16777215, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_TARGET"), 5, true)  --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_GEN"), 131071, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_ENTR"), 63, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_APPROACH"), -1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEAPONS"), 1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEP_DISRP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_ARM_DISRP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_HEL_DISRP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C"), 255, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C_SCOPED"), 255, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_SCOPED"), 127, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT"), 127, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_V"), 585151, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_V"), 438863, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4_PROGRESS"), 124271, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 65279, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 16777215, true)
     locals.set_int("heist_island_planning", 1526, 2) --刷新面板
 end)
 
@@ -223,24 +224,24 @@ gentab:add_button("配置佩岛前置(粉钻)", function()
     if playerid == 1 then 
         mpx = "MP1_" 
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 3, true) --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 131071, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 63, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_APPROACH"), -1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEAPONS"), 1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEP_DISRP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_ARM_DISRP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_HEL_DISRP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C"), 255, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C_SCOPED"), 255, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_SCOPED"), 127, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT"), 127, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_V"), 585151, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_V"), 438863, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_PROGRESS"), 124271, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_MISSIONS"), 65279, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I"), 16777215, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_TARGET"), 3, true) --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_GEN"), 131071, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_ENTR"), 63, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_APPROACH"), -1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEAPONS"), 1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEP_DISRP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_ARM_DISRP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_HEL_DISRP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C"), 255, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C_SCOPED"), 255, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_SCOPED"), 127, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT"), 127, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_V"), 585151, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_V"), 438863, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4_PROGRESS"), 124271, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 65279, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 16777215, true)
     locals.set_int("heist_island_planning", 1526, 2)
 end)
 
@@ -252,24 +253,24 @@ gentab:add_button("重置佩岛", function()
     if playerid == 1 then 
         mpx = "MP1_" 
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_TARGET"), 0, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_GEN"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_BS_ENTR"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_APPROACH"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEAPONS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_WEP_DISRP"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_ARM_DISRP"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4CNF_HEL_DISRP"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_C_SCOPED"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_SCOPED"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_GOLD_V"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_PAINT_V"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_PROGRESS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4_MISSIONS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I_SCOPED"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H4LOOT_COKE_I"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_TARGET"), 0, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_GEN"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_ENTR"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_APPROACH"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEAPONS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEP_DISRP"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_ARM_DISRP"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_HEL_DISRP"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C_SCOPED"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_SCOPED"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_V"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_V"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4_PROGRESS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 0, true)
     locals.set_int("heist_island_planning", 1526, 2)
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
@@ -280,23 +281,23 @@ gentab:add_button("配置赌场前置(钻石)", function()
     if playerid == 1 then 
         mpx = "MP1_" 
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 3, true) --主目标:钻石
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 159, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 2, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWWEAP"), 1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWDRIVER"), 1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWHACKER"), 5, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_VEHS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_WEAPS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET0"),443351, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_MASKS"), 12, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_COMPLETEDPOSIX"), -1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CAS_HEIST_FLOW"), -1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_POI"), 1023, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    STATS.STAT_SET_INT(joaat(mpx.."H3_LAST_APPROACH"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_TARGET"), 3, true) --主目标:钻石
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET1"), 159, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_KEYLEVELS"), 2, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWWEAP"), 1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWDRIVER"), 1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWHACKER"), 5, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_VEHS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_WEAPS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET0"),443351, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_MASKS"), 12, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3_COMPLETEDPOSIX"), -1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."CAS_HEIST_FLOW"), -1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_POI"), 1023, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
 end)
 
 gentab:add_sameline()
@@ -307,23 +308,23 @@ gentab:add_button("配置赌场前置(黄金)", function()
     if playerid == 1 then 
         mpx = "MP1_" 
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 1, true) --主目标: 黄金
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 159, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 2, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWWEAP"), 1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWDRIVER"), 1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_CREWHACKER"), 5, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_VEHS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_WEAPS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET0"),443351, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_MASKS"), 12, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_COMPLETEDPOSIX"), -1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CAS_HEIST_FLOW"), -1, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_POI"), 1023, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    STATS.STAT_SET_INT(joaat(mpx.."H3_LAST_APPROACH"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_TARGET"), 1, true) --主目标: 黄金
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET1"), 159, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_KEYLEVELS"), 2, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWWEAP"), 1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWDRIVER"), 1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWHACKER"), 5, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_VEHS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_WEAPS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET0"),443351, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_MASKS"), 12, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3_COMPLETEDPOSIX"), -1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."CAS_HEIST_FLOW"), -1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_POI"), 1023, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
 end)
 
 gentab:add_sameline()
@@ -334,18 +335,18 @@ gentab:add_button("重置赌场计划面板", function()
     if playerid == 1 then 
         mpx = "MP1_" 
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_APPROACH"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_LAST_APPROACH"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_TARGET"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET1"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_KEYLEVELS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_DISRUPTSHIP"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_BITSET0"),0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_MASKS"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3_COMPLETEDPOSIX"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CAS_HEIST_FLOW"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_POI"), 0, true)
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."H3OPT_ACCESSPOINTS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_APPROACH"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3_LAST_APPROACH"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_TARGET"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET1"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_KEYLEVELS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_DISRUPTSHIP"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET0"),0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_MASKS"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3_COMPLETEDPOSIX"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."CAS_HEIST_FLOW"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_POI"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_ACCESSPOINTS"), 0, true)
 end)
 
 
@@ -568,6 +569,11 @@ gentab:add_sameline()
 
 local checkfirebreath = gentab:add_checkbox("喷火")--这只是一个复选框,代码往最后的循环脚本部分找
 
+gentab:add_sameline()
+
+local firemt = gentab:add_checkbox("恶灵骑士") --这只是一个复选框,代码往最后的循环脚本部分找
+
+
 bigfireWings = {
     [1] = {pos = {[1] = 120, [2] =  75}},
     [2] = {pos = {[1] = 120, [2] = -75}},
@@ -612,6 +618,14 @@ gentab:add_sameline()
 
 gentab:add_button("摩托帮出货一键完成(不稳定)", function()
     locals.set_int("gb_biker_contraband_sell","821","30")
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("致幻剂出货一键完成", function()
+    locals.set_int("fm_content_acid_lab_sell",6596,9)
+    locals.set_int("fm_content_acid_lab_sell",6597,10)
+    locals.set_int("fm_content_acid_lab_sell",6530,2)
 end)
 
 gentab:add_sameline()
@@ -700,9 +714,9 @@ gentab:add_button("夜总会保险箱30万循环10次", function()
             gui.show_message("已执行次数", a2)
             globals.set_int(262145 + 24227,300000) -- 	if (func_22904(MP_STAT_CLUB_SAFE_CASH_VALUE, -1) != Global_262145.f_24227)
             globals.set_int(262145 + 24223,300000) -- 	func_6(iParam0, iParam1, joaat("NIGHTCLUBINCOMEUPTOPOP100"), &(Global_262145.f_24223), true);
-            STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 10000, true)
-            STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
-            STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."CLUB_POPULARITY"), 100000, true)
+            STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 10000, true)
+            STATS.STAT_SET_INT(joaat(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
+            STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 100000, true)
             gui.show_message("警告", "此方法仅用于偶尔小额恢复")
             ncsafeloop:sleep(10000) --执行间隔，单位ms
         end
@@ -890,7 +904,7 @@ gentab:add_button("移除达克斯冷却", function()
     if playerid == 1 then 
         mpx = "MP1_" 
     end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."XM22JUGGALOWORKCDTIMER"), -1, true)
+    STATS.STAT_SET_INT(joaat(mpx.."XM22JUGGALOWORKCDTIMER"), -1, true)
 end)
 
 gentab:add_sameline()
@@ -1023,6 +1037,21 @@ local disablecops = gentab:add_checkbox("阻止派遣警察") --只是一个开�
 gui.get_tab(""):add_separator()
 gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
 
+gui.get_tab(""):add_button("传送到玩家(粒子特效)", function()
+    script.run_in_fiber(function (ptfxtp2ply)
+        local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), targpos.x, targpos.y, targpos.z)
+        STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_rcbarry2") --小丑出现烟雾
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_rcbarry2") do
+            STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_rcbarry2")
+            ptfxtp2ply:yield()               
+        end
+        GRAPHICS.USE_PARTICLE_FX_ASSET("scr_rcbarry2")
+        GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("scr_clown_appears", PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x8b93, 1.0, false, false, false, 0, 0, 0, 0)
+
+    end)
+end)
+
 gui.get_tab(""):add_button("小笼子", function()
     script.run_in_fiber(function (smallcage)
         local objHash = joaat("prop_gold_cont_01")
@@ -1040,7 +1069,7 @@ end)
 gui.get_tab(""):add_sameline()
 
 gui.get_tab(""):add_button("栅栏笼子", function()
-    local objHash = MISC.GET_HASH_KEY("prop_fnclink_03e")
+    local objHash = joaat("prop_fnclink_03e")
     STREAMING.REQUEST_MODEL(objHash)
 
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
@@ -1127,7 +1156,7 @@ gui.get_tab(""):add_sameline()
 
 gui.get_tab(""):add_button("电击", function()
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 1000, true, MISC.GET_HASH_KEY("weapon_stungun"), false, false, true, 1.0)
+    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 1000, true, joaat("weapon_stungun"), false, false, true, 1.0)
 end)
 
 gui.get_tab(""):add_sameline()
@@ -1135,7 +1164,7 @@ gui.get_tab(""):add_sameline()
 gui.get_tab(""):add_button("轰炸", function()
     script.run_in_fiber(function (airst)
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-        airshash = MISC.GET_HASH_KEY("vehicle_weapon_trailer_dualaa")
+        airshash = joaat("vehicle_weapon_trailer_dualaa")
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z- 1 , pos.x, pos.y, pos.z - 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x+2, pos.y, pos.z- 1 , pos.x+2, pos.y, pos.z - 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x-2, pos.y, pos.z- 1 , pos.x-2, pos.y, pos.z - 1, 10000, true, airshash, PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 10000)
@@ -1373,6 +1402,33 @@ gui.add_tab(""):add_button("碎片崩溃", function()
         end
     end)
 end)
+--[[
+gui.add_tab(""):add_sameline()
+
+gui.add_tab(""):add_button("载具模型崩溃", function()
+    script.run_in_fiber(function (vehcrh1)
+        local targetplyped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+        local pcrds = ENTITY.GET_ENTITY_COORDS(targetplyped, false)
+        STREAMING.REQUEST_MODEL(joaat("chernobog"))
+        while not STREAMING.HAS_MODEL_LOADED(joaat("chernobog")) do		
+            STREAMING.REQUEST_MODEL(joaat("chernobog"))
+            vehcrh1:yield()
+        end
+        for i = 1, 50 do
+        spdcrhveh1 = VEHICLE.CREATE_VEHICLE(joaat("chernobog"), pcrds.x, pcrds.y, pcrds.z, ENTITY.GET_ENTITY_HEADING(targetplyped) , true, true, true)
+        vehcrh1:sleep(50)
+        --ENTITY.FREEZE_ENTITY_POSITION(spdcrhveh1, true)
+        ENTITY.SET_ENTITY_VISIBLE(spdcrhveh1, true, 0)
+        TASK.TASK_VEHICLE_TEMP_ACTION(targetplyped, spdcrhveh1, 18, 999)
+        TASK.TASK_VEHICLE_TEMP_ACTION(targetplyped, spdcrhveh1, 16, 999)   
+        vehcrh1:sleep(50)
+        end
+    end)
+end)
+]]
+gui.add_tab(""):add_sameline()
+
+local audiospam = gui.add_tab(""):add_checkbox("声音轰炸")
 
 gui.add_tab(""):add_button("向上发射", function()
     script.run_in_fiber(function (launchply)
@@ -1450,13 +1506,13 @@ gentab:add_sameline()
 
 gentab:add_button("赠送暴君MK2", function()
     script.run_in_fiber(function (giftmk2)
-        STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
-        while STREAMING.HAS_MODEL_LOADED(MISC.GET_HASH_KEY("oppressor2")) ~= 1 do
-            STREAMING.REQUEST_MODEL(MISC.GET_HASH_KEY("oppressor2"))
+        STREAMING.REQUEST_MODEL(joaat("oppressor2"))
+        while STREAMING.HAS_MODEL_LOADED(joaat("oppressor2")) ~= 1 do
+            STREAMING.REQUEST_MODEL(joaat("oppressor2"))
             giftmk2:yield()
         end   
         for i = 0, 31 do
-            veh = VEHICLE.CREATE_VEHICLE(MISC.GET_HASH_KEY("oppressor2"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 0 , true, true, true)
+            veh = VEHICLE.CREATE_VEHICLE(joaat("oppressor2"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 0 , true, true, true)
         end
     end)
 end)
@@ -1551,6 +1607,7 @@ local loopa6 = 0  --控制火焰翅膀
 local loopa7 = 0  --控制警察调度
 local loopa8 = 0  --控制NPC零伤害
 local loopa9 = 0  --控制取消同步
+local loopa10 = 0  --控制恶灵骑士
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -1616,7 +1673,6 @@ script.register_looped("schlua-dataservice", function()
 
     if  check4:is_enabled() then--锁定机库仓库进货数
         globals.set_int(1890730+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
-
     end
 
     if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘奖品--只影响实际结果，不影响转盘显示
@@ -1626,7 +1682,9 @@ script.register_looped("schlua-dataservice", function()
     end
 
     if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 
-        locals.set_int("gb_biker_contraband_sell","716","0") -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
+        if locals.get_int("gb_biker_contraband_sell",716) ~= 0 then
+            locals.set_int("gb_biker_contraband_sell",716,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
+        end
     end
 
     if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
@@ -1673,6 +1731,15 @@ script.register_looped("schlua-defps", function()
         end
     end
     
+    if  audiospam:is_enabled() then--声音轰炸
+        local targetplyped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+        local pcrds = ENTITY.GET_ENTITY_COORDS(targetplyped, false)
+           -- AUDIO.PLAY_SOUND_FROM_COORD(-1, "Air_Defences_Activated", pcrds.x, pcrds.y, pcrds.z, "DLC_sum20_Business_Battle_AC_Sounds", true, 999999999, true)
+            AUDIO.PLAY_SOUND_FROM_COORD(-1, 'Event_Message_Purple', pcrds.x, pcrds.y, pcrds.z, 'GTAO_FM_Events_Soundset', true, 1000, false)
+            AUDIO.PLAY_SOUND_FROM_COORD(-1, '5s', pcrds.x, pcrds.y, pcrds.z, 'GTAO_FM_Events_Soundset', true, 1000, false)
+            AUDIO.PLAY_SOUND_FROM_COORD(-1,"10s",pcrds.x,pcrds.y,pcrds.z,"MP_MISSION_COUNTDOWN_SOUNDSET",true, 70, false)
+    end
+
     if  check2:is_enabled() then--卡死玩家
         local defpstarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
         local targetcoords = ENTITY.GET_ENTITY_COORDS(defpstarget)
@@ -1832,6 +1899,63 @@ script.register_looped("schlua-miscservice", function()
             ENTITY.DELETE_ENTITY(objectsix3)
             gui.show_message("头顶666","移除")
             loopa2 = 0
+        end
+    end
+
+    if  firemt:is_enabled() then --控制恶灵骑士
+        if loopa10 == 0 then
+        while not STREAMING.HAS_MODEL_LOADED(joaat("sanctus")) do		
+            STREAMING.REQUEST_MODEL(joaat("sanctus"))
+            script_util:yield()
+        end
+        firemtcrtveh = VEHICLE.CREATE_VEHICLE(joaat("sanctus"), ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).x, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).y, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).z, 0 , true, true, true)
+        ENTITY.SET_ENTITY_RENDER_SCORCHED(firemtcrtveh,true)
+        ENTITY.SET_ENTITY_INVINCIBLE(firemtcrtveh,true)
+        VEHICLE.SET_VEHICLE_EXTRA_COLOURS(firemtcrtveh,30,15)
+        PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(),firemtcrtveh,-1)
+        script_util:sleep(500) 
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("core") do
+            STREAMING.REQUEST_NAMED_PTFX_ASSET("core")
+            script_util:yield()               
+        end
+
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
+            STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
+            script_util:yield()               
+        end
+        local vehbone3 = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(firemtcrtveh, "wheel_rr")
+        local vehbone4 = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(firemtcrtveh, "wheel_rf")
+        GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+        vehptfx6 = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("fire_wrecked_plane_cockpit", firemtcrtveh, 0.0, 0.9, 0.0, 170.0, 0.0, 0.0, vehbone3, 1.0, false, false, false, 0, 0, 0, 0)
+        GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+        vehptfx7 = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("fire_wrecked_plane_cockpit", firemtcrtveh, 0.0, -0.9, -0.0, 170.0, 0.0, 0.0, vehbone3, 1.0, false, false, false, 0, 0, 0, 0)
+        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+        vehptfx3 = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("muz_xs_turret_flamethrower_looping", firemtcrtveh, 0.0, 0.7, 0.0, 170.0, 0.0, 0.0, vehbone3, 1.0, false, false, false, 0, 0, 0, 0)
+        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+        vehptfx2 = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("muz_xs_turret_flamethrower_looping", firemtcrtveh, 0.0, 0.0, 1.0, 170.0, 0.0, 0.0, vehbone3, 1.0, false, false, false, 0, 0, 0, 0)
+        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+        vehptfx1 = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("muz_xs_turret_flamethrower_looping", firemtcrtveh, 0.0, 0.7, 0.4, 170.0, 0.0, 0.0, vehbone3, 1.0, false, false, false, 0, 0, 0, 0)
+        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+        vehptfx4 = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("muz_xs_turret_flamethrower_looping", firemtcrtveh, -0.5, 0.7, 0.3, 180.0, 0.0, 0.0, vehbone3, 1.0, false, false, false, 0, 0, 0, 0)
+        GRAPHICS.USE_PARTICLE_FX_ASSET("weap_xs_vehicle_weapons")
+        vehptfx5 = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("muz_xs_turret_flamethrower_looping", firemtcrtveh, 0.5, 0.7, 0.3, 180.0, 0.0, 0.0, vehbone3, 1.0, false, false, false, 0, 0, 0, 0)
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx7, 100, 100, 100, false)
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx6, 100, 100, 100, false)
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx2, 100, 100, 100, false)
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx3, 100, 100, 100, false)
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx4, 100, 100, 100, false)
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx5, 100, 100, 100, false)
+
+        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx1, 200, 200, 200, false)
+        
+        gui.show_message("恶灵骑士","开")
+        end
+        loopa10 = 1
+    else
+        if loopa10 == 1 then 
+            ENTITY.DELETE_ENTITY(firemtcrtveh)
+            gui.show_message("恶灵骑士","关")
+            loopa10 = 0
         end
     end
 
@@ -2056,6 +2180,7 @@ end)
    gui.show_error("SCH LUA", "游戏版本不受支持!仍然使用可能损坏游戏")
 end
 
+
 ------------------------------------------------技工 呼叫 载具资产 freemode.c Begian
 
 void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip* pblParam4, Blip* pblParam5, Blip* pblParam6, Blip* pblParam7, Blip* pblParam8) // Position - 0x42ED1D
@@ -2174,7 +2299,7 @@ gentab:add_sameline()
 gentab:add_button("测试3", function()
 
     local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
-    local PED1 =     PED.CREATE_PED(26,MISC.GET_HASH_KEY("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
+    local PED1 =     PED.CREATE_PED(26,joaat("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
     ENTITY.SET_ENTITY_VISIBLE(PED1, false, 0)
     script_util:sleep(100)
     WEAPON.GIVE_WEAPON_TO_PED(PED1,-270015777,80,true,true)
@@ -2256,29 +2381,29 @@ gui.get_tab(""):add_sameline()
 gui.get_tab(""):add_button("模型2", function()
 
 local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-local object = create_object(MISC.GET_HASH_KEY("virgo"), cord)
-local object = create_object(MISC.GET_HASH_KEY("osiris"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_firealarm"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_bs_cond"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_bs_foamx3"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor07"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor06"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor05"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_bs_gelx3"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor01"), cord)
-local object = create_object(MISC.GET_HASH_KEY("feltzer3"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor02"), cord)
-local object = create_object(MISC.GET_HASH_KEY("windsor"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor04"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_ct_monitor03"), cord)
-local object = create_object(MISC.GET_HASH_KEY("v_serv_bs_clutter"), cord)
+local object = create_object(joaat("virgo"), cord)
+local object = create_object(joaat("osiris"), cord)
+local object = create_object(joaat("v_serv_firealarm"), cord)
+local object = create_object(joaat("v_serv_bs_cond"), cord)
+local object = create_object(joaat("v_serv_bs_foamx3"), cord)
+local object = create_object(joaat("v_serv_ct_monitor07"), cord)
+local object = create_object(joaat("v_serv_ct_monitor06"), cord)
+local object = create_object(joaat("v_serv_ct_monitor05"), cord)
+local object = create_object(joaat("v_serv_bs_gelx3"), cord)
+local object = create_object(joaat("v_serv_ct_monitor01"), cord)
+local object = create_object(joaat("feltzer3"), cord)
+local object = create_object(joaat("v_serv_ct_monitor02"), cord)
+local object = create_object(joaat("windsor"), cord)
+local object = create_object(joaat("v_serv_ct_monitor04"), cord)
+local object = create_object(joaat("v_serv_ct_monitor03"), cord)
+local object = create_object(joaat("v_serv_bs_clutter"), cord)
 ENTITY.SET_ENTITY_AS_MISSION_ENTITY(object, true, true)
 ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(object, 1, 0.0, 10000.0, 0.0, 0.0, 0.0, 0.0, false, true, true, false, true)
 ENTITY.SET_ENTITY_ROTATION(object, math.random(0, 360), math.random(0, 360), math.random(0, 360), 0, true)
 ENTITY.SET_ENTITY_VELOCITY(object, math.random(-10, 10), math.random(-10, 10), math.random(30, 50))
 ENTITY.ATTACH_ENTITY_TO_ENTITY(object, object, 0, 0, -1, 2.5, 0, 180, 0, 0, false, true, false, 0, true)
 script_util:sleep(300)
-MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(cord.x, cord.y, cord.z + 1, cord.x, cord.y, cord.z, 0, true, MISC.GET_HASH_KEY("weapon_heavysniper_mk2"), PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 1.0)
+MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(cord.x, cord.y, cord.z + 1, cord.x, cord.y, cord.z, 0, true, joaat("weapon_heavysniper_mk2"), PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 1.0)
 ENTITY.DETACH_ENTITY(object, object)
 --delete_by_handle(object)
 end)
@@ -2367,7 +2492,7 @@ gentab:add_sameline()
 gentab:add_button("测试5", function()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     coords.z = coords.z + 63
-    local ufoModel = MISC.GET_HASH_KEY("p_spinning_anus_s")
+    local ufoModel = joaat("p_spinning_anus_s")
     while STREAMING.HAS_MODEL_LOADED(ufoModel) ~= 1 do
     
         STREAMING.REQUEST_MODEL(ufoModel)
@@ -2482,7 +2607,7 @@ if playerid == 1 then
     mpx = "MP1_" 
 
 end
-    STATS.STAT_SET_INT(MISC.GET_HASH_KEY(mpx.."LUCKY_WHEEL_NUM_SPIN"), 0, true)
+    STATS.STAT_SET_INT(joaat(mpx.."LUCKY_WHEEL_NUM_SPIN"), 0, true)
     globals.set_int(262145+27382,1) -- 9960150 
     globals.set_int(262145+27383,1) -- -312420223
 end)

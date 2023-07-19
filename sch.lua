@@ -1,4 +1,4 @@
--- v1.47 -- 
+-- v1.49 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,7 +28,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.46")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.49")
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -466,7 +466,7 @@ gentab:add_button("显示复仇者面板", function()
 end)
 
 gentab:add_separator()
-gentab:add_text("娱乐功能(稳定性不高,全是bug)") --不解释，我自己也搞不明白
+gentab:add_text("娱乐功能(稳定性不高,全是bug)(粒子效果达到内存限制后将无法继续生成,请开启然后关闭本页最下方的清理PTFX水柱火柱功能)") --不解释，我自己也搞不明白
 
 gentab:add_button("放烟花", function()
     script.run_in_fiber(function (firew)
@@ -1042,6 +1042,14 @@ local drawcs = gentab:add_checkbox("绘制+准星") --只是一个开关，代�
 gentab:add_sameline()
 
 local disablecops = gentab:add_checkbox("阻止派遣警察") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local disapedheat = gentab:add_checkbox("无温度(反热成像)") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关，代码往后面找
 
 --------------------------------------------------------------------------------------- Players 页面
 
@@ -1619,6 +1627,8 @@ local loopa7 = 0  --控制警察调度
 local loopa8 = 0  --控制NPC零伤害
 local loopa9 = 0  --控制取消同步
 local loopa10 = 0  --控制恶灵骑士
+local loopa11 = 0  --控制PED热量
+local loopa12 = 0  --控制是否允许攻击队友
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2006,16 +2016,40 @@ script.register_looped("schlua-miscservice", function()
     end
 
     if  disablecops:is_enabled() then --控制是否派遣警察
-            PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(PLAYER.PLAYER_ID(), false)
-            loopa7 = 1
+        PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(PLAYER.PLAYER_ID(), false)
+        loopa7 = 1
     else
         if loopa7 == 1 then 
-            PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(PLAYER.PLAYER_ID(), true)
+        PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(PLAYER.PLAYER_ID(), true)
         gui.show_message("提示","通缉时会派遣警察")
         loopa7 = 0
         end
     end
 
+    if  disapedheat:is_enabled() then --控制是否存在热量
+        if loopa11 == 0 then 
+            PED.SET_PED_HEATSCALE_OVERRIDE(PLAYER.PLAYER_ID(), 0)
+            loopa11 = 1
+        end
+    else
+        if loopa11 == 1 then 
+            PED.SET_PED_HEATSCALE_OVERRIDE(PLAYER.PLAYER_ID(), 1)
+            loopa11 = 0
+        end
+    end
+
+    if  canafrdly:is_enabled() then --控制是否允许攻击队友
+        if loopa12 == 0 then 
+            PED.SET_CAN_ATTACK_FRIENDLY(PLAYER.PLAYER_ID(), true, false)
+            loopa12 = 1
+        end
+    else
+        if loopa12 == 1 then 
+            PED.SET_CAN_ATTACK_FRIENDLY(PLAYER.PLAYER_ID(), false, false)
+            loopa12 = 0
+        end
+    end
+    
     if  desync:is_enabled() then --创建新手教程战局以取消与其他玩家同步
         if loopa9 == 0 then
             NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()

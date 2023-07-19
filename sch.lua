@@ -628,8 +628,6 @@ gentab:add_button("致幻剂出货一键完成", function()
     locals.set_int("fm_content_acid_lab_sell",6530,2)
 end)
 
-gentab:add_sameline()
-
 local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
 
 gentab:add_sameline()

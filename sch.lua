@@ -1,4 +1,4 @@
--- v1.46 -- 
+-- v1.47 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -730,10 +730,23 @@ local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(高危)")
 gentab:add_separator()
 gentab:add_text("传送")
 
+gentab:add_button("导航点(粒子特效)", function()
+    script.run_in_fiber(function (tp2wp)
+        command.call("waypointtp",{})
+        STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_rcbarry2") --小丑出现烟雾
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_rcbarry2") do
+            STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_rcbarry2")
+            tp2wp:yield()               
+        end
+        GRAPHICS.USE_PARTICLE_FX_ASSET("scr_rcbarry2")
+        GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("scr_clown_appears", PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x8b93, 1.0, false, false, false, 0, 0, 0, 0)
+    end)
+end)
+
 function tpfac() --传送到设施
     local Pos = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(590))
     if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(590)) then
-        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), Pos.x, Pos.y, Pos.z)
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), Pos.x, Pos.y, Pos.z+4)
     end
 
 end

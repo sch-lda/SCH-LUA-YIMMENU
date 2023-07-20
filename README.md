@@ -32,7 +32,8 @@ Translation: It is experimental and not optimized for users. There is no guarant
 ### 5.杂项 Misc 
 过多选项，不一一列举 Too many cluttered options to list
 ### 6.全局选项 Global Troll 
-爆炸 Explode\
+爆炸 Explode \
+防空警报 Sound spam \
 伞崩 Parachute crash \
 赠送暴君MK2 Spawn Oppressor Mk II
 ### 7.调试 Debug 

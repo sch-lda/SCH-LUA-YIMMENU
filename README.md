@@ -43,6 +43,9 @@ This Github Repo is experimental and only kept as a backup archive. There is no 
 ### 8.玩家选项 PlayerMenu
 带有粒子效果的传送到玩家 TP to player with PTFX \
 恶搞 Troll
+## 关联Github仓库 Related Github Repositories
+Heist Lua by Wang https://github.com/wangzixuank/YimMenu-HeistLua \
+GTA5线上小助手Lua仓库 GTA5OnlineTools' Online Lua Repo https://github.com/CrazyZhang666/GTA5OnlineLua 
 ## 截图 screenshots
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1131247030983995412/image.png)
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1131247031323725864/image.png)

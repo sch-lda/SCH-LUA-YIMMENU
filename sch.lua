@@ -1,4 +1,4 @@
--- v1.49 -- 
+-- v1.50 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,7 +28,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.49")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.50")
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -730,9 +730,9 @@ local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(高危)")
 gentab:add_separator()
 gentab:add_text("传送")
 
-gentab:add_button("导航点(粒子特效)", function()
+gentab:add_button("导航点(粒子效果)", function()
     script.run_in_fiber(function (tp2wp)
-        command.call("waypointtp",{})
+        command.call("waypointtp",{}) --调用Yimmenu自身传送到导航点命令
         STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_rcbarry2") --小丑出现烟雾
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_rcbarry2") do
             STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_rcbarry2")
@@ -962,6 +962,38 @@ gentab:add_button("停止本地所有声音", function()
     end
 end)
 
+gentab:add_sameline()
+
+gentab:add_button("生成地面加速条", function()
+    script.run_in_fiber(function (crtspeedm)
+    objHash = joaat("stt_prop_track_speedup_t1")
+    while not STREAMING.HAS_MODEL_LOADED(objHash) do	
+        STREAMING.REQUEST_MODEL(objHash)
+        crtspeedm:yield()
+    end
+    local selfpedPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+    local heading = ENTITY.GET_ENTITY_HEADING(PLAYER.PLAYER_PED_ID())
+    local obj = OBJECT.CREATE_OBJECT(objHash, selfpedPos.x, selfpedPos.y, selfpedPos.z-0.2, true, true, false)
+    ENTITY.SET_ENTITY_HEADING(obj, heading + 90)
+    end)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("生成空中加速条", function()
+    script.run_in_fiber(function (crtspeedm)
+    objHash = joaat("ar_prop_ar_speed_ring")
+    while not STREAMING.HAS_MODEL_LOADED(objHash) do	
+        STREAMING.REQUEST_MODEL(objHash)
+        crtspeedm:yield()
+    end
+    local selfpedPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+    local heading = ENTITY.GET_ENTITY_HEADING(PLAYER.PLAYER_PED_ID())
+    local obj = OBJECT.CREATE_OBJECT(objHash, selfpedPos.x, selfpedPos.y, selfpedPos.z-0.2, true, true, false)
+    ENTITY.SET_ENTITY_HEADING(obj, heading)
+    end)
+end)
+
 gentab:add_text("视觉效果")
 
 gentab:add_sameline()
@@ -1037,6 +1069,14 @@ local pedgun = gentab:add_checkbox("PED枪(射出NPC)") --只是一个开关，�
 
 gentab:add_sameline()
 
+local bsktgun = gentab:add_checkbox("篮球枪") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local bballgun = gentab:add_checkbox("大球枪") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
 local drawcs = gentab:add_checkbox("绘制+准星") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
@@ -1056,7 +1096,7 @@ local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关
 gui.get_tab(""):add_separator()
 gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
 
-gui.get_tab(""):add_button("传送到玩家(粒子特效)", function()
+gui.get_tab(""):add_button("传送到玩家(粒子效果)", function()
     script.run_in_fiber(function (ptfxtp2ply)
         local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), targpos.x, targpos.y, targpos.z)
@@ -1614,6 +1654,119 @@ gentab:add_sameline()
 
 local DECALrm = gentab:add_checkbox("清理物体表面痕迹") --只是一个开关，代码往后面找
 
+gentab:add_text("obj生成(Name)") 
+gentab:add_sameline()
+local iputobjname = gentab:add_input_string("objname")
+gentab:add_sameline()
+gentab:add_button("生成N", function()
+    script.run_in_fiber(function (cusobj2)
+        objHash = joaat(iputobjname:get_value())
+        while not STREAMING.HAS_MODEL_LOADED(objHash) do	
+            STREAMING.REQUEST_MODEL(objHash)
+            cusobj2:yield()
+        end
+        local selfpedPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+        local heading = ENTITY.GET_ENTITY_HEADING(PLAYER.PLAYER_PED_ID())
+        local obj = OBJECT.CREATE_OBJECT(objHash, selfpedPos.x, selfpedPos.y, selfpedPos.z, true, true, false)
+        ENTITY.SET_ENTITY_HEADING(obj, heading)
+        end)
+end)
+
+gentab:add_text("obj生成(Hash)") 
+gentab:add_sameline()
+local iputobjhash = gentab:add_input_string("objhash")
+gentab:add_sameline()
+gentab:add_button("生成H", function()
+    script.run_in_fiber(function (cusobj1)
+        objHash = iputobjhash:get_value()
+        while not STREAMING.HAS_MODEL_LOADED(objHash) do	
+            STREAMING.REQUEST_MODEL(objHash)
+            cusobj1:yield()
+        end
+        local selfpedPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+        local heading = ENTITY.GET_ENTITY_HEADING(PLAYER.PLAYER_PED_ID())
+        local obj = OBJECT.CREATE_OBJECT(objHash, selfpedPos.x, selfpedPos.y, selfpedPos.z, true, true, false)
+        ENTITY.SET_ENTITY_HEADING(obj, heading)
+        end)
+end)
+
+gentab:add_text("PTFX生成") ;gentab:add_sameline()
+local iputptfxdic = gentab:add_input_string("PTFX Dic")
+local iputptfxname = gentab:add_input_string("PTFX Name")
+gentab:add_sameline()
+gentab:add_button("生成ptfx", function()
+    script.run_in_fiber(function (cusptfx)
+        iputptfxdicval = iputptfxdic:get_value()
+        iputptfxnameval = iputptfxname:get_value()
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(iputptfxdicval)
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(iputptfxdicval) do
+            cusptfx:yield()
+        end
+        GRAPHICS.USE_PARTICLE_FX_ASSET(iputptfxdicval)
+        --GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(iputptfxnameval, PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x8b93, 1.0, false, false, false, 0, 0, 0, 0)
+        local tar1 = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(iputptfxnameval, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 1.0, true, true, true)
+    end)
+end)
+
+gui.get_tab(""):add_text("调试") 
+
+gui.get_tab(""):add_text("obj生成(Name)") 
+gui.get_tab(""):add_sameline()
+local iputobjnamer = gui.get_tab(""):add_input_string("objname")
+gui.get_tab(""):add_sameline()
+gui.get_tab(""):add_button("生成N", function()
+    script.run_in_fiber(function (cusobj2r)
+        local targetplyped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+        local remotePos = ENTITY.GET_ENTITY_COORDS(targetplyped, false)
+        objHashr = joaat(iputobjnamer:get_value())
+        while not STREAMING.HAS_MODEL_LOADED(objHashr) do	
+            STREAMING.REQUEST_MODEL(objHashr)
+            cusobj2r:yield()
+        end
+        local headingr = ENTITY.GET_ENTITY_HEADING(targetplyped)
+        local objr = OBJECT.CREATE_OBJECT(objHashr, remotePos.x, remotePos.y, remotePos.z, true, true, false)
+        ENTITY.SET_ENTITY_HEADING(objr, headingr)
+        end)
+end)
+
+gui.get_tab(""):add_text("obj生成(Hash)") 
+gui.get_tab(""):add_sameline()
+local iputobjhashr = gui.get_tab(""):add_input_string("objhash")
+gui.get_tab(""):add_sameline()
+gui.get_tab(""):add_button("生成H", function()
+    script.run_in_fiber(function (cusobj1r)
+        local targetplyped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+        local remotePos = ENTITY.GET_ENTITY_COORDS(targetplyped, false)
+        objHashr = iputobjhashr:get_value()
+        while not STREAMING.HAS_MODEL_LOADED(objHashr) do	
+            STREAMING.REQUEST_MODEL(objHashr)
+            cusobj1r:yield()
+        end
+        local headingr = ENTITY.GET_ENTITY_HEADING(targetplyped)
+        local objr = OBJECT.CREATE_OBJECT(objHashr, remotePos.x, remotePos.y, remotePos.z, true, true, false)
+        ENTITY.SET_ENTITY_HEADING(objr, headingr)
+        end)
+end)
+
+gui.get_tab(""):add_text("PTFX生成") ;gui.get_tab(""):add_sameline()
+local iputptfxdicr = gui.get_tab(""):add_input_string("PTFX Dic")
+local iputptfxnamer = gui.get_tab(""):add_input_string("PTFX Name")
+gui.get_tab(""):add_sameline()
+gui.get_tab(""):add_button("生成ptfx", function()
+    script.run_in_fiber(function (cusptfxr)
+        iputptfxdicvalr = iputptfxdicr:get_value()
+        iputptfxnamevalr = iputptfxnamer:get_value()
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(iputptfxdicvalr)
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(iputptfxdicvalr) do
+            cusptfxr:yield()
+        end
+        GRAPHICS.USE_PARTICLE_FX_ASSET(iputptfxdicvalr)
+        local tar1 = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+        GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(iputptfxnamevalr, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 1.0, true, true, true)
+    end)
+end)
+
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 --存放一些变量，阻止无限循环，间接实现 checkbox 的 on_enable() 和 on_disable()
 
@@ -1930,16 +2083,15 @@ script.register_looped("schlua-miscservice", function()
             script_util:yield()
         end
         firemtcrtveh = VEHICLE.CREATE_VEHICLE(joaat("sanctus"), ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).x, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).y, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).z, 0 , true, true, true)
-        ENTITY.SET_ENTITY_RENDER_SCORCHED(firemtcrtveh,true)
-        ENTITY.SET_ENTITY_INVINCIBLE(firemtcrtveh,true)
+        ENTITY.SET_ENTITY_RENDER_SCORCHED(firemtcrtveh,true) --烧焦效果
+        ENTITY.SET_ENTITY_INVINCIBLE(firemtcrtveh,true)  --载具无敌
         VEHICLE.SET_VEHICLE_EXTRA_COLOURS(firemtcrtveh,30,15)
-        PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(),firemtcrtveh,-1)
+        PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(),firemtcrtveh,-1) --坐进载具
         script_util:sleep(500) 
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("core") do
             STREAMING.REQUEST_NAMED_PTFX_ASSET("core")
             script_util:yield()               
         end
-
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("weap_xs_vehicle_weapons") do
             STREAMING.REQUEST_NAMED_PTFX_ASSET("weap_xs_vehicle_weapons")
             script_util:yield()               
@@ -1985,17 +2137,43 @@ script.register_looped("schlua-miscservice", function()
     end
 
     if  pedgun:is_enabled() then --NPC枪
-
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-        local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)
-    
+        local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)  
         if PED.IS_PED_SHOOTING(PLAYER.PLAYER_PED_ID()) then 
-    
             peds = PED.CREATE_RANDOM_PED(pos.x, pos.y, pos.z)    
             ENTITY.SET_ENTITY_ROTATION(peds, camrot.x, camrot.y, camrot.z, 1, false)    
             ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(peds, 1, 0, 1000, 0, false, true, true, true)
             ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+        end
+    end
 
+    if  bsktgun:is_enabled() then --篮球枪
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)
+        objhash = joaat("prop_bskball_01")
+        while not STREAMING.HAS_MODEL_LOADED(objhash) do		
+            STREAMING.REQUEST_MODEL(objhash)
+            script_util:yield()
+        end
+        if PED.IS_PED_SHOOTING(PLAYER.PLAYER_PED_ID()) then 
+            bskt = OBJECT.CREATE_OBJECT(objhash,pos.x, pos.y, pos.z, true, true, false)
+            ENTITY.SET_ENTITY_ROTATION(bskt, camrot.x, camrot.y, camrot.z, 1, false)    
+            ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(bskt, 1, 0, 1000, 0, false, true, true, true)
+        end
+    end
+
+    if  bballgun:is_enabled() then --大球枪
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)
+        objhash = joaat("v_ilev_exball_grey")
+        while not STREAMING.HAS_MODEL_LOADED(objhash) do		
+            STREAMING.REQUEST_MODEL(objhash)
+            script_util:yield()
+        end
+        if PED.IS_PED_SHOOTING(PLAYER.PLAYER_PED_ID()) then 
+            bskt = OBJECT.CREATE_OBJECT(objhash,pos.x, pos.y, pos.z, true, true, false)
+            ENTITY.SET_ENTITY_ROTATION(bskt, camrot.x, camrot.y, camrot.z, 1, false)    
+            ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(bskt, 1, 0, 1000, 0, false, true, true, true)
         end
     end
 

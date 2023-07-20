@@ -22,11 +22,26 @@ Translation: It is experimental and not optimized for users. There is no guarant
 一键出货(不稳定) Instant Sell for MC(Unstable)、Bunker、CEO cargo、Air cargo\
 获得赌场轮盘载具 Casino Lucky wheel control
 ### 3.娱乐功能 Entertainment 
+烟花 Firework \
+飞天扫帚 Flying Broom \
+恶灵骑士 No clue how to translate \
+火焰翅膀 Fire Wing
 ### 4.传送 Teleport 
+带有粒子效果的传送到导航点 TP to Waypoint with PTFX \
+传送到常用计划面板和保险箱 TP to NC safe、Heist panel(Facility & Kosatka) 
 ### 5.杂项 Misc 
+过多选项，不一一列举 Too many cluttered options to list
 ### 6.全局选项 Global Troll 
+爆炸 Explode\
+伞崩 Parachute crash \
+赠送暴君MK2 Spawn Oppressor Mk II
 ### 7.调试 Debug 
+自定义物体和粒子效果生成 Create object、PTFX with name\
+取消同步(龟壳) Block sync with others\
+清理附近粒子效果和物体表面痕迹 Clear PTFX in range
 ### 8.玩家选项 PlayerMenu
+带有粒子效果的传送到玩家 TP to player with PTFX \
+恶搞 Troll
 ## 截图 screenshots
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1131247030983995412/image.png)
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1131247031323725864/image.png)

@@ -2,8 +2,8 @@
 Currently no English version available.\
 学习使用Lua的一次尝试.试图让免费菜单Yimmenu具备更多P2C菜单的实用功能 \
 An attempt to learn Lua.Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
-它是实验性的，没有针对用户优化，稳定性和安全性没有保障 \
-Translation: It is experimental and not optimized for users. There is no guarantee of stability and security. 
+它是实验性的，仅留作备份存档，没有针对用户优化，稳定性和安全性没有保障 \
+This Github Repo is experimental and only kept as a backup archive. There is no guarantee of user optimization, stability, and security.
 ## 用户协议 TOS
 ### 允许 Allowed:
 个人使用 Personal use \

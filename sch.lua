@@ -1,4 +1,4 @@
--- v1.50 -- 
+-- v1.51 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,7 +28,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.50")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.51")
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -1096,6 +1096,89 @@ local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关
 gui.get_tab(""):add_separator()
 gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
 
+local spcam = gui.get_tab(""):add_checkbox("间接观看(不易被检测)")
+
+gui.get_tab(""):add_sameline()
+
+local vehgodr = gui.get_tab(""):add_checkbox("给与载具无敌")
+
+gui.get_tab(""):add_sameline()
+
+local vehnoclr = gui.get_tab(""):add_checkbox("载具完全无碰撞")
+
+gui.get_tab(""):add_sameline()
+
+gui.get_tab(""):add_button("修理载具", function()
+    script.run_in_fiber(function (repvehr)
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
+            gui.show_error("警告","玩家不在载具内")
+        else
+            tarveh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+            if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh)  then
+                local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh)
+                NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
+                local time = os.time()
+                while not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh) do
+                    if os.time() - time >= 5 then
+                        break
+                    end
+                    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(tarveh)
+                    repvehr:yield()
+                end
+            end
+            VEHICLE.SET_VEHICLE_FIXED(tarveh)
+        end
+    end)
+end)
+--[[
+gui.get_tab(""):add_sameline()
+
+gui.get_tab(""):add_button("移除载具", function()
+    script.run_in_fiber(function (rmvehr)
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
+            gui.show_error("警告","玩家不在载具内")
+        else
+            command.call( vehkick, {"PLAYER.GET_PLAYER_NAME(network.get_selected_player())"})
+            tarveh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+            if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh)  then
+                local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh)
+                NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
+                local time = os.time()
+                while not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh) do
+                    if os.time() - time >= 5 then
+                        break
+                    end
+                    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(tarveh)
+                    rmvehr:yield()
+                end
+            end
+            ENTITY.DELETE_ENTITY(tarveh)
+        end
+    end)
+end)
+
+
+gui.get_tab(""):add_sameline()
+
+gui.get_tab(""):add_button("德罗索", function()
+    script.run_in_fiber(function (giftdls)
+        local giftvehhash = joaat("deluxo")
+        STREAMING.REQUEST_MODEL(giftvehhash)
+        while STREAMING.HAS_MODEL_LOADED(giftvehhash) ~= 1 do
+            STREAMING.REQUEST_MODEL(giftvehhash)
+            giftdls:yield()
+        end   
+        local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        firemtcrtveh = VEHICLE.CREATE_VEHICLE(joaat("deluxo"), ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).x, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).y, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(),false).z, 0 , true, true, true)
+
+        vehdls = VEHICLE.CREATE_VEHICLE(giftvehhash, targpos.x + 2, targpos.y, targpos.z, 0 , true, true, true)
+        ENTITY.SET_ENTITY_INVINCIBLE(vehdls, true)
+        VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(vehdls, false)
+    end)
+end)
+]]
+gui.get_tab(""):add_sameline()
+
 gui.get_tab(""):add_button("传送到玩家(粒子效果)", function()
     script.run_in_fiber(function (ptfxtp2ply)
         local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
@@ -1782,6 +1865,9 @@ local loopa9 = 0  --控制取消同步
 local loopa10 = 0  --控制恶灵骑士
 local loopa11 = 0  --控制PED热量
 local loopa12 = 0  --控制是否允许攻击队友
+local loopa13 = 0  --控制观看
+local loopa14 = 0  --控制远程载具无敌
+local loopa15 = 0  --控制远程载具无碰撞
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -1962,13 +2048,11 @@ script.register_looped("schlua-defps", function()
         end
 
         if  check8:is_enabled() then --水柱
-
             local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
             FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z - 2.0, 13, 1, true, false, 0, false)
         end
 
         if  checknodmgexp:is_enabled() then --循环无伤爆炸
-
             local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
             FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 1, 1, true, true, 1, true)
         end
@@ -1996,10 +2080,142 @@ script.register_looped("schlua-miscservice", function()
         end
         loopa4 = 1
     else
-        if loopa4 == 1 then           
-        HUD.SET_MINIMAP_SONAR_SWEEP(false)        
-        gui.show_message("声纳","关闭")
-        loopa4 = 0
+        if loopa4 == 1 then   
+            HUD.SET_MINIMAP_SONAR_SWEEP(false)        
+            gui.show_message("声纳","关闭")
+            loopa4 = 0
+        end
+    end
+
+    if  vehgodr:is_enabled() then --控制远程载具无敌
+        if loopa14 == 0 then
+            if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
+                gui.show_error("警告","玩家不在载具内")
+                vehgodr:set_enabled(nil)
+                loopa14 = 0
+            else
+                tarveh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+                if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh)  then
+                    local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh)
+                    NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
+                    local time = os.time()
+                    while not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh) do
+                        if os.time() - time >= 5 then
+                            break
+                        end
+                        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(tarveh)
+                        script_util:yield()
+                    end
+                end
+                ENTITY.SET_ENTITY_PROOFS(tarveh, true, true, true, true, true, 0, 0, true)
+                ENTITY.SET_ENTITY_INVINCIBLE(tarveh, true)
+                VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(tarveh, false)
+                gui.show_message("载具无敌","已应用")
+                loopa14 = 1
+            end
+        end
+    else
+        if loopa14 == 1 then   
+            if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
+                gui.show_error("警告","玩家不在载具内")
+                vehgodr:set_enabled(nil)
+                loopa14 = 0
+            else
+                tarveh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+                if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh)  then
+                    local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh)
+                    NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
+                    local time = os.time()
+                    while not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh) do
+                        if os.time() - time >= 5 then
+                            break
+                        end
+                        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(tarveh)
+                        script_util:yield()
+                    end
+                end
+                ENTITY.SET_ENTITY_PROOFS(tarveh, false, false, false, false, false, 0, 0, false)
+                ENTITY.SET_ENTITY_INVINCIBLE(tarveh, false)
+                VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(tarveh, true)
+                gui.show_message("载具无敌","已撤销")
+                loopa14 = 0
+            end
+        end
+    end
+
+    if  vehnoclr:is_enabled() then --控制远程载具无碰撞
+        if loopa15 == 0 then
+            if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
+                gui.show_error("警告","玩家不在载具内")
+                vehnoclr:set_enabled(nil)
+                loopa14 = 0
+            else
+                local tarveh2 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+                if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh2)  then
+                    local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh2)
+                    NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
+                    local time = os.time()
+                    while not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh2) do
+                        if os.time() - time >= 5 then
+                            break
+                        end
+                        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(tarveh2)
+                        script_util:yield()
+                    end
+                end
+                ENTITY.SET_ENTITY_COLLISION(tarveh2,false,false)
+                gui.show_message("载具无碰撞","已应用")
+                loopa15 = 1
+            end
+        end
+    else
+        if loopa15 == 1 then
+            if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
+                gui.show_error("警告","玩家不在载具内")
+                vehnoclr:set_enabled(nil)
+                loopa15 = 0
+            else
+                tarveh2 = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+                if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh2)  then
+                    local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh2)
+                    NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
+                    local time = os.time()
+                    while not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh2) do
+                        if os.time() - time >= 5 then
+                            break
+                        end
+                        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(tarveh2)
+                        script_util:yield()
+                    end
+                end
+                ENTITY.SET_ENTITY_COLLISION(tarveh2,true,true)
+                gui.show_message("载具无碰撞","已撤销")
+                loopa15 = 0
+            end
+        end
+    end
+
+    if  spcam:is_enabled() then --控制观看开关
+        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        STREAMING.SET_FOCUS_POS_AND_VEL(TargetPPos.x, TargetPPos.y, TargetPPos.z, 0.0, 0.0, 0.0)
+
+        if loopa13 == 0 then
+            specam = CAM.CREATE_CAM("DEFAULT_SCRIPTED_CAMERA", false)
+			CAM.SET_CAM_ACTIVE(specam, true)
+			CAM.RENDER_SCRIPT_CAMS(true, true, 500, true, true, false)
+            loopa13 = 1
+        end
+        rotation = CAM.GET_GAMEPLAY_CAM_ROT(2)
+        CAM.SET_CAM_ROT(specam, rotation.x, rotation.y, rotation.z, 2)
+        CAM.SET_CAM_COORD(specam, TargetPPos.x, TargetPPos.y, TargetPPos.z+5)
+
+    else
+        if loopa13 == 1 then     
+            CAM.SET_CAM_ACTIVE(specam, false)
+			CAM.RENDER_SCRIPT_CAMS(false, true, 500, true, true, 0)
+			CAM.DESTROY_CAM(specam, false)
+			STREAMING.CLEAR_FOCUS()    
+            loopa13 = 0
         end
     end
 
@@ -2178,9 +2394,24 @@ script.register_looped("schlua-miscservice", function()
     end
 
     if  pedvehctl:is_enabled() then --玩家选项-载具旋转
-        local tarveh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) 
-        ENTITY.APPLY_FORCE_TO_ENTITY(tarveh, 5, 0, 0, 150.0, 0, 0, 0, 0, true, false, true, false, true)
-        --script_util:sleep(100)
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
+            gui.show_error("警告","玩家不在载具内")
+        else
+            tarveh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
+            if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh)  then
+                local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh)
+                NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
+                local time = os.time()
+                while not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh) do
+                    if os.time() - time >= 5 then
+                        break
+                    end
+                    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(tarveh)
+                    script_util:yield()
+                end
+            end
+            ENTITY.APPLY_FORCE_TO_ENTITY(tarveh, 5, 0, 0, 150.0, 0, 0, 0, 0, true, false, true, false, true)
+        end
     end
 
     if  drawcs:is_enabled() then --绘制准星

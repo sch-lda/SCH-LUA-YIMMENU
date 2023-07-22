@@ -29,7 +29,8 @@ This Github Repo is experimental and only kept as a backup archive. There is no 
 ### 4.实体控制 Entity Control
 载具力场 Vehicle force field \
 NPC批量控制 NPC control \
-MPC瞄准惩罚 NPC aiming punish
+MPC瞄准惩罚(摔倒/杀死/中断/上天/燃烧...) NPC aiming reaction(ragdoll/kill/interrupt/launch/light) \
+移除摄像头 Remove all CCTV cameras
 ### 5.传送 Teleport 
 带有粒子效果的传送到导航点 TP to Waypoint with PTFX \
 传送到常用计划面板和保险箱 TP to NC safe、Heist panel(Facility & Kosatka) 
@@ -51,7 +52,7 @@ MPC瞄准惩罚 NPC aiming punish
 Heist Lua by Wang https://github.com/wangzixuank/YimMenu-HeistLua \
 GTA5线上小助手Lua仓库 GTA5OnlineTools' Online Lua Repo https://github.com/CrazyZhang666/GTA5OnlineLua 
 ## 截图 screenshots
-![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205683656360036/image.png)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/64751e8e-5d6f-48c6-99a9-ccd142f17b9f)
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205684029665280/image.png)
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205684264554656/image.png)
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205684524580874/image.png)

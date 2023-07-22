@@ -27,8 +27,15 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
+local luaversion = "v1.54"
+path = package.path
+if path:match("YimMenu") then
+    log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
+else
+    local_()
+end
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.54")
+local gentab = gui.add_tab("sch-lua-Alpha-"..luaversion)
 
 function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
     local dx = pos.x - tarpos.x

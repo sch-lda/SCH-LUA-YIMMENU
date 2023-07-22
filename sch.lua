@@ -1,4 +1,4 @@
--- v1.54 -- 
+-- v1.55 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -27,7 +27,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.54"
+local luaversion = "v1.55"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -59,6 +59,14 @@ function run_script(name) --启动脚本线程
         SYSTEM.START_NEW_SCRIPT(name, 5000)
         SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(name)
     end)
+end
+
+function DELETE_OBJECT_BY_HASH(hash)
+    for _, ent in pairs(entities.get_all_objects_as_handles()) do
+        if ENTITY.GET_ENTITY_MODEL(ent) == hash then
+            PED.SET_PED_COORDS_KEEP_VEHICLE(ent, 0, 0, 0)
+        end
+    end
 end
 
 function screen_draw_text(text, x, y, p0 , size) --在屏幕上绘制文字
@@ -628,86 +636,132 @@ gentab:add_separator()
 
 gentab:add_text("实体控制") 
 
-local forcefield = gentab:add_checkbox("载具力场(作用范围15米)") --只是一个开关，代码往后面找
+local vehforcefield = gentab:add_checkbox("载具力场(15米)") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local pedforcefield = gentab:add_checkbox("NPC力场(15米)") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local forcefield = gentab:add_checkbox("力场(载具+NPC)") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local vehboost = gentab:add_checkbox("Shift键控制的简易载具加速(测试)") --只是一个开关，代码往后面找
 
 gentab:add_text("NPC批量控制(一千米内)") 
 
 gentab:add_sameline()
 
-local reactany = gentab:add_checkbox("打断0") --只是一个开关，代码往后面找
+local reactany = gentab:add_checkbox("中断a") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react1any = gentab:add_checkbox("摔倒0") --只是一个开关，代码往后面找
+local react1any = gentab:add_checkbox("摔倒a") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react2any = gentab:add_checkbox("击杀0") --只是一个开关，代码往后面找
+local react2any = gentab:add_checkbox("击杀a") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react3any = gentab:add_checkbox("燃烧0") --只是一个开关，代码往后面找
+local react3any = gentab:add_checkbox("燃烧a") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react4any = gentab:add_checkbox("起飞0") --只是一个开关，代码往后面找
+local react4any = gentab:add_checkbox("起飞a") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react5any = gentab:add_checkbox("收为保镖0") --只是一个开关，代码往后面找
+local react5any = gentab:add_checkbox("收为保镖a") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local revitalizationped = gentab:add_checkbox("复活") --只是一个开关，代码往后面找
 
 
 gentab:add_text("被NPC瞄准自动反击(作用范围:一千米半径的圆)") 
 
 gentab:add_sameline()
 
-local aimreact = gentab:add_checkbox("打断") --只是一个开关，代码往后面找
+local aimreact = gentab:add_checkbox("中断b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact1 = gentab:add_checkbox("摔倒") --只是一个开关，代码往后面找
+local aimreact1 = gentab:add_checkbox("摔倒b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact2 = gentab:add_checkbox("击杀") --只是一个开关，代码往后面找
+local aimreact2 = gentab:add_checkbox("击杀b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact3 = gentab:add_checkbox("燃烧") --只是一个开关，代码往后面找
+local aimreact3 = gentab:add_checkbox("燃烧b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact4 = gentab:add_checkbox("起飞") --只是一个开关，代码往后面找
+local aimreact4 = gentab:add_checkbox("起飞b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact5 = gentab:add_checkbox("收为保镖") --只是一个开关，代码往后面找
+local aimreact5 = gentab:add_checkbox("收为保镖b") --只是一个开关，代码往后面找
 
 gentab:add_text("NPC瞄准任何人自动反击(作用范围:一千米半径的圆)") 
 
 gentab:add_sameline()
 
-local aimreactany = gentab:add_checkbox("打断1") --只是一个开关，代码往后面找
+local aimreactany = gentab:add_checkbox("中断c") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact1any = gentab:add_checkbox("摔倒1") --只是一个开关，代码往后面找
+local aimreact1any = gentab:add_checkbox("摔倒c") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact2any = gentab:add_checkbox("击杀1") --只是一个开关，代码往后面找
+local aimreact2any = gentab:add_checkbox("击杀c") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact3any = gentab:add_checkbox("燃烧1") --只是一个开关，代码往后面找
+local aimreact3any = gentab:add_checkbox("燃烧c") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact4any = gentab:add_checkbox("起飞1") --只是一个开关，代码往后面找
+local aimreact4any = gentab:add_checkbox("起飞c") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact5any = gentab:add_checkbox("收为保镖1") --只是一个开关，代码往后面找
+local aimreact5any = gentab:add_checkbox("收为保镖c") --只是一个开关，代码往后面找
+
+local delallcam = gentab:add_checkbox("移除所有摄像头") --只是一个开关，代码往后面找
+
+CamList = {   --从heist control抄的
+    joaat("prop_cctv_cam_01a"),
+    joaat("prop_cctv_cam_01b"),
+    joaat("prop_cctv_cam_02a"),
+    joaat("prop_cctv_cam_03a"),
+    joaat("prop_cctv_cam_04a"),
+    joaat("prop_cctv_cam_04c"),
+    joaat("prop_cctv_cam_05a"),
+    joaat("prop_cctv_cam_06a"),
+    joaat("prop_cctv_cam_07a"),
+    joaat("prop_cs_cctv"),
+    joaat("p_cctv_s"),
+    joaat("hei_prop_bank_cctv_01"),
+    joaat("hei_prop_bank_cctv_02"),
+    joaat("ch_prop_ch_cctv_cam_02a"),
+    joaat("xm_prop_x17_server_farm_cctv_01"),
+}
+
+gentab:add_sameline()
+
+gentab:add_button("移除佩里科重甲兵", function()
+    for _, ent in pairs(entities.get_all_peds_as_handles()) do
+        if ENTITY.GET_ENTITY_MODEL(ent) == 193469166 then
+            PED.SET_PED_COORDS_KEEP_VEHICLE(ent, 5079.87, -5786.66, 1.5)
+        end
+    end
+end)
 
 gentab:add_separator()
 
@@ -1159,6 +1213,10 @@ local disableAIdmg = gentab:add_checkbox("锁定NPC零伤害") --只是一个开
 gentab:add_sameline()
 
 local checkSONAR = gentab:add_checkbox("小地图显示声纳") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local disalight = gentab:add_checkbox("全局熄灯") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -1969,7 +2027,7 @@ local loopa12 = 0  --控制是否允许攻击队友
 local loopa13 = 0  --控制观看
 local loopa14 = 0  --控制远程载具无敌
 local loopa15 = 0  --控制远程载具无碰撞
-local loopa16 = 0  --控制载具力场
+local loopa16 = 0  --控制世界灯光开关
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2188,6 +2246,18 @@ script.register_looped("schlua-miscservice", function()
             HUD.SET_MINIMAP_SONAR_SWEEP(false)        
             gui.show_message("声纳","关闭")
             loopa4 = 0
+        end
+    end
+
+    if  disalight:is_enabled() then --控制世界灯光开关
+        if loopa16 == 0 then
+            GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(true)
+        end
+        loopa16 = 1
+    else
+        if loopa16 == 1 then   
+            GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(false)
+            loopa16 = 0
         end
     end
 
@@ -2456,6 +2526,15 @@ script.register_looped("schlua-miscservice", function()
         PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 65, 81) --锁定玩家状态为游泳
     end
 
+    if vehboost:is_enabled() then --载具加速
+        if PAD.IS_CONTROL_PRESSED(0, 352) then
+            local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)  
+            ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(vehicle, 1, 0, 1, 0, false, true, true, true)
+        end
+    end
+
     if  pedgun:is_enabled() then --NPC枪
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)  
@@ -2596,7 +2675,7 @@ end)
 
 script.register_looped("schlua-ectrlervice", function() 
     
-    if  forcefield:is_enabled() then --控制载具力场
+    if  vehforcefield:is_enabled() then --控制载具力场
         local vehtable = entities.get_all_vehicles_as_handles()
         local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
         for _, vehicle in pairs(vehtable) do
@@ -2604,13 +2683,56 @@ script.register_looped("schlua-ectrlervice", function()
             local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
             if calcDistance(selfpos, vehicle_pos) <= 15 then
                 if vehicle ~= vehisin then
-                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 5, 0, 0, 0.5, 0, false, false, true, false, false)
+                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 3, 0, 0, 0.5, 0, false, false, true, false, false)
+                end
+            end
+        end
+    end
+    
+    if  pedforcefield:is_enabled() then --控制NPC力场
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 15 and peds ~= PLAYER.PLAYER_PED_ID() then 
+                if PED.IS_PED_IN_ANY_VEHICLE(peds) then
+                    tarpensveh = PED.GET_VEHICLE_PED_IS_IN(peds)
+                    ENTITY.APPLY_FORCE_TO_ENTITY(tarpensveh, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                else
+                    ENTITY.APPLY_FORCE_TO_ENTITY(peds, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                end
+            end
+        end
+    end
+    
+    if  forcefield:is_enabled() then --控制力场
+        local vehtable = entities.get_all_vehicles_as_handles()
+        local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+        for _, vehicle in pairs(vehtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
+            if calcDistance(selfpos, vehicle_pos) <= 15 then
+                if vehicle ~= vehisin then
+                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 3, 0, 0, 0.5, 0, false, false, true, false, false)
+                end
+            end
+        end
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 15 and peds ~= PLAYER.PLAYER_PED_ID() then 
+                if PED.IS_PED_IN_ANY_VEHICLE(peds) then
+                    tarpensveh = PED.GET_VEHICLE_PED_IS_IN(peds)
+                    ENTITY.APPLY_FORCE_TO_ENTITY(tarpensveh, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                else
+                    ENTITY.APPLY_FORCE_TO_ENTITY(peds, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
                 end
             end
         end
     end
 
-    if  aimreact:is_enabled() then --控制NPC瞄准惩罚1-打断
+    if  aimreact:is_enabled() then --控制NPC瞄准惩罚1-中断
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -2627,7 +2749,6 @@ script.register_looped("schlua-ectrlervice", function()
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
-                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
                 PED.SET_PED_TO_RAGDOLL(peds, 5000, 0,0 , false, false, false)
             end
         end
@@ -2699,7 +2820,7 @@ script.register_looped("schlua-ectrlervice", function()
         end
     end
 
-    if  aimreactany:is_enabled() then --控制NPC瞄准任何人惩罚1-打断
+    if  aimreactany:is_enabled() then --控制NPC瞄准任何人惩罚1-中断
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -2716,7 +2837,6 @@ script.register_looped("schlua-ectrlervice", function()
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
-                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
                 PED.SET_PED_TO_RAGDOLL(peds, 5000, 0,0 , false, false, false)
             end
         end
@@ -2788,7 +2908,19 @@ script.register_looped("schlua-ectrlervice", function()
         end
     end
 
-    if  reactany:is_enabled() then --控制NPC-打断
+    if  delallcam:is_enabled() then --移除所有摄像头
+        for _, ent in pairs(entities.get_all_objects_as_handles()) do
+            for __, cam in pairs(CamList) do
+                if ENTITY.GET_ENTITY_MODEL(ent) == cam then
+                    ENTITY.FREEZE_ENTITY_POSITION(ent,false)
+                    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(ent, 5079.87, -5786.66, 1, false, true, true)
+
+                end
+            end
+        end
+    end
+
+    if  reactany:is_enabled() then --控制NPC-中断
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -2805,7 +2937,6 @@ script.register_looped("schlua-ectrlervice", function()
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
-                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
                 PED.SET_PED_TO_RAGDOLL(peds, 5000, 0,0 , false, false, false)
             end
         end
@@ -2873,6 +3004,23 @@ script.register_looped("schlua-ectrlervice", function()
                 WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_microsmg"), 9999, false, false)
                 WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_carbinerifle"), 9999, false, true)
                 TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+            end
+        end
+    end
+
+    if  revitalizationped:is_enabled() then --控制NPC-复活
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_DEAD_OR_DYING(peds,1) then 
+                ENTITY.SET_ENTITY_LOAD_COLLISION_FLAG(peds, true)
+                ENTITY.SET_ENTITY_AS_MISSION_ENTITY(peds, true, false)
+                ENTITY.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION(peds, true)
+                ENTITY.SET_ENTITY_COLLISION(peds,true,true)
+                ENTITY.SET_ENTITY_HEALTH(peds,500,true)
+                PED.RESURRECT_PED(peds)
+
             end
         end
     end

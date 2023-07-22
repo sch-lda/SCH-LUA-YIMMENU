@@ -47,6 +47,8 @@ MPC瞄准惩罚(摔倒/杀死/中断/上天/燃烧...) NPC aiming reaction(ragdo
 清理附近粒子效果和物体表面痕迹 Clear PTFX in range
 ### 9.玩家选项 PlayerMenu
 带有粒子效果的传送到玩家 TP to player with PTFX \
+载具无敌 Vehicle Godmode \
+修理载具 Repair Vehicle \
 恶搞 Troll
 ## 关联Github仓库 Related Github Repositories
 Heist Lua by Wang https://github.com/wangzixuank/YimMenu-HeistLua \

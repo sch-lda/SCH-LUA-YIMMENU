@@ -1,4 +1,4 @@
--- v1.52 -- 
+-- v1.53 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,7 +28,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.52")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.53")
 
 function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
     local dx = pos.x - tarpos.x
@@ -621,6 +621,16 @@ local checkfirew = gentab:add_checkbox("火焰翅膀")
 gentab:add_sameline()
 
 local forcefield = gentab:add_checkbox("载具力场") --只是一个开关，代码往后面找
+
+local aimreact = gentab:add_checkbox("NPC瞄准自动打断") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact1 = gentab:add_checkbox("NPC瞄准自动摔倒") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact2 = gentab:add_checkbox("NPC瞄准自动击杀") --只是一个开关，代码往后面找
 
 gentab:add_separator()
 
@@ -2483,16 +2493,43 @@ script.register_looped("schlua-miscservice", function()
             local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
             if calcDistance(selfpos, vehicle_pos) <= 15 then
                 if vehicle ~= vehisin then
-                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 1, 0, 0, 0.5, 0, false, false, true, false, false)
+                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 5, 0, 0, 0.5, 0, false, false, true, false, false)
                 end
             end
         end
-        if loopa16 == 0 then 
-            loopa16 = 1
+    end
+
+    if  aimreact:is_enabled() then --控制NPC瞄准惩罚1-打断
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
+            end
         end
-    else
-        if loopa16 == 1 then 
-            loopa16 = 0
+    end
+
+    if  aimreact1:is_enabled() then --控制NPC瞄准惩罚2 -摔倒
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
+                PED.SET_PED_TO_RAGDOLL(peds, 5000, 0,0 , false, false, false)
+            end
+        end
+    end
+
+    if  aimreact2:is_enabled() then --控制NPC瞄准惩罚3 -死亡
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                ENTITY.SET_ENTITY_HEALTH(peds,0,true)
+            end
         end
     end
 

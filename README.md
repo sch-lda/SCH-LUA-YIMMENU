@@ -25,7 +25,8 @@ This Github Repo is experimental and only kept as a backup archive. There is no 
 烟花 Firework \
 飞天扫帚 Flying Broom \
 恶灵骑士 No clue how to translate \
-火焰翅膀 Fire Wing
+火焰翅膀 Fire Wing \
+载具力场 Vehicle force field
 ### 4.传送 Teleport 
 带有粒子效果的传送到导航点 TP to Waypoint with PTFX \
 传送到常用计划面板和保险箱 TP to NC safe、Heist panel(Facility & Kosatka) 

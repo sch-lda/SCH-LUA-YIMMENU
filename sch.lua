@@ -1,4 +1,4 @@
--- v1.51 -- 
+-- v1.52 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,7 +28,15 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.51")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.52")
+
+function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
+    local dx = pos.x - tarpos.x
+    local dy = pos.y - tarpos.y
+    local dz = pos.z - tarpos.z
+    local distance = math.sqrt(dx*dx + dy*dy + dz*dz)
+    return distance
+end
 
 function upgrade_vehicle(vehicle)
     for i = 0, 49 do
@@ -163,7 +171,11 @@ end
 
 --[[
 gentab:add_button("测试6", function()
-
+    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+    local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+    distance = calcDistance(pos,targpos)
+    formattedDistance = string.format("%.1f", distance)
+    log.info(formattedDistance)
 end)
 ]]
 
@@ -606,6 +618,10 @@ gentab:add_sameline()
 
 local checkfirew = gentab:add_checkbox("火焰翅膀")
 
+gentab:add_sameline()
+
+local forcefield = gentab:add_checkbox("载具力场") --只是一个开关，代码往后面找
+
 gentab:add_separator()
 
 gentab:add_text("产业功能-中高风险") 
@@ -689,15 +705,11 @@ gentab:add_sameline()
 
 local inputCEOcargo = gentab:add_input_int("个板条箱")
 
-
-
 local check4 = gentab:add_checkbox("锁定机库员工单次进货数量为")
 
 gentab:add_sameline()
 
 local iputint3 = gentab:add_input_int("箱")
-
-
 
 gentab:add_button("夜总会保险箱30万循环10次", function()
     script.run_in_fiber(function (ncsafeloop)
@@ -1091,9 +1103,9 @@ gentab:add_sameline()
 
 local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关，代码往后面找
 
+
 --------------------------------------------------------------------------------------- Players 页面
 
-gui.get_tab(""):add_separator()
 gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
 
 local spcam = gui.get_tab(""):add_checkbox("间接观看(不易被检测)")
@@ -1614,6 +1626,8 @@ gui.add_tab(""):add_button("向下挤压", function()
     end)
 end)
 
+local plydist = gui.get_tab(""):add_input_float("距离(m)")
+
 --[[
 gui.get_tab(""):add_sameline()
 
@@ -1868,10 +1882,12 @@ local loopa12 = 0  --控制是否允许攻击队友
 local loopa13 = 0  --控制观看
 local loopa14 = 0  --控制远程载具无敌
 local loopa15 = 0  --控制远程载具无碰撞
+local loopa16 = 0  --控制载具力场
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
 script.register_looped("schlua-recoveryservice", function() 
+
     if  checkxsdped:is_enabled() then --NPC掉落2000元循环    --自身
         PED.SET_AMBIENT_PEDS_DROP_MONEY(true) --自由模式NPC是否掉钱
         local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
@@ -2458,7 +2474,28 @@ script.register_looped("schlua-miscservice", function()
             loopa12 = 0
         end
     end
-    
+
+    if  forcefield:is_enabled() then --控制载具力场
+        local vehtable = entities.get_all_vehicles_as_handles()
+        local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+        for _, vehicle in pairs(vehtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
+            if calcDistance(selfpos, vehicle_pos) <= 15 then
+                if vehicle ~= vehisin then
+                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 1, 0, 0, 0.5, 0, false, false, true, false, false)
+                end
+            end
+        end
+        if loopa16 == 0 then 
+            loopa16 = 1
+        end
+    else
+        if loopa16 == 1 then 
+            loopa16 = 0
+        end
+    end
+
     if  desync:is_enabled() then --创建新手教程战局以取消与其他玩家同步
         if loopa9 == 0 then
             NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
@@ -2601,6 +2638,16 @@ script.register_looped("schlua-drawservice", function()
         local Interior = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
 
         screen_draw_text(string.format("Interior ID:".. Interior),0.875,0.2, 0.4 , 0.4)
+    end
+end)
+
+script.register_looped("schlua-testservice", function() 
+    if gui.get_tab(""):is_selected() then
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+        local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        distance = calcDistance(pos,targpos)
+        formattedDistance = string.format("%.3f", distance)
+        plydist:set_value(formattedDistance)
     end
 end)
 --[[

@@ -1,4 +1,4 @@
--- v1.55 -- 
+-- v1.56 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -27,7 +27,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.55"
+local luaversion = "v1.56"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -585,8 +585,15 @@ gentab:add_sameline()
 local objectsix1 --注册为全局变量以便后续移除666
 local objectsix2--注册为全局变量以便后续移除666
 local objectsix3--注册为全局变量以便后续移除666
+local object5201 --注册为全局变量以便后续移除520
+local object5202--注册为全局变量以便后续移除520
+local object5203--注册为全局变量以便后续移除520
 
 local check666 = gentab:add_checkbox("头顶666") --这只是一个复选框,代码往最后的循环脚本部分找
+
+gentab:add_sameline()
+
+local check520 = gentab:add_checkbox("头顶520") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
@@ -2028,6 +2035,7 @@ local loopa13 = 0  --控制观看
 local loopa14 = 0  --控制远程载具无敌
 local loopa15 = 0  --控制远程载具无碰撞
 local loopa16 = 0  --控制世界灯光开关
+local loopa17 = 0  --控制头顶520
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2466,6 +2474,56 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
+    if  check520:is_enabled() then --控制头顶520生成与移除
+        if loopa17 == 0 then
+            local num5 = "prop_mp_num_2"
+            local num2 = "prop_mp_num_5"
+            local num0 = "prop_mp_num_0"
+            local user_ped = PLAYER.PLAYER_PED_ID()
+            num5hash = joaat(num5)
+            num2hash = joaat(num2)
+            num0hash = joaat(num0)
+        
+            STREAMING.REQUEST_MODEL(num5hash)
+            while not STREAMING.HAS_MODEL_LOADED(num5hash) do		
+                script_util:yield()
+            end
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(num5hash)
+        
+            object5201 = OBJECT.CREATE_OBJECT(num5hash, 0.0,0.0,0, true, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(object5201, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), 0.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
+        
+            STREAMING.REQUEST_MODEL(num2hash)
+            while not STREAMING.HAS_MODEL_LOADED(num2hash) do		
+                script_util:yield()
+            end
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(num2hash)
+        
+            object5202 = OBJECT.CREATE_OBJECT(num2hash, 0.0,0.0,0, true, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(object5202, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0),  -1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
+        
+            STREAMING.REQUEST_MODEL(num0hash)
+            while not STREAMING.HAS_MODEL_LOADED(num0hash) do		
+                script_util:yield()
+            end
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(num0hash)
+        
+            object5203 = OBJECT.CREATE_OBJECT(num0hash, 0.0,0.0,0, true, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(object5203, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0),   1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
+        
+            gui.show_message("头顶520","生成")
+        end
+        loopa17 = 1
+    else
+        if loopa17 == 1 then 
+            ENTITY.DELETE_ENTITY(object5201)
+            ENTITY.DELETE_ENTITY(object5202)
+            ENTITY.DELETE_ENTITY(object5203)
+            gui.show_message("头顶520","移除")
+            loopa17 = 0
+        end
+    end
+
     if  firemt:is_enabled() then --控制恶灵骑士
         if loopa10 == 0 then
         while not STREAMING.HAS_MODEL_LOADED(joaat("sanctus")) do		
@@ -2564,7 +2622,7 @@ script.register_looped("schlua-miscservice", function()
     if  bballgun:is_enabled() then --大球枪
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)
-        objhash = joaat("v_ilev_exball_grey")
+        objhash = joaat("v_ilev_exball_blue")
         while not STREAMING.HAS_MODEL_LOADED(objhash) do		
             STREAMING.REQUEST_MODEL(objhash)
             script_util:yield()

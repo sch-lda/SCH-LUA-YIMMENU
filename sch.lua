@@ -678,7 +678,7 @@ local react5any = gentab:add_checkbox("收为保镖a") --只是一个开关，�
 
 gentab:add_sameline()
 
-local revitalizationped = gentab:add_checkbox("复活") --只是一个开关，代码往后面找
+local revitalizationped = gentab:add_checkbox("复活(不稳定)") --只是一个开关，代码往后面找
 
 
 gentab:add_text("被NPC瞄准自动反击(作用范围:一千米半径的圆)") 

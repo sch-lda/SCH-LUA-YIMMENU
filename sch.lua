@@ -1,4 +1,4 @@
--- v1.53 -- 
+-- v1.54 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,7 +28,7 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-local gentab = gui.add_tab("sch-lua-Alpha-v1.53")
+local gentab = gui.add_tab("sch-lua-Alpha-v1.54")
 
 function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
     local dx = pos.x - tarpos.x
@@ -612,25 +612,95 @@ bigfireWings = {
     [23] = {pos = {[1] = 200, [2] =  75}},
     [24] = {pos = {[1] = 200, [2] = -75}},
 }
-local ptfxAegg
 
 gentab:add_sameline()
 
 local checkfirew = gentab:add_checkbox("火焰翅膀")
 
-gentab:add_sameline()
+gentab:add_separator()
 
-local forcefield = gentab:add_checkbox("载具力场") --只是一个开关，代码往后面找
+gentab:add_text("实体控制") 
 
-local aimreact = gentab:add_checkbox("NPC瞄准自动打断") --只是一个开关，代码往后面找
+local forcefield = gentab:add_checkbox("载具力场(作用范围15米)") --只是一个开关，代码往后面找
 
-gentab:add_sameline()
-
-local aimreact1 = gentab:add_checkbox("NPC瞄准自动摔倒") --只是一个开关，代码往后面找
+gentab:add_text("NPC批量控制(一千米内)") 
 
 gentab:add_sameline()
 
-local aimreact2 = gentab:add_checkbox("NPC瞄准自动击杀") --只是一个开关，代码往后面找
+local reactany = gentab:add_checkbox("打断0") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local react1any = gentab:add_checkbox("摔倒0") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local react2any = gentab:add_checkbox("击杀0") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local react3any = gentab:add_checkbox("燃烧0") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local react4any = gentab:add_checkbox("起飞0") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local react5any = gentab:add_checkbox("收为保镖0") --只是一个开关，代码往后面找
+
+
+gentab:add_text("被NPC瞄准自动反击(作用范围:一千米半径的圆)") 
+
+gentab:add_sameline()
+
+local aimreact = gentab:add_checkbox("打断") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact1 = gentab:add_checkbox("摔倒") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact2 = gentab:add_checkbox("击杀") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact3 = gentab:add_checkbox("燃烧") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact4 = gentab:add_checkbox("起飞") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact5 = gentab:add_checkbox("收为保镖") --只是一个开关，代码往后面找
+
+gentab:add_text("NPC瞄准任何人自动反击(作用范围:一千米半径的圆)") 
+
+gentab:add_sameline()
+
+local aimreactany = gentab:add_checkbox("打断1") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact1any = gentab:add_checkbox("摔倒1") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact2any = gentab:add_checkbox("击杀1") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact3any = gentab:add_checkbox("燃烧1") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact4any = gentab:add_checkbox("起飞1") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact5any = gentab:add_checkbox("收为保镖1") --只是一个开关，代码往后面找
 
 gentab:add_separator()
 
@@ -2082,6 +2152,7 @@ script.register_looped("schlua-defps", function()
             local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
             FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 1, 1, true, true, 1, true)
         end
+
 end)
 
 script.register_looped("schlua-miscservice", function() 
@@ -2485,6 +2556,39 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
+    if  desync:is_enabled() then --创建新手教程战局以取消与其他玩家同步
+        if loopa9 == 0 then
+            NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
+            gui.show_message("取消同步","将与所有玩家取消同步")
+        end
+        loopa9 = 1
+    else
+        if loopa9 == 1 then                    
+            NETWORK.NETWORK_END_TUTORIAL_SESSION()
+            gui.show_message("取消同步","关")
+        loopa9 = 0
+        end
+    end
+
+    if  ptfxrm:is_enabled() then --清理PTFX和火焰效果
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        FIRE.STOP_FIRE_IN_RANGE(selfpos.x, selfpos.y, selfpos.z, 500)
+        FIRE.STOP_ENTITY_FIRE(PLAYER.PLAYER_PED_ID())    
+        GRAPHICS.REMOVE_PARTICLE_FX_IN_RANGE(selfpos.x, selfpos.y, selfpos.z, 1000)
+        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(PLAYER.PLAYER_PED_ID())
+    else
+    end
+
+    if  DECALrm:is_enabled() then --清理弹孔、血渍、油污等表面特征
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        GRAPHICS.REMOVE_DECALS_IN_RANGE(selfpos.x, selfpos.y, selfpos.z, 100)
+    else
+    end
+
+end)
+
+script.register_looped("schlua-ectrlervice", function() 
+    
     if  forcefield:is_enabled() then --控制载具力场
         local vehtable = entities.get_all_vehicles_as_handles()
         local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
@@ -2533,38 +2637,241 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
-    if  desync:is_enabled() then --创建新手教程战局以取消与其他玩家同步
-        if loopa9 == 0 then
-            NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
-            gui.show_message("取消同步","将与所有玩家取消同步")
-        end
-        loopa9 = 1
-    else
-        if loopa9 == 1 then                    
-            NETWORK.NETWORK_END_TUTORIAL_SESSION()
-            gui.show_message("取消同步","关")
-        loopa9 = 0
+    if  aimreact3:is_enabled() then --控制NPC瞄准惩罚3 -燃烧
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                FIRE.START_ENTITY_FIRE(peds)
+                FIRE.START_SCRIPT_FIRE(ped_pos.x, ped_pos.y, ped_pos.z, 25, true)
+                FIRE.ADD_EXPLOSION(ped_pos.x, ped_pos.y, ped_pos.z, 3, 1, false, false, 0, false);
+            end
         end
     end
 
-    if  ptfxrm:is_enabled() then --清理PTFX和火焰效果
-        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-        FIRE.STOP_FIRE_IN_RANGE(selfpos.x, selfpos.y, selfpos.z, 500)
-        FIRE.STOP_ENTITY_FIRE(PLAYER.PLAYER_PED_ID())    
-        GRAPHICS.REMOVE_PARTICLE_FX_IN_RANGE(selfpos.x, selfpos.y, selfpos.z, 1000)
-        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(PLAYER.PLAYER_PED_ID())
-    else
+    if  aimreact4:is_enabled() then --控制NPC瞄准惩罚4 -起飞
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                if PED.IS_PED_IN_ANY_VEHICLE(peds) then
+                    tarpensveh = PED.GET_VEHICLE_PED_IS_IN(peds)
+                    ENTITY.APPLY_FORCE_TO_ENTITY(tarpensveh, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                else
+                    ENTITY.APPLY_FORCE_TO_ENTITY(peds, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                end
+            end
+        end
+    end
+    
+    if  aimreact5:is_enabled() then --控制NPC瞄准惩罚5 -收为保镖
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                TASK.CLEAR_PED_TASKS(peds)
+                PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+                PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+                PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
+                PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
+                PED.SET_PED_COMBAT_ABILITY(peds, 2)
+                PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+                PED.SET_PED_FLEE_ATTRIBUTES(peds, 512 | 1024 | 2048 | 16384 | 131072 | 262144, true)
+                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
+                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 394, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 400, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 134, true)
+                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_microsmg"), 9999, false, false)
+                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_carbinerifle"), 9999, false, true)
+                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+            end
+        end
     end
 
-    if  DECALrm:is_enabled() then --清理弹孔、血渍、油污等表面特征
-        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-        GRAPHICS.REMOVE_DECALS_IN_RANGE(selfpos.x, selfpos.y, selfpos.z, 100)
-    else
+    if  aimreactany:is_enabled() then --控制NPC瞄准任何人惩罚1-打断
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
+            end
+        end
     end
+
+    if  aimreact1any:is_enabled() then --控制NPC瞄准任何人惩罚2 -摔倒
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
+                PED.SET_PED_TO_RAGDOLL(peds, 5000, 0,0 , false, false, false)
+            end
+        end
+    end
+
+    if  aimreact2any:is_enabled() then --控制NPC瞄准任何人惩罚3 -死亡
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                ENTITY.SET_ENTITY_HEALTH(peds,0,true)
+            end
+        end
+    end
+
+    if  aimreact3any:is_enabled() then --控制NPC瞄准任何人惩罚3 -燃烧
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                FIRE.START_ENTITY_FIRE(peds)
+                FIRE.START_SCRIPT_FIRE(ped_pos.x, ped_pos.y, ped_pos.z, 25, true)
+                FIRE.ADD_EXPLOSION(ped_pos.x, ped_pos.y, ped_pos.z, 3, 1, false, false, 0, false);
+            end
+        end
+    end
+
+    if  aimreact4any:is_enabled() then --控制NPC瞄准任何人惩罚4 -起飞
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                if PED.IS_PED_IN_ANY_VEHICLE(peds) then
+                    tarpensveh = PED.GET_VEHICLE_PED_IS_IN(peds)
+                    ENTITY.APPLY_FORCE_TO_ENTITY(tarpensveh, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                else
+                    ENTITY.APPLY_FORCE_TO_ENTITY(peds, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                end
+            end
+        end
+    end
+
+    if  aimreact5any:is_enabled() then --控制NPC瞄准任何人惩罚4 -收为保镖
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                TASK.CLEAR_PED_TASKS(peds)
+                PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+                PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+                PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
+                PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
+                PED.SET_PED_COMBAT_ABILITY(peds, 2)
+                PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+                PED.SET_PED_FLEE_ATTRIBUTES(peds, 512 | 1024 | 2048 | 16384 | 131072 | 262144, true)
+                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
+                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 394, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 400, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 134, true)
+                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_microsmg"), 9999, false, false)
+                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_carbinerifle"), 9999, false, true)
+                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+            end
+        end
+    end
+
+    if  reactany:is_enabled() then --控制NPC-打断
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
+                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
+            end
+        end
+    end
+
+    if  react1any:is_enabled() then --控制NPC -摔倒
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
+                TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
+                PED.SET_PED_TO_RAGDOLL(peds, 5000, 0,0 , false, false, false)
+            end
+        end
+    end
+
+    if  react2any:is_enabled() then --控制NPC -死亡
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
+                ENTITY.SET_ENTITY_HEALTH(peds,0,true)
+            end
+        end
+    end
+
+    if  react3any:is_enabled() then --控制NPC -燃烧
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
+                FIRE.START_ENTITY_FIRE(peds)
+                FIRE.START_SCRIPT_FIRE(ped_pos.x, ped_pos.y, ped_pos.z, 25, true)
+                FIRE.ADD_EXPLOSION(ped_pos.x, ped_pos.y, ped_pos.z, 3, 1, false, false, 0, false);
+            end
+        end
+    end
+
+    if  react4any:is_enabled() then --控制NPC-起飞
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() then 
+                if PED.IS_PED_IN_ANY_VEHICLE(peds) then
+                    tarpensveh = PED.GET_VEHICLE_PED_IS_IN(peds)
+                    ENTITY.APPLY_FORCE_TO_ENTITY(tarpensveh, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                else
+                    ENTITY.APPLY_FORCE_TO_ENTITY(peds, 3, 0, 0, 2, 0, 0, 0.5, 0, false, false, true, false, false)
+                end
+            end
+        end
+    end
+
+    if  react5any:is_enabled() then --控制NPC 收为保镖
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= 1000 and peds ~= PLAYER.PLAYER_PED_ID() then 
+                TASK.CLEAR_PED_TASKS(peds)
+                PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+                PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+                PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
+                PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
+                PED.SET_PED_COMBAT_ABILITY(peds, 2)
+                PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+                PED.SET_PED_FLEE_ATTRIBUTES(peds, 512 | 1024 | 2048 | 16384 | 131072 | 262144, true)
+                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
+                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 394, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 400, true)
+                PED.SET_PED_CONFIG_FLAG(peds, 134, true)
+                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_microsmg"), 9999, false, false)
+                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_carbinerifle"), 9999, false, true)
+                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+            end
+        end
+    end
+
 
 end)
-
-
 
 script.register_looped("schlua-ptfxservice", function() 
 

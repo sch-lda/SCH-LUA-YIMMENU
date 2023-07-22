@@ -25,29 +25,33 @@ This Github Repo is experimental and only kept as a backup archive. There is no 
 烟花 Firework \
 飞天扫帚 Flying Broom \
 恶灵骑士 No clue how to translate \
-火焰翅膀 Fire Wing \
-载具力场 Vehicle force field
-### 4.传送 Teleport 
+火焰翅膀 Fire Wing 
+### 4.实体控制 Entity Control
+载具力场 Vehicle force field \
+NPC批量控制 NPC control \
+MPC瞄准惩罚 NPC aiming punish
+### 5.传送 Teleport 
 带有粒子效果的传送到导航点 TP to Waypoint with PTFX \
 传送到常用计划面板和保险箱 TP to NC safe、Heist panel(Facility & Kosatka) 
-### 5.杂项 Misc 
+### 6.杂项 Misc 
 过多选项，不一一列举 Too many cluttered options to list
-### 6.全局选项 Global Troll 
+### 7.全局选项 Global Troll 
 爆炸 Explode \
 防空警报 Sound spam \
 伞崩 Parachute crash \
 赠送暴君MK2 Spawn Oppressor Mk II
-### 7.调试 Debug 
+### 8.调试 Debug 
 自定义物体和粒子效果生成 Create object、PTFX with name\
 取消同步(龟壳) Block sync with others\
 清理附近粒子效果和物体表面痕迹 Clear PTFX in range
-### 8.玩家选项 PlayerMenu
+### 9.玩家选项 PlayerMenu
 带有粒子效果的传送到玩家 TP to player with PTFX \
 恶搞 Troll
 ## 关联Github仓库 Related Github Repositories
 Heist Lua by Wang https://github.com/wangzixuank/YimMenu-HeistLua \
 GTA5线上小助手Lua仓库 GTA5OnlineTools' Online Lua Repo https://github.com/CrazyZhang666/GTA5OnlineLua 
 ## 截图 screenshots
-![image](https://cdn.discordapp.com/attachments/1123459970806054975/1131247030983995412/image.png)
-![image](https://cdn.discordapp.com/attachments/1123459970806054975/1131247031323725864/image.png)
-![image](https://cdn.discordapp.com/attachments/1123459970806054975/1131247031873175623/image.png)
+![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205683656360036/image.png)
+![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205684029665280/image.png)
+![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205684264554656/image.png)
+![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205684524580874/image.png)

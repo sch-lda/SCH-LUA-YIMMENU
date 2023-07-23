@@ -3365,7 +3365,7 @@ end)
 end
 
 
-------------------------------------------------技工 呼叫 载具资产 freemode.c Begian
+------------------------------------------------技工 呼叫 载具资产 freemode.c began
 
 void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip* pblParam4, Blip* pblParam5, Blip* pblParam6, Blip* pblParam7, Blip* pblParam8) // Position - 0x42ED1D
 {

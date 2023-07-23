@@ -681,7 +681,7 @@ local vehjmpr = gentab:add_checkbox("载具跳跃") --只是一个开关，代�
 
 gentab:add_sameline()
 
-local vehdoorlk4p = gentab:add_checkbox("对玩家锁门") --只是一个开关，代码往后面找
+local vehdoorlk4p = gentab:add_checkbox("对所有玩家锁门") --只是一个开关，代码往后面找
 
 gentab:add_text("NPC批量控制") 
 

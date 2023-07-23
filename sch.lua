@@ -17,6 +17,13 @@
 另请确保通过小助手官方discord用户yeahsch(sch)发布的文件下载，其他任何方式均有可能是恶意脚本
 Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
+外部链接
+Yimmenu lib By Discord@alice2333 https://discord.com/channels/388227343862464513/1124473215436214372 能够为开发者提供支持
+YimMenu-HeistLua https://github.com/wangzixuank/YimMenu-HeistLua 一个Yim开源任务脚本
+
+Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Control脚本和MusinessBanager脚本，Blue-Flag Lua虽然有些过时但也提供了一些灵感
+小助手官方Discord中 Alice、wangzixuan、nord123对Lua的编写提供了帮助
+
 对于lua编写可能有帮助的网站
     1.Yimmenu Lua API  https://github.com/YimMenu/YimMenu/tree/master/docs/lua
     2.GTA5 Native Reference (本机函数)  https://nativedb.spyral.dev
@@ -790,7 +797,8 @@ gentab:add_sameline()
 gentab:add_button("移除佩里科重甲兵", function()
     for _, ent in pairs(entities.get_all_peds_as_handles()) do
         if ENTITY.GET_ENTITY_MODEL(ent) == 193469166 then
-            PED.SET_PED_COORDS_KEEP_VEHICLE(ent, 5079.87, -5786.66, 1.5)
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent,true,true) --不执行这个下面会删除失败
+            ENTITY.DELETE_ENTITY(ent)
         end
     end
 end)
@@ -2230,12 +2238,12 @@ end)
 script.register_looped("schlua-miscservice", function() 
     if  checkfootaudio:is_enabled() then --控制自己是否产生脚步声
         AUDIO.SET_PED_FOOTSTEPS_EVENTS_ENABLED(PLAYER.PLAYER_PED_ID(),false)
-        if loopa1 == 0 then
+        if loopa1 == 0 then --这段代码只会在开启开关时执行一次，而不是循环
             gui.show_message("脚步声控制","静音")
         end
         loopa1 = 1
     else
-        if loopa1 == 1 then                    
+        if loopa1 == 1 then     --这段代码只会在关掉开关时执行一次，而不是循环               
         AUDIO.SET_PED_FOOTSTEPS_EVENTS_ENABLED(PLAYER.PLAYER_PED_ID(),true)
         gui.show_message("脚步声控制","有声")
         loopa1 = 0
@@ -2243,7 +2251,7 @@ script.register_looped("schlua-miscservice", function()
     end
 
     if  checkSONAR:is_enabled() then --控制声纳开关
-        if loopa4 == 0 then
+        if loopa4 == 0 then  --这段代码只会在开启开关时执行一次，而不是循环
             HUD.SET_MINIMAP_SONAR_SWEEP(true)
             gui.show_message("声纳","开启")
         end
@@ -2276,7 +2284,7 @@ script.register_looped("schlua-miscservice", function()
                 loopa14 = 0
             else
                 tarveh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED(network.get_selected_player()))
-                if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh)  then
+                if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(tarveh)  then --先请求控制才能 修改其他玩家的载具状态
                     local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(tarveh)
                     NETWORK.SET_NETWORK_ID_CAN_MIGRATE(netid, true)
                     local time = os.time()
@@ -2288,7 +2296,8 @@ script.register_looped("schlua-miscservice", function()
                         script_util:yield()
                     end
                 end
-                ENTITY.SET_ENTITY_PROOFS(tarveh, true, true, true, true, true, 0, 0, true)
+                --如果未被作弊者拦截,理论上应该请求控制成功了
+                ENTITY.SET_ENTITY_PROOFS(tarveh, true, true, true, true, true, 0, 0, true) --似乎没啥用...
                 ENTITY.SET_ENTITY_INVINCIBLE(tarveh, true)
                 VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(tarveh, false)
                 gui.show_message("载具无敌","已应用")
@@ -3072,8 +3081,8 @@ script.register_looped("schlua-ectrlervice", function()
         for _, ent in pairs(entities.get_all_objects_as_handles()) do
             for __, cam in pairs(CamList) do
                 if ENTITY.GET_ENTITY_MODEL(ent) == cam then
-                    ENTITY.FREEZE_ENTITY_POSITION(ent,false)
-                    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(ent, 5079.87, -5786.66, 1, false, true, true)
+                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent,true,true) --不执行这个下面会删除失败 @nord123#9579
+                    ENTITY.DELETE_ENTITY(ent)               
                 end
             end
         end

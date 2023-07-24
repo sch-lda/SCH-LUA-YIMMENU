@@ -1,4 +1,4 @@
--- v1.58 -- 
+-- v1.59 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.58"
+local luaversion = "v1.59"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -714,11 +714,15 @@ local react4any = gentab:add_checkbox("起飞a") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-local react5any = gentab:add_checkbox("收为保镖a") --只是一个开关，代码往后面找
+local react5any = gentab:add_checkbox("收为保镖a(不稳定)") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
 local revitalizationped = gentab:add_checkbox("复活(不稳定)") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local rmdied = gentab:add_checkbox("移除尸体") --只是一个开关，代码往后面找
 
 gentab:add_text("被NPC瞄准自动反击") 
 
@@ -746,6 +750,10 @@ gentab:add_sameline()
 
 local aimreact5 = gentab:add_checkbox("收为保镖b") --只是一个开关，代码往后面找
 
+gentab:add_sameline()
+
+local aimreact6 = gentab:add_checkbox("移除b") --只是一个开关，代码往后面找
+
 gentab:add_text("NPC瞄准任何人自动反击") 
 
 gentab:add_sameline()
@@ -771,6 +779,10 @@ local aimreact4any = gentab:add_checkbox("起飞c") --只是一个开关，代�
 gentab:add_sameline()
 
 local aimreact5any = gentab:add_checkbox("收为保镖c") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact6any = gentab:add_checkbox("移除c") --只是一个开关，代码往后面找
 
 local delallcam = gentab:add_checkbox("移除所有摄像头") --只是一个开关，代码往后面找
 
@@ -2594,6 +2606,7 @@ script.register_looped("schlua-miscservice", function()
 
     if vehboost:is_enabled() then --载具加速
         if PAD.IS_CONTROL_PRESSED(0, 352) and PED.IS_PED_IN_ANY_VEHICLE(PLAYER.PLAYER_PED_ID()) then --按下Shift且在载具中
+            --https://docs.fivem.net/docs/game-references/controls/ 如需自定义，查询控制键位对应的数字，替换掉352即可
             local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
             local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)  
@@ -2945,6 +2958,18 @@ script.register_looped("schlua-ectrlervice", function()
         end
     end
 
+    if  aimreact6:is_enabled() then --控制NPC瞄准惩罚6 -移除
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                ENTITY.SET_ENTITY_AS_MISSION_ENTITY(peds,true,true) --不执行这个下面会删除失败
+                ENTITY.DELETE_ENTITY(peds)            
+            end
+        end
+    end
+
     if  aimreact4:is_enabled() then --控制NPC瞄准惩罚4 -起飞
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -3039,6 +3064,18 @@ script.register_looped("schlua-ectrlervice", function()
         end
     end
 
+    if  aimreact6any:is_enabled() then --控制NPC瞄准任何人惩罚6 -移除
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                ENTITY.SET_ENTITY_AS_MISSION_ENTITY(peds,true,true) --不执行这个下面会删除失败
+                ENTITY.DELETE_ENTITY(peds)            
+            end
+        end
+    end
+
     if  aimreact4any:is_enabled() then --控制NPC瞄准任何人惩罚4 -起飞
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -3127,6 +3164,18 @@ script.register_looped("schlua-ectrlervice", function()
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
                 ENTITY.SET_ENTITY_HEALTH(peds,0,true)
+            end
+        end
+    end
+
+    if  rmdied:is_enabled() then --控制NPC -移除尸体
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_DEAD_OR_DYING(peds,1) then 
+                ENTITY.SET_ENTITY_AS_MISSION_ENTITY(peds,true,true) --不执行这个下面会删除失败
+                ENTITY.DELETE_ENTITY(peds)
             end
         end
     end
@@ -3316,8 +3365,6 @@ end)
 script.register_looped("schlua-drawservice", function() 
     if  DrawHost:is_enabled() then
         screen_draw_text(string.format("战局主机:".. PLAYER.GET_PLAYER_NAME(NETWORK.NETWORK_GET_HOST_PLAYER_INDEX())),0.180,0.8, 0.4 , 0.4)
-
-        
         if SCRIPT.HAS_SCRIPT_LOADED("freemode") then
         freemodehost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
         screen_draw_text(string.format("战局脚本主机:".. PLAYER.GET_PLAYER_NAME(freemodehost)),  0.180, 0.828, 0.4 , 0.4)
@@ -3325,11 +3372,11 @@ script.register_looped("schlua-drawservice", function()
 
         if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") or SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller_2020") then
             if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
-                fmmchost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
+                fmmchost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",-1,0)
                 screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmchost)), 0.180, 0.910, 0.4 , 0.4)
             end
             if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
-                fmmc2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
+                fmmc2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",-1,0)
                 screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmc2020host)), 0.180, 0.910, 0.4 , 0.4)
             end
             

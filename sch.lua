@@ -1,4 +1,4 @@
--- v1.57 -- 
+-- v1.58 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.57"
+local luaversion = "v1.58"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -2593,7 +2593,7 @@ script.register_looped("schlua-miscservice", function()
     end
 
     if vehboost:is_enabled() then --载具加速
-        if PAD.IS_CONTROL_PRESSED(0, 352) then
+        if PAD.IS_CONTROL_PRESSED(0, 352) and PED.IS_PED_IN_ANY_VEHICLE(PLAYER.PLAYER_PED_ID()) then --按下Shift且在载具中
             local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
             local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)  

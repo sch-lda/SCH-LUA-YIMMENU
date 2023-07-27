@@ -1,5 +1,5 @@
 # SCH-LUA-YIMMENU
-Currently no English version available.\
+[English Version translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
 学习使用Lua的一次尝试.试图让免费菜单Yimmenu具备更多P2C菜单的实用功能 \
 An attempt to learn Lua.Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
 它是实验性的，仅留作备份存档，没有针对用户优化，稳定性和安全性没有保障 \
@@ -51,8 +51,11 @@ MPC瞄准惩罚(摔倒/杀死/中断/上天/燃烧...) NPC aiming reaction(ragdo
 修理载具 Repair Vehicle \
 恶搞 Troll
 ## 关联Github仓库 Related Github Repositories
-Heist Lua by Wang https://github.com/wangzixuank/YimMenu-HeistLua \
-GTA5线上小助手Lua仓库 GTA5OnlineTools' Online Lua Repo https://github.com/CrazyZhang666/GTA5OnlineLua 
+Heist Lua by Wang (ZH_CN) https://github.com/wangzixuank/YimMenu-HeistLua \
+GTA5线上小助手Lua仓库 (ZH_CN) GTA5OnlineTools' Online Lua Repo https://github.com/CrazyZhang666/GTA5OnlineLua \
+RScript (ZH_CN) https://github.com/TCRoid/YimMenu-Lua-RScript \
+Alestarov_Menu (EN) https://github.com/Alestarov/YimMenu-lua-script-Alestarov_Menu \
+YIMMENU官方Lua仓库 (EN) YIMMENU Official Lua Repo https://github.com/YimMenu-Lua
 ## 截图 screenshots
 ![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/64751e8e-5d6f-48c6-99a9-ccd142f17b9f)
 ![image](https://cdn.discordapp.com/attachments/1123459970806054975/1132205684029665280/image.png)

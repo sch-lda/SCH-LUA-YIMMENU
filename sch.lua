@@ -1,4 +1,4 @@
--- v1.61 -- 
+-- v1.62 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,13 +34,15 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.61"
+local luaversion = "v1.62"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
 else
     local_()
 end
+
+local verchka1 = 0
 
 local gentab = gui.add_tab("sch-lua-Alpha-"..luaversion)
 
@@ -709,7 +711,42 @@ local react4any = gentab:add_checkbox("起飞a") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-local react5any = gentab:add_checkbox("收为保镖a(不稳定)") --只是一个开关，代码往后面找
+gentab:add_button("收为保镖", function()
+    local pedtable = entities.get_all_peds_as_handles()
+    for _, peds in pairs(pedtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+        if calcDistance(selfpos, ped_pos) <= 200 and peds ~= PLAYER.PLAYER_PED_ID() then 
+            TASK.CLEAR_PED_TASKS(peds)
+            PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+            PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+            PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
+            PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
+            PED.SET_PED_COMBAT_ABILITY(peds, 2)
+            PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+            PED.SET_PED_FLEE_ATTRIBUTES(peds, 512, true)
+            PED.SET_PED_FLEE_ATTRIBUTES(peds, 1024, true)
+            PED.SET_PED_FLEE_ATTRIBUTES(peds, 2048, true)
+            PED.SET_PED_FLEE_ATTRIBUTES(peds, 16384, true)
+            PED.SET_PED_FLEE_ATTRIBUTES(peds, 131072, true)
+            PED.SET_PED_FLEE_ATTRIBUTES(peds, 262144, true)
+            PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
+            PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
+            PED.SET_PED_CONFIG_FLAG(peds, 394, true)
+            PED.SET_PED_CONFIG_FLAG(peds, 400, true)
+            PED.SET_PED_CONFIG_FLAG(peds, 134, true)
+            WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
+            PED.SET_PED_ACCURACY(peds,100)
+            TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+            ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+            pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
+            HUD.REMOVE_BLIP(pedblip)
+            newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
+            HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
+            HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
+        end
+    end
+end)
 
 gentab:add_sameline()
 
@@ -743,7 +780,7 @@ local react4anyac = gentab:add_checkbox("起飞a1") --只是一个开关，代�
 
 gentab:add_sameline()
 
-local react5anyac = gentab:add_checkbox("收为保镖a1(不稳定)") --只是一个开关，代码往后面找
+local react5anyac = gentab:add_checkbox("收为保镖a1") --只是一个开关，代码往后面找
 
 gentab:add_text("被NPC瞄准自动反击") 
 
@@ -1931,7 +1968,7 @@ gentab:add_button("PED伞崩", function() --恶毒的东西
 end)
 
 gentab:add_separator()
-gentab:add_text("变量调整") 
+gentab:add_text("变量调整-即使你将作用范围设置为一个较大值,但实际上仍然受游戏的限制") 
 
 gentab:add_text("NPC/载具力场作用范围") 
 gentab:add_sameline()
@@ -3050,7 +3087,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
                 TASK.CLEAR_PED_TASKS(peds)
                 PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
                 PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
@@ -3073,6 +3110,12 @@ script.register_looped("schlua-ectrlservice", function()
                 PED.SET_PED_ACCURACY(peds,100)
                 TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
                 ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+                pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
+                HUD.REMOVE_BLIP(pedblip)
+                newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
+                HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
+                HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
+
             end
         end
     end
@@ -3156,7 +3199,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+            if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
                 TASK.CLEAR_PED_TASKS(peds)
                 PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
                 PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
@@ -3179,6 +3222,11 @@ script.register_looped("schlua-ectrlservice", function()
                 PED.SET_PED_ACCURACY(peds,100)
                 TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
                 ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+                pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
+                HUD.REMOVE_BLIP(pedblip)
+                newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
+                HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
+                HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
             end
         end
     end
@@ -3301,38 +3349,6 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
-    if  react5any:is_enabled() then --控制NPC 收为保镖
-        local pedtable = entities.get_all_peds_as_handles()
-        for _, peds in pairs(pedtable) do
-            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
-                TASK.CLEAR_PED_TASKS(peds)
-                PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
-                PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
-                PED.SET_PED_COMBAT_ABILITY(peds, 2)
-                PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 512, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 1024, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 2048, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 16384, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 131072, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 262144, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 394, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 400, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 134, true)
-                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
-                PED.SET_PED_ACCURACY(peds,100)
-                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
-                ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
-            end
-        end
-    end
-
     if  react3anyac:is_enabled() then --控制敌对NPC -燃烧
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -3367,7 +3383,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1) then 
                 TASK.CLEAR_PED_TASKS(peds)
                 PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
                 PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
@@ -3390,6 +3406,11 @@ script.register_looped("schlua-ectrlservice", function()
                 PED.SET_PED_ACCURACY(peds,100)
                 TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
                 ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+                pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
+                HUD.REMOVE_BLIP(pedblip)
+                newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
+                HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
+                HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
             end
         end
     end
@@ -3426,7 +3447,6 @@ script.register_looped("schlua-ectrlservice", function()
                 TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
                 ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
                 PED.RESURRECT_PED(peds)
-
             end
         end
     end
@@ -3553,36 +3573,39 @@ script.register_looped("schlua-testservice", function()
         plydist:set_value(formattedDistance)
     end
 end)
---[[
+
+event.register_handler(menu_event.PlayerMgrInit, function ()
+    verchka1 = verchka1 + 1
+end)
+
 script.register_looped("schlua-verckservice", function() 
-    script_util:sleep(60000)
+if verchka1 > 0 and verchka1 < 99 then
     if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
-        local start_time = os.time()
-        local duration = 10  
-        while os.time() - start_time < duration do
-        local scaleForm = GRAPHICS.REQUEST_SCALEFORM_MOVIE("POPUP_WARNING")
-        GRAPHICS.DRAW_RECT(.5, .5, 1, 1, 255, 20, 20, 255)
-        GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleForm, "SHOW_POPUP_WARNING")
-        GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleForm, 0, 0, 0, 0, 0)
-        GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT(500.0)
-        GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("SCH LUA警告")
-        GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING("脚本不支持您的游戏版本,继续使用将损坏您的在线账户!")
-        GRAPHICS.END_SCALEFORM_MOVIE_METHOD(scaleForm)
-        script_util:sleep(10)
+        if STREAMING.IS_PLAYER_SWITCH_IN_PROGRESS() then
+        else
+            log.warning("sch-lua脚本不支持您的游戏版本,请立即删除,继续使用将损坏您的在线账户!")
+            gui.show_error("sch-lua不支持您的游戏版本","请立即删除以免损坏在线存档")
+            script_util:sleep(1000)
+            verchka1 = verchka1 + 1
         end
     else
-        script_util:sleep(6000000)
+        verchka1 = 100
+        log.info("已通过游戏版本适配检测")
     end
+end
 end)
-]]
+
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 --[[
     	Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
 
-        if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
-   gui.show_error("SCH LUA", "游戏版本不受支持!仍然使用可能损坏游戏")
-end
+    local bsta
+    if bsta == globals.get_int(1574996) then
+    else
+        bsta = globals.get_int(1574996)
+        log.info(globals.get_int(1574996))
+    end
 
 
 ------------------------------------------------技工 呼叫 载具资产 freemode.c began

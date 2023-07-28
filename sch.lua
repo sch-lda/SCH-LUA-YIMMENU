@@ -1,4 +1,4 @@
--- v1.60 -- 
+-- v1.61 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.60"
+local luaversion = "v1.61"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -87,11 +87,6 @@ function screen_draw_text(text, x, y, p0 , size) --在屏幕上绘制文字
 	HUD.SET_TEXT_EDGE(1, 0, 0, 0, 0)
 	HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text)
 	HUD.END_TEXT_COMMAND_DISPLAY_TEXT(x, y) --占坐标轴的比例
-end
-
-function StatGetInt(stathash)
-    statvalue = STATS.STAT_GET_INT(stathash, statvalue, -1) 
-    return statvalue
 end
 
 --[[  暂未使用
@@ -191,15 +186,11 @@ end
 
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
---[[
+
 gentab:add_button("测试6", function()
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
-    local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    distance = calcDistance(pos,targpos)
-    formattedDistance = string.format("%.1f", distance)
-    log.info(formattedDistance)
+log.info(stats.get_int("MPPLY_LAST_MP_CHAR"))
 end)
-]]
+
 
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
@@ -224,7 +215,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("配置佩岛前置(猎豹雕像)", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等  --用于判断当前是角色1还是角色2
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
     local mpx = "MP0_"--用于判断当前是角色1还是角色2
     if playerid == 1 then --用于判断当前是角色1还是角色2
         mpx = "MP1_" --用于判断当前是角色1还是角色2
@@ -253,7 +244,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("配置佩岛前置(粉钻)", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
         mpx = "MP1_" 
@@ -282,7 +273,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("重置佩岛", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
         mpx = "MP1_" 
@@ -310,7 +301,7 @@ gentab:add_button("重置佩岛", function()
 end)
 
 gentab:add_button("配置赌场前置(钻石)", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
         mpx = "MP1_" 
@@ -337,7 +328,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("配置赌场前置(黄金)", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
         mpx = "MP1_" 
@@ -364,7 +355,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("重置赌场计划面板", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
         mpx = "MP1_" 
@@ -385,7 +376,7 @@ end)
 
 
 gentab:add_button("转换CEO/首领", function()
-    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then --1895156+playerIndex*609+10+429+1 = 0 为CEO =1为摩托帮首领
@@ -404,7 +395,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("显示事务所电脑", function()
-    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appfixersecurity")
     else
@@ -422,7 +413,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("显示地堡电脑", function()
-    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appbunkerbusiness")
     else
@@ -438,7 +429,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("显示机库电脑", function()
-    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appsmuggler")
     else
@@ -454,7 +445,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("显示游戏厅产业总控电脑", function()
-    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("apparcadebusinesshub")
     else
@@ -470,7 +461,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("显示恐霸主控面板", function()
-    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("apphackertruck")
     else
@@ -486,7 +477,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("显示复仇者面板", function()
-    local playerIndex = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appAvengerOperations")
     else
@@ -855,8 +846,13 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("摩托帮出货一键完成(不稳定)", function()
-    locals.set_int("gb_biker_contraband_sell","821","30")
+gentab:add_button("摩托帮出货一键完成", function()
+    if locals.get_int("gb_biker_contraband_sell",716) >= 1 then
+        locals.set_int("gb_biker_contraband_sell","821","15")
+    else
+        gui.show_error("该任务类型不支持一键完成","一共就一辆卡车也要一键??")
+        log.info("该任务类型不支持一键完成,否则不会有任何收入.一共就一辆送货载具也要使用一键完成??")
+    end
 end)
 
 gentab:add_sameline()
@@ -905,7 +901,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("CEO仓库员工进货一次", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32360,1,playerid)
@@ -917,7 +913,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("机库员工进货一次", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
     STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
 end)
@@ -936,7 +932,7 @@ local iputint3 = gentab:add_input_int("箱")
 
 gentab:add_button("夜总会保险箱30万循环10次", function()
     script.run_in_fiber(function (ncsafeloop)
-        local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
         local mpx = "MP0_"
         if playerid == 1 then 
             mpx = "MP1_" 
@@ -1048,7 +1044,7 @@ local NightclubPropertyInfo = {
 -- Business / Other Online Work Stuff [[update]]
 local function GetOnlineWorkOffset()
     -- GLOBAL_PLAYER_STAT
-        local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     return (1853988 + 1 + (playerid * 867) + 267)
 end
 local function GetNightClubHubOffset()
@@ -1136,16 +1132,34 @@ end)
 gentab:add_separator()
 gentab:add_text("杂项")
 
-gentab:add_button("预览万圣节猎鬼活动", function()
-    globals.set_int(262145+35064,1) --Ghost hunt enable
-    globals.set_int(262145+35158,50000) --Ghost hunt GHOSTHUNT_CASH_REWARD
-    gui.show_message("鬼将随机生成在某个位置","该活动只发生在晚八点至次日凌晨六点")
+local SEa = 0
+
+gentab:add_button("移除收支差", function()
+
+    SE = MONEY.NETWORK_GET_VC_BANK_BALANCE() + stats.get_int("MPPLY_TOTAL_SVC") - stats.get_int("MPPLY_TOTAL_EVC")
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
+    local mpx = "MP0_"--用于判断当前是角色1还是角色2
+    if playerid == 1 then --用于判断当前是角色1还是角色2
+        mpx = "MP1_" --用于判断当前是角色1还是角色2
+    end
+    if SE >= 20000 and SEa == 0 then
+        SE = SE - 10000
+        stats.set_int(mpx.."MONEY_EARN_JOBS",stats.get_int(mpx.."MONEY_EARN_JOBS") + SE )
+        stats.set_int("MPPLY_TOTAL_EVC",stats.get_int("MPPLY_TOTAL_EVC") + SE )
+        gui.show_message("移除收支差","执行成功")
+        log.info("已移除收支差:"..SE)    
+        SEa = 1
+    else
+        gui.show_message("您的收支差正常无需移除或已移除过","完全没有收支差可能反而不正常")
+        SEa = 1
+    end
+
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("移除达克斯冷却", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
         mpx = "MP1_" 
@@ -2161,6 +2175,7 @@ script.register_looped("schlua-dataservice", function()
 
     if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 
         if locals.get_int("gb_biker_contraband_sell",716) ~= 0 then
+            log.info("已锁定摩托帮产业出货任务类型.注意:此功能与摩托帮一键完成出货冲突")
             locals.set_int("gb_biker_contraband_sell",716,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
         end
     end
@@ -2191,7 +2206,7 @@ defpttable = {}
 defpscount2 = 1
 defpscount = 200 --刷200个模型
 
-script.register_looped("schlua-defps", function() 
+script.register_looped("schlua-defpservice", function() 
 
     if  checkspped:is_enabled() then--刷模型
         local sppedtarget = PLAYER.GET_PLAYER_PED(network.get_selected_player())
@@ -2782,7 +2797,7 @@ script.register_looped("schlua-miscservice", function()
 
 end)
 
-script.register_looped("schlua-ectrlervice", function() 
+script.register_looped("schlua-ectrlservice", function() 
     
     if  vehengdmg:is_enabled() then --控制载具引擎破坏
         local vehtable = entities.get_all_vehicles_as_handles()
@@ -3961,7 +3976,7 @@ end)
 
 --[[  已被检测
 gentab:add_button("移除赌场轮盘冷却", function()
-    local playerid = globals.get_int(1574918) --疑似与MPPLY_LAST_MP_CHAR相等
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
 local mpx = "MP0_"
 if playerid == 1 then 

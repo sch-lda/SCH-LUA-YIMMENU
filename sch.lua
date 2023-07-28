@@ -1,4 +1,4 @@
--- v1.62 -- 
+-- v1.63 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.62"
+local luaversion = "v1.63"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -2001,6 +2001,14 @@ local ptfxrm = gentab:add_checkbox("清理PTFX火焰水柱") --只是一个开�
 gentab:add_sameline()
 
 local DECALrm = gentab:add_checkbox("清理物体表面痕迹") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+gentab:add_button("Diasble Ver Check", function()
+    verchka1 = 100
+    log.warning("将忽略lua与游戏版本不匹配的校验,使用过时的脚本您必须自行承担在线存档损坏的风险")
+    gui.show_error("将忽略lua与游戏版本不匹配的校验","您必须承担在线存档损坏的风险")
+end)
 
 gentab:add_text("obj生成(Name)") 
 gentab:add_sameline()

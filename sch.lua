@@ -1,4 +1,4 @@
--- v1.64 -- 
+-- v1.65 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.64"
+local luaversion = "v1.65"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -938,6 +938,17 @@ gentab:add_sameline()
 gentab:add_button("地堡满原材料", function()
     globals.set_int(1648657+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("夜总会满人气", function()
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
+    local mpx = "MP0_"
+    if playerid == 1 then 
+        mpx = "MP1_" 
+    end
+    STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 10000, true)
 end)
 
 gentab:add_sameline()
@@ -2257,10 +2268,10 @@ script.register_looped("schlua-dataservice", function()
             tunables.set_int("GR_MANU_PRODUCTION_TIME", 5000)
         end
         if globals.get_int(262145 + 21713) ~= 5000 then
-            globals.set_int(262145 + 21713, 5000)
+            globals.set_int(262145 + 21713, 5000) -- 631477612
         end
         if globals.get_int(262145 + 21714) ~= 5000 then
-            globals.set_int(262145 + 21714, 5000)
+            globals.set_int(262145 + 21714, 5000) -- 818645907
         end
         loopa19 =1
     else

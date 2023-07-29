@@ -1,4 +1,4 @@
--- v1.63 -- 
+-- v1.64 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.63"
+local luaversion = "v1.64"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -904,6 +904,10 @@ local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
 
 gentab:add_sameline()
 
+local bussp = gentab:add_checkbox("摩托帮产业+地堡+致幻剂快速生产(!)")
+
+gentab:add_sameline()
+
 gentab:add_button("地堡出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     locals.set_int("gb_gunrunning","1980","0") --bunkerAutoComplete: {('1206', '774')}  LOCAL gb_gunrunning set to 0 to autocomplete 
@@ -925,6 +929,7 @@ gentab:add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+3,1) --大麻
     globals.set_int(1648657+1+4,1) --证件
     globals.set_int(1648657+1+0,1) --假钞
+    globals.set_int(1648657+1+6,1) --致幻剂
     gui.show_message("自动补货","全部完成")
 end)
 
@@ -2144,6 +2149,7 @@ local loopa15 = 0  --控制远程载具无碰撞
 local loopa16 = 0  --控制世界灯光开关
 local loopa17 = 0  --控制头顶520
 local loopa18 = 0  --控制载具锁门
+local loopa19 = 0  --控制摩托帮生产速度
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2223,6 +2229,53 @@ script.register_looped("schlua-dataservice", function()
             log.info("已锁定摩托帮产业出货任务类型.注意:此功能与摩托帮一键完成出货冲突")
             locals.set_int("gb_biker_contraband_sell",716,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
         end
+    end
+
+    if  bussp:is_enabled() then--锁定生产速度
+        if loopa19 == 0 then
+            gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
+        end
+        if tunables.get_int("BIKER_METH_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_CRACK_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_FAKEIDS_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_WEED_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_COUNTERCASH_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_ACID_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("GR_MANU_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("GR_MANU_PRODUCTION_TIME", 5000)
+        end
+        if globals.get_int(262145 + 21713) ~= 5000 then
+            globals.set_int(262145 + 21713, 5000)
+        end
+        if globals.get_int(262145 + 21714) ~= 5000 then
+            globals.set_int(262145 + 21714, 5000)
+        end
+        loopa19 =1
+    else
+        if loopa19 == 1 then 
+            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 1800000)
+            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 1800000)
+            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 1800000)
+            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 1800000)
+            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 1800000)
+            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 1800000)
+            tunables.set_int("GR_MANU_PRODUCTION_TIME", 900000)
+            globals.set_int(262145 + 21713, 900000)
+            globals.set_int(262145 + 21714, 900000)
+            loopa19 =0
+        end    
     end
 
     if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离

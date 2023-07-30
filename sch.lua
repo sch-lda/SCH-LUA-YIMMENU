@@ -1,4 +1,4 @@
--- v1.65 -- 
+-- v1.66 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.65"
+local luaversion = "v1.66"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -1343,6 +1343,10 @@ gentab:add_sameline()
 
 local checkmiss = gentab:add_checkbox("移除虎鲸导弹冷却并提升射程")--只是一个开关，代码往后面找
  
+gentab:add_sameline()
+
+local taxisvs = gentab:add_checkbox("线上出租车工作自动化")--只是一个开关，代码往后面找
+ 
 local checkzhongjia = gentab:add_checkbox("请求重甲花费(用于删除黑钱)")--只是一个开关，代码往后面找
 
 gentab:add_sameline()
@@ -2163,6 +2167,38 @@ local loopa18 = 0  --控制载具锁门
 local loopa19 = 0  --控制摩托帮生产速度
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
+
+script.register_looped("schlua-taxiservice", function() 
+    if  taxisvs:is_enabled() then
+    local psgcrd = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(HUD.GET_CLOSEST_BLIP_INFO_ID(280)), 0, 6, 0)
+    if HUD.DOES_BLIP_EXIST(HUD.GET_CLOSEST_BLIP_INFO_ID(280)) then
+        if psgcrd.x ~= 0 then
+            log.info("发现乘客")
+            script_util:sleep(500)
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), psgcrd.x, psgcrd.y, psgcrd.z, false, false, false, false)
+            script_util:sleep(1000)
+            PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 86, 1)
+            log.info("乘客将加速上车")
+            local pedtable = entities.get_all_peds_as_handles()
+            for _, peds in pairs(pedtable) do
+                local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+                local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+                if calcDistance(selfpos, ped_pos) <= 15 and peds ~= PLAYER.PLAYER_PED_ID() then 
+                    PED.SET_PED_MOVE_RATE_OVERRIDE(ped, 10.0)
+                end
+            end
+            while HUD.DOES_BLIP_EXIST(HUD.GET_CLOSEST_BLIP_INFO_ID(280)) do
+                script_util:yield()
+            end
+            log.info("乘客已上车")
+            script_util:sleep(500)
+            command.call("objectivetp",{}) --调用Yimmenu自身传送到目标点命令
+            log.info("传送到目的地")
+        end
+    else
+    end
+    end
+end)
 
 script.register_looped("schlua-recoveryservice", function() 
 

@@ -1184,18 +1184,6 @@ end)
 gentab:add_separator()
 gentab:add_text("杂项")
 
-gentab:add_button("自动驾驶测试", function()
-    local vehselfisin = ENTITY.GET_ENTITY_MODEL(vehicle)
-    local ped = PLAYER.PLAYER_PED_ID()
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(ped)
-    local psgcrd = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(HUD.GET_CLOSEST_BLIP_INFO_ID(280)), 0, 6, 0)
-    PED.SET_DRIVER_ABILITY(ped, 1.0)
-    PED.SET_DRIVER_AGGRESSIVENESS(ped, 0.6)
-    PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
-    TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
-    TASK.TASK_VEHICLE_DRIVE_TO_COORD(ped, vehicle, psgcrd.x, psgcrd.y, psgcrd.z, 200, 1.0, vehselfisin, 787004, 5.0, 1.0)
-end)
-
 local SEa = 0
 
 gentab:add_button("移除收支差", function()

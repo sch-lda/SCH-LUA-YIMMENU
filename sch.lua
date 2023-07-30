@@ -1,4 +1,4 @@
--- v1.66 -- 
+-- v1.67 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.66"
+local luaversion = "v1.67"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -187,13 +187,12 @@ end
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
-
-
+--[[
 gentab:add_button("测试6", function()
-log.info(stats.get_int("MPPLY_LAST_MP_CHAR"))
+    globals.set_float(262145, 100.0)
+    log.info(tunables.get_float("CASH_MULTIPLIER"))
 end)
-
-
+]]
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 --------------------------------------------------------------------------------------- Lua管理器页面
@@ -2085,6 +2084,12 @@ gentab:add_button("生成ptfx", function()
     end)
 end)
 
+local cashmtp = gentab:add_checkbox("设置联系人任务收入倍率")
+
+gentab:add_sameline()
+
+local cashmtpin = gentab:add_input_float("倍")
+
 gui.get_tab(""):add_text("调试") 
 
 gui.get_tab(""):add_text("obj生成(Name)") 
@@ -2263,6 +2268,14 @@ script.register_looped("schlua-dataservice", function()
 
     if  check4:is_enabled() then--锁定机库仓库进货数
         globals.set_int(1890730+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
+    end
+
+    if  cashmtp:is_enabled() and cashmtpin:get_value() >= 0 then--锁定普通联系人差事奖励倍率
+        if globals.get_float(262145) ~= cashmtpin:get_value() then
+            formattedcashmtpin = string.format("%.3f", cashmtpin:get_value())
+            gui.show_message("联系人任务收入倍率",formattedcashmtpin.."倍")
+            globals.set_float(262145,cashmtpin:get_value())
+        end
     end
 
     if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘奖品--只影响实际结果，不影响转盘显示
@@ -3672,7 +3685,7 @@ script.register_looped("schlua-drawservice", function()
     end
 end)
 
-script.register_looped("schlua-testservice", function() 
+script.register_looped("schlua-calcservice", function() 
     if gui.get_tab(""):is_selected() then
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
         local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
@@ -3683,7 +3696,13 @@ script.register_looped("schlua-testservice", function()
 end)
 
 event.register_handler(menu_event.PlayerMgrInit, function ()
-    verchka1 = verchka1 + 1
+
+    verchka1 = verchka1 + 1 --触发lua版本检查:检查lua是否适配当前游戏版本
+
+    if cashmtpin:get_value() == 0 then
+        cashmtpin:set_value(globals.get_float(262145))
+    end
+
 end)
 
 script.register_looped("schlua-verckservice", function() 

@@ -1,4 +1,4 @@
--- v1.67 -- 
+-- v1.68 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -26,7 +26,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 
 对于lua编写可能有帮助的网站
     1.Yimmenu Lua API  https://github.com/YimMenu/YimMenu/tree/master/docs/lua
-    2.GTA5 Native Reference (本机函数)  https://nativedb.spyral.dev
+    2.GTA5 Native Reference (本机函数)  https://nativedb.dotindustries.dev/natives
     3.GTA5 反编译脚本  https://github.com/Primexz/GTAV-Decompiled-Scripts
     4.PlebMaster (快速搜索模型Hash)  https://forge.plebmasters.de
     5.gta-v-data-dumps (查ptfx/声音/模型)  https://github.com/DurtyFree/gta-v-data-dumps
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.67"
+local luaversion = "v1.68"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -1184,6 +1184,18 @@ end)
 gentab:add_separator()
 gentab:add_text("杂项")
 
+gentab:add_button("自动驾驶测试", function()
+    local vehselfisin = ENTITY.GET_ENTITY_MODEL(vehicle)
+    local ped = PLAYER.PLAYER_PED_ID()
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(ped)
+    local psgcrd = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(HUD.GET_CLOSEST_BLIP_INFO_ID(280)), 0, 6, 0)
+    PED.SET_DRIVER_ABILITY(ped, 1.0)
+    PED.SET_DRIVER_AGGRESSIVENESS(ped, 0.6)
+    PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
+    TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
+    TASK.TASK_VEHICLE_DRIVE_TO_COORD(ped, vehicle, psgcrd.x, psgcrd.y, psgcrd.z, 200, 1.0, vehselfisin, 787004, 5.0, 1.0)
+end)
+
 local SEa = 0
 
 gentab:add_button("移除收支差", function()
@@ -1341,11 +1353,13 @@ local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开
 gentab:add_sameline()
 
 local checkmiss = gentab:add_checkbox("移除虎鲸导弹冷却并提升射程")--只是一个开关，代码往后面找
- 
+
+local taxisvs = gentab:add_checkbox("线上出租车工作自动化(连续传送)")--只是一个开关，代码往后面找
+  
 gentab:add_sameline()
 
-local taxisvs = gentab:add_checkbox("线上出租车工作自动化")--只是一个开关，代码往后面找
- 
+local taxisvs2 = gentab:add_checkbox("线上出租车工作自动化(仿真驾驶)")--只是一个开关，代码往后面找
+
 local checkzhongjia = gentab:add_checkbox("请求重甲花费(用于删除黑钱)")--只是一个开关，代码往后面找
 
 gentab:add_sameline()
@@ -2004,6 +2018,27 @@ gentab:add_sameline()
 local npcaimprange = gentab:add_input_int("惩罚半径(米)")
 npcaimprange:set_value(1000)
 
+gentab:add_text("出租车自动化随机间隔") 
+gentab:add_sameline()
+local taximin = gentab:add_input_int("最小值(毫秒)")
+taximin:set_value(0)
+local taximax = gentab:add_input_int("最大值(毫秒)")
+taximax:set_value(0)
+gentab:add_sameline()
+local taximina = 0
+local taximaxa = 0
+gentab:add_button("写入间隔", function()
+    if taximax:get_value() >= taximin:get_value() and taximin:get_value() >= 0 then
+        taximina = taximin:get_value()
+        taximaxa = taximax:get_value()
+        gui.show_message("成功","已应用")
+    else
+        gui.show_message("错误","输入不合法,已重置")
+        taximin:set_value(0)
+        taximax:set_value(0)
+    end
+end)
+
 gentab:add_separator()
 gentab:add_text("调试") 
 
@@ -2199,10 +2234,81 @@ script.register_looped("schlua-taxiservice", function()
             script_util:sleep(500)
             command.call("objectivetp",{}) --调用Yimmenu自身传送到目标点命令
             log.info("传送到目的地")
+            delms = math.random(taximina, taximaxa)
+            log.info(delms.."毫秒后执行下一轮出租车工作")
+            script_util:sleep(delms)
         end
     else
     end
     end
+
+    if  taxisvs2:is_enabled() then
+        local psgcrd = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(HUD.GET_CLOSEST_BLIP_INFO_ID(280)), 0, 6, 0)
+        if HUD.DOES_BLIP_EXIST(HUD.GET_CLOSEST_BLIP_INFO_ID(280)) then
+            if psgcrd.x ~= 0 then
+                log.info("发现乘客,正在驾驶前往.按下Shift可立即传送跳过")
+                script_util:sleep(500)
+                local vehselfisin = ENTITY.GET_ENTITY_MODEL(vehicle)
+                local ped = PLAYER.PLAYER_PED_ID()
+                local vehicle = PED.GET_VEHICLE_PED_IS_IN(ped)
+                local psgcrd = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(HUD.GET_CLOSEST_BLIP_INFO_ID(280)), 0, 6, 0)
+                PED.SET_DRIVER_ABILITY(ped, 1.0)
+                PED.SET_DRIVER_AGGRESSIVENESS(ped, 0.6)
+                PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
+                TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
+                TASK.TASK_VEHICLE_DRIVE_TO_COORD(ped, vehicle, psgcrd.x, psgcrd.y, psgcrd.z, 200, 1.0, vehselfisin, 787004, 5.0, 1.0) 
+                script_util:sleep(1500)
+                while calcDistance(ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()), ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(HUD.GET_CLOSEST_BLIP_INFO_ID(280)), 0, 6, 0)) >= 15 and not ENTITY.IS_ENTITY_STATIC(PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID())) do
+                    if PAD.IS_CONTROL_PRESSED(0, 352)  then --按下Shift
+                        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), psgcrd.x, psgcrd.y, psgcrd.z, false, false, false, false)
+                        script_util:sleep(1500)
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 86, 1)
+                    end
+                    script_util:yield()
+                end
+                script_util:sleep(1500)
+                PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 86, 1)
+                while HUD.DOES_BLIP_EXIST(HUD.GET_CLOSEST_BLIP_INFO_ID(280)) do
+                    if PAD.IS_CONTROL_PRESSED(0, 352)  then --按下Shift
+                        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), psgcrd.x, psgcrd.y, psgcrd.z, false, false, false, false)
+                        script_util:sleep(1500)
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 86, 1)
+                    end
+                    script_util:yield()
+                end
+                log.info("乘客已上车")
+                script_util:sleep(1500)
+                objcrd = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(1))
+
+                local vehselfisin = ENTITY.GET_ENTITY_MODEL(vehicle)
+                local ped = PLAYER.PLAYER_PED_ID()
+                local vehicle = PED.GET_VEHICLE_PED_IS_IN(ped)
+                local psgcrd = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(HUD.GET_CLOSEST_BLIP_INFO_ID(280)), 0, 6, 0)
+                PED.SET_DRIVER_ABILITY(ped, 1.0)
+                PED.SET_DRIVER_AGGRESSIVENESS(ped, 0.6)
+                PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
+                TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(ped, true)
+                TASK.TASK_VEHICLE_DRIVE_TO_COORD(ped, vehicle, objcrd.x, objcrd.y, objcrd.z, 200, 1.0, vehselfisin, 787004, 5.0, 1.0) 
+                script_util:sleep(1500)
+                log.info("正在自动驾驶前往目的地,按下shift可立即传送跳过")
+                while calcDistance(ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()), HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(1))) >= 15 and not ENTITY.IS_ENTITY_STATIC(PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID())) do
+                    if PAD.IS_CONTROL_PRESSED(0, 352)  then --按下Shift
+                        command.call("objectivetp",{}) --调用Yimmenu自身传送到目标点命令
+                    end
+                    script_util:yield()
+                end
+                if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(1)) then
+                    log.info("自动驾驶未能精准到达目的地,将使用传送补救")
+                    command.call("objectivetp",{}) --调用Yimmenu自身传送到目标点命令
+                end
+                delms = math.random(taximina, taximaxa)
+                log.info(delms.."毫秒后执行下一轮出租车工作")
+                script_util:sleep(delms)
+            end
+        else
+        end
+        end
+    
 end)
 
 script.register_looped("schlua-recoveryservice", function() 

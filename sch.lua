@@ -1,4 +1,4 @@
--- v1.68 -- 
+-- v1.69 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.68"
+local luaversion = "v1.69"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -187,12 +187,15 @@ end
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
---[[
+
 gentab:add_button("测试6", function()
-    globals.set_float(262145, 100.0)
-    log.info(tunables.get_float("CASH_MULTIPLIER"))
+    log.info(NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0))
+
+            network.force_script_host("fm_mission_controller_2020") --抢脚本主机
+            network.force_script_host("fm_mission_controller") --抢脚本主机
+            log.info(NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0))
 end)
-]]
+
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 
 --------------------------------------------------------------------------------------- Lua管理器页面
@@ -204,13 +207,36 @@ gentab:add_text("任务功能")
 gentab:add_button("佩里科终章一键完成", function()
     script.run_in_fiber(function (pericoinstcpl)
         local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
-        while not PLAYER.PLAYER_ID() == FMMC2020host do   --如果判断不是脚本主机则自动抢脚本主机
+        local FMMChost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0)
+        local time = os.time()
+        while PLAYER.PLAYER_ID() ~= FMMC2020host and PLAYER.PLAYER_ID() ~= FMMChost do   --如果判断不是脚本主机则自动抢脚本主机
+            if os.time() - time >= 10 then
+                log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
+                log.info("已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)")
+                gui.show_error("失败,未成为脚本主机","您可能不在支持一键完成的任务中")
+                break
+            end
             network.force_script_host("fm_mission_controller_2020") --抢脚本主机
+            network.force_script_host("fm_mission_controller") --抢脚本主机
+            log.info("正在抢任务脚本主机以便一键完成...")
             pericoinstcpl:yield()
         end
         locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
         locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
+        locals.set_int("fm_mission_controller", 19710, 12)
+        locals.set_int("fm_mission_controller", 28332, 99999)
+        locals.set_int("fm_mission_controller", 31656, 99999)
     end)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("佩里科终章一键完成(强制)", function()
+        locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
+        locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
+        locals.set_int("fm_mission_controller", 19710, 12)
+        locals.set_int("fm_mission_controller", 28332, 99999)
+        locals.set_int("fm_mission_controller", 31656, 99999)
 end)
 
 gentab:add_sameline()
@@ -2389,26 +2415,26 @@ script.register_looped("schlua-dataservice", function()
         if loopa19 == 0 then
             gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
         end
-        if tunables.get_int("BIKER_METH_PRODUCTION_TIME") ~= 5000 then
-            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 5000)
+        if globals.get_int(262145 + 17571) ~= 5000 then
+            globals.set_int(262145 + 17571, 5000) -- BIKER_WEED_PRODUCTION_TIME
         end
-        if tunables.get_int("BIKER_CRACK_PRODUCTION_TIME") ~= 5000 then
-            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 5000)
+        if globals.get_int(262145 + 17572) ~= 5000 then
+            globals.set_int(262145 + 17572, 5000) 
         end
-        if tunables.get_int("BIKER_FAKEIDS_PRODUCTION_TIME") ~= 5000 then
-            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 5000)
+        if globals.get_int(262145 + 17573) ~= 5000 then
+            globals.set_int(262145 + 17573, 5000) 
         end
-        if tunables.get_int("BIKER_WEED_PRODUCTION_TIME") ~= 5000 then
-            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 5000)
+        if globals.get_int(262145 + 17574) ~= 5000 then
+            globals.set_int(262145 + 17574, 5000) 
         end
-        if tunables.get_int("BIKER_COUNTERCASH_PRODUCTION_TIME") ~= 5000 then
-            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 5000)
+        if globals.get_int(262145 + 17575) ~= 5000 then
+            globals.set_int(262145 + 17575, 5000) 
         end
-        if tunables.get_int("BIKER_ACID_PRODUCTION_TIME") ~= 5000 then
-            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 5000)
+        if globals.get_int(262145 + 17576) ~= 5000 then
+            globals.set_int(262145 + 17576, 5000) 
         end
-        if tunables.get_int("GR_MANU_PRODUCTION_TIME") ~= 5000 then
-            tunables.set_int("GR_MANU_PRODUCTION_TIME", 5000)
+        if globals.get_int(262145 + 21712) ~= 5000 then
+            globals.set_int(262145 + 21712, 5000) -- GR_MANU_PRODUCTION_TIME
         end
         if globals.get_int(262145 + 21713) ~= 5000 then
             globals.set_int(262145 + 21713, 5000) -- 631477612
@@ -2419,13 +2445,13 @@ script.register_looped("schlua-dataservice", function()
         loopa19 =1
     else
         if loopa19 == 1 then 
-            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 1800000)
-            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 1800000)
-            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 1800000)
-            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 1800000)
-            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 1800000)
-            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 1800000)
-            tunables.set_int("GR_MANU_PRODUCTION_TIME", 900000)
+            globals.set_int(262145 + 17571, 1800000) 
+            globals.set_int(262145 + 17572, 1800000) 
+            globals.set_int(262145 + 17573, 1800000) 
+            globals.set_int(262145 + 17574, 1800000) 
+            globals.set_int(262145 + 17575, 1800000) 
+            globals.set_int(262145 + 17576, 1800000) 
+            globals.set_int(262145 + 21712, 900000)
             globals.set_int(262145 + 21713, 900000)
             globals.set_int(262145 + 21714, 900000)
             loopa19 =0
@@ -3760,11 +3786,11 @@ script.register_looped("schlua-drawservice", function()
 
         if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") or SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller_2020") then
             if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
-                fmmchost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",-1,0)
+                fmmchost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0)
                 screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmchost)), 0.180, 0.910, 0.4 , 0.4)
             end
             if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
-                fmmc2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",-1,0)
+                fmmc2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
                 screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmc2020host)), 0.180, 0.910, 0.4 , 0.4)
             end
             
@@ -3819,7 +3845,8 @@ end)
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 --[[
-    	Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
+
+    Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
 
     local bsta
     if bsta == globals.get_int(1574996) then
@@ -3827,6 +3854,8 @@ end)
         bsta = globals.get_int(1574996)
         log.info(globals.get_int(1574996))
     end
+
+	赌场右下角收入    func_3521(iLocal_19710.f_2686, "MONEY_HELD" /*TAKE*/, 1000, 6, 2, 0, "HUD_CASH" /*$~1~*/, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 1, -1);
 
 
 ------------------------------------------------技工 呼叫 载具资产 freemode.c began

@@ -1,4 +1,4 @@
--- v1.70 -- 
+-- v1.71 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.70"
+local luaversion = "v1.71"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -43,6 +43,8 @@ else
 end
 
 local verchka1 = 0
+
+local autoresply = 0
 
 local gentab = gui.add_tab("sch-lua-Alpha-"..luaversion)
 
@@ -159,16 +161,28 @@ function CreateVehicle(Hash, Pos, Heading, Invincible)
     end)
 end
 
+function MCprintspl()
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
+    local mpx = "MP0_"--用于判断当前是角色1还是角色2
+    if playerid == 1 then --用于判断当前是角色1还是角色2
+        mpx = "MP1_" --用于判断当前是角色1还是角色2
+    end
+    log.info("假钞 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY0").."%")
+    log.info("可卡因 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY1").."%")
+    log.info("冰毒 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY2").."%")
+    log.info("大麻 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY3").."%")
+    log.info("假证 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY4").."%")
+    log.info("地堡 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY5").."%")
+    log.info("致幻剂 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY6").."%")
+end
+
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 --[[
 gentab:add_button("测试6", function()
-    log.info(NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0))
 
-            network.force_script_host("fm_mission_controller_2020") --抢脚本主机
-            network.force_script_host("fm_mission_controller") --抢脚本主机
-            log.info(NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0))
+
 end)
 ]]
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
@@ -2401,6 +2415,11 @@ script.register_looped("schlua-dataservice", function()
     end
 
     if  bussp:is_enabled() then--锁定生产速度
+        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
+        local mpx = "MP0_"--用于判断当前是角色1还是角色2
+        if playerid == 1 then --用于判断当前是角色1还是角色2
+            mpx = "MP1_" --用于判断当前是角色1还是角色2
+        end
         if loopa19 == 0 then
             gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
         end
@@ -2430,6 +2449,48 @@ script.register_looped("schlua-dataservice", function()
         end
         if globals.get_int(262145 + 21714) ~= 5000 then
             globals.set_int(262145 + 21714, 5000) -- 818645907
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY0") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+0,1) --假钞
+            log.info("原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY1") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+1,1) --kky
+            log.info("原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY2") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+2,1) --bd
+            log.info("原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY3") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+3,1) --dm
+            log.info("原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY4") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+4,1) --id
+            log.info("原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY5") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+5,1) --bk
+            log.info("原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY6") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+6,1) --acid
+            log.info("原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
         end
         loopa19 =1
     else
@@ -3465,7 +3526,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, ent in pairs(entities.get_all_objects_as_handles()) do
             for __, cam in pairs(CamList) do
                 if ENTITY.GET_ENTITY_MODEL(ent) == cam then
-                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent,true,true) --不执行这个下面会删除失败 @nord123#9579
+                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent,true,true) --先设置为任务实体 不执行这个下面会删除失败 @nord123#9579
                     ENTITY.DELETE_ENTITY(ent)               
                 end
             end
@@ -3811,20 +3872,28 @@ event.register_handler(menu_event.PlayerMgrInit, function ()
 end)
 
 script.register_looped("schlua-verckservice", function() 
-if verchka1 > 0 and verchka1 < 99 then
-    if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
-        if STREAMING.IS_PLAYER_SWITCH_IN_PROGRESS() then
-        else
-            log.warning("sch-lua脚本不支持您的游戏版本,请立即删除,继续使用将损坏您的在线账户!")
-            gui.show_error("sch-lua不支持您的游戏版本","请立即删除以免损坏在线存档")
-            script_util:sleep(1000)
-            verchka1 = verchka1 + 1
+    if autoresply == 1 then
+        time = os.time()
+        while os.time() - time < 10 do
+            script_util:yield()
         end
-    else
-        verchka1 = 100
-        log.info("已通过游戏版本适配检测")
+        autoresply = 0
     end
-end
+
+    if verchka1 > 0 and verchka1 < 99 then
+        if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
+            if STREAMING.IS_PLAYER_SWITCH_IN_PROGRESS() then
+            else
+                log.warning("sch-lua脚本不支持您的游戏版本,请立即删除,继续使用将损坏您的在线账户!")
+                gui.show_error("sch-lua不支持您的游戏版本","请立即删除以免损坏在线存档")
+                script_util:sleep(1000)
+                verchka1 = verchka1 + 1
+            end
+        else
+            verchka1 = 100
+            log.info("已通过游戏版本适配检测")
+        end
+    end
 end)
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能

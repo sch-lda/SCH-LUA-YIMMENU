@@ -1,4 +1,4 @@
--- v1.72 -- 
+-- v1.73 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.72"
+local luaversion = "v1.73"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -942,11 +942,21 @@ local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
 
 gentab:add_sameline()
 
-local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂快速生产(!)")
+local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂极速生产(!)")
 
 gentab:add_sameline()
 
-local ncspup = gentab:add_checkbox("夜总会快速进货(!)")
+local ncspup = gentab:add_checkbox("夜总会极速进货(!)")
+
+local ncspupa1 = gentab:add_checkbox("夜总会4倍速进货(!)")
+
+gentab:add_sameline()
+
+local ncspupa2 = gentab:add_checkbox("夜总会10倍速进货(!)")
+
+gentab:add_sameline()
+
+local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(!)")
 
 gentab:add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
@@ -2220,6 +2230,9 @@ local loopa17 = 0  --控制头顶520
 local loopa18 = 0  --控制载具锁门
 local loopa19 = 0  --控制摩托帮地堡致幻剂生产速度
 local loopa20 = 0  --控制夜总会生产速度
+local loopa21 = 0  --控制夜总会生产速度
+local loopa22 = 0  --控制夜总会生产速度
+local loopa23 = 0  --控制夜总会生产速度
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2500,15 +2513,15 @@ script.register_looped("schlua-dataservice", function()
         loopa19 =1
     else
         if loopa19 == 1 then 
-            globals.set_int(262145 + 17571, 1800000) 
+            globals.set_int(262145 + 17571, 360000) 
             globals.set_int(262145 + 17572, 1800000) 
-            globals.set_int(262145 + 17573, 1800000) 
-            globals.set_int(262145 + 17574, 1800000) 
-            globals.set_int(262145 + 17575, 1800000) 
-            globals.set_int(262145 + 17576, 1800000) 
-            globals.set_int(262145 + 21712, 900000)
-            globals.set_int(262145 + 21713, 900000)
-            globals.set_int(262145 + 21714, 900000)
+            globals.set_int(262145 + 17573, 3000000) 
+            globals.set_int(262145 + 17574, 300000) 
+            globals.set_int(262145 + 17575, 720000) 
+            globals.set_int(262145 + 17576, 135000) 
+            globals.set_int(262145 + 21712, 600000)
+            globals.set_int(262145 + 21713, 90000)
+            globals.set_int(262145 + 21714, 90000)
             loopa19 =0
         end    
     end
@@ -2560,6 +2573,124 @@ script.register_looped("schlua-dataservice", function()
             loopa20 =0
         end    
     end
+
+    if  ncspupa1:is_enabled() then--锁定夜总会生产速度x4
+        if loopa21 == 0 then
+            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+        end
+        if globals.get_int(262145 + 24548) ~= 3600000 then
+            globals.set_int(262145 + 24548, 3600000) -- tuneables_processing.c -147565853
+        end
+        if globals.get_int(262145 + 24549) ~= 1800000 then
+            globals.set_int(262145 + 24549, 1800000) -- tuneables_processing.c -1390027611
+        end
+        if globals.get_int(262145 + 24550) ~= 600000 then
+            globals.set_int(262145 + 24550, 600000) -- tuneables_processing.c -1292210552
+        end
+        if globals.get_int(262145 + 24551) ~= 600000 then
+            globals.set_int(262145 + 24551, 600000) -- tuneables_processing.c 1007184806
+        end
+        if globals.get_int(262145 + 24552) ~= 450000 then
+            globals.set_int(262145 + 24552, 450000) -- tuneables_processing.c 18969287
+        end
+        if globals.get_int(262145 + 24553) ~= 900000 then
+            globals.set_int(262145 + 24553, 900000) -- tuneables_processing.c -863328938
+        end
+        if globals.get_int(262145 + 24554) ~= 2100000 then
+            globals.set_int(262145 + 24554, 2100000) -- tuneables_processing.c 1607981264
+        end
+        loopa21 =1
+    else
+        if loopa21 == 1 then 
+            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            loopa21 =0
+        end    
+    end
+
+    if  ncspupa2:is_enabled() then--锁定夜总会生产速度x10
+        if loopa22 == 0 then
+            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+        end
+        if globals.get_int(262145 + 24548) ~= 1440000 then
+            globals.set_int(262145 + 24548, 1440000) -- tuneables_processing.c -147565853
+        end
+        if globals.get_int(262145 + 24549) ~= 720000 then
+            globals.set_int(262145 + 24549, 720000) -- tuneables_processing.c -1390027611
+        end
+        if globals.get_int(262145 + 24550) ~= 240000 then
+            globals.set_int(262145 + 24550, 240000) -- tuneables_processing.c -1292210552
+        end
+        if globals.get_int(262145 + 24551) ~= 240000 then
+            globals.set_int(262145 + 24551, 240000) -- tuneables_processing.c 1007184806
+        end
+        if globals.get_int(262145 + 24552) ~= 180000 then
+            globals.set_int(262145 + 24552, 180000) -- tuneables_processing.c 18969287
+        end
+        if globals.get_int(262145 + 24553) ~= 360000 then
+            globals.set_int(262145 + 24553, 360000) -- tuneables_processing.c -863328938
+        end
+        if globals.get_int(262145 + 24554) ~= 840000 then
+            globals.set_int(262145 + 24554, 840000) -- tuneables_processing.c 1607981264
+        end
+        loopa22 =1
+    else
+        if loopa22 == 1 then 
+            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            loopa22 =0
+        end    
+    end
+
+    if  ncspupa3:is_enabled() then--锁定夜总会生产速度x20
+        if loopa23 == 0 then
+            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+        end
+        if globals.get_int(262145 + 24548) ~= 720000 then
+            globals.set_int(262145 + 24548, 720000) -- tuneables_processing.c -147565853
+        end
+        if globals.get_int(262145 + 24549) ~= 360000 then
+            globals.set_int(262145 + 24549, 360000) -- tuneables_processing.c -1390027611
+        end
+        if globals.get_int(262145 + 24550) ~= 120000 then
+            globals.set_int(262145 + 24550, 120000) -- tuneables_processing.c -1292210552
+        end
+        if globals.get_int(262145 + 24551) ~= 120000 then
+            globals.set_int(262145 + 24551, 120000) -- tuneables_processing.c 1007184806
+        end
+        if globals.get_int(262145 + 24552) ~= 90000 then
+            globals.set_int(262145 + 24552, 90000) -- tuneables_processing.c 18969287
+        end
+        if globals.get_int(262145 + 24553) ~= 180000 then
+            globals.set_int(262145 + 24553, 180000) -- tuneables_processing.c -863328938
+        end
+        if globals.get_int(262145 + 24554) ~= 420000 then
+            globals.set_int(262145 + 24554, 420000) -- tuneables_processing.c 1607981264
+        end
+        loopa23 =1
+    else
+        if loopa23 == 1 then 
+            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            loopa23 =0
+        end    
+    end
+
 
     
 

@@ -1,4 +1,4 @@
--- v1.71 -- 
+-- v1.72 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.71"
+local luaversion = "v1.72"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -943,6 +943,10 @@ local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
 gentab:add_sameline()
 
 local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂快速生产(!)")
+
+gentab:add_sameline()
+
+local ncspup = gentab:add_checkbox("夜总会快速进货(!)")
 
 gentab:add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
@@ -2214,7 +2218,8 @@ local loopa15 = 0  --控制远程载具无碰撞
 local loopa16 = 0  --控制世界灯光开关
 local loopa17 = 0  --控制头顶520
 local loopa18 = 0  --控制载具锁门
-local loopa19 = 0  --控制摩托帮生产速度
+local loopa19 = 0  --控制摩托帮地堡致幻剂生产速度
+local loopa20 = 0  --控制夜总会生产速度
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2414,7 +2419,7 @@ script.register_looped("schlua-dataservice", function()
         end
     end
 
-    if  bussp:is_enabled() then--锁定生产速度
+    if  bussp:is_enabled() then--锁定地堡摩托帮致幻剂生产速度
         local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
         local mpx = "MP0_"--用于判断当前是角色1还是角色2
         if playerid == 1 then --用于判断当前是角色1还是角色2
@@ -2507,6 +2512,56 @@ script.register_looped("schlua-dataservice", function()
             loopa19 =0
         end    
     end
+
+    if  ncspup:is_enabled() then--锁定夜总会生产速度
+        if loopa20 == 0 then
+            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+        end
+        if globals.get_int(262145 + 24548) ~= 5000 then
+            globals.set_int(262145 + 24548, 5000) -- tuneables_processing.c -147565853
+        end
+        if globals.get_int(262145 + 24549) ~= 5000 then
+            globals.set_int(262145 + 24549, 5000) -- tuneables_processing.c -1390027611
+        end
+        if globals.get_int(262145 + 24550) ~= 5000 then
+            globals.set_int(262145 + 24550, 5000) -- tuneables_processing.c -1292210552
+        end
+        if globals.get_int(262145 + 24551) ~= 5000 then
+            globals.set_int(262145 + 24551, 5000) -- tuneables_processing.c 1007184806
+        end
+        if globals.get_int(262145 + 24552) ~= 5000 then
+            globals.set_int(262145 + 24552, 5000) -- tuneables_processing.c 18969287
+        end
+        if globals.get_int(262145 + 24553) ~= 5000 then
+            globals.set_int(262145 + 24553, 5000) -- tuneables_processing.c -863328938
+        end
+        if globals.get_int(262145 + 24554) ~= 5000 then
+            globals.set_int(262145 + 24554, 5000) -- tuneables_processing.c 1607981264
+        end
+        loopa20 =1
+    else
+        if loopa20 == 1 then 
+            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+--[[ 游戏默认值
+    Global_262145.f_24548 = 4800000;
+	Global_262145.f_24549 = 14400000;
+	Global_262145.f_24550 = 7200000;
+	Global_262145.f_24551 = 2400000;
+	Global_262145.f_24552 = 1800000;
+	Global_262145.f_24553 = 3600000;
+	Global_262145.f_24554 = 8400000;
+]]
+            loopa20 =0
+        end    
+    end
+
+    
 
     if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
         globals.set_int(262145 + 30394, 0) --tuneables_processing.c IH_SUBMARINE_MISSILES_COOLDOWN

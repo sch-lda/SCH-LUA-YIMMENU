@@ -70,14 +70,6 @@ function run_script(name) --启动脚本线程
     end)
 end
 
-function DELETE_OBJECT_BY_HASH(hash)
-    for _, ent in pairs(entities.get_all_objects_as_handles()) do
-        if ENTITY.GET_ENTITY_MODEL(ent) == hash then
-            PED.SET_PED_COORDS_KEEP_VEHICLE(ent, 0, 0, 0)
-        end
-    end
-end
-
 function screen_draw_text(text, x, y, p0 , size) --在屏幕上绘制文字
 	HUD.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING") --The following were found in the decompiled script files: STRING, TWOSTRINGS, NUMBER, PERCENTAGE, FO_TWO_NUM, ESMINDOLLA, ESDOLLA, MTPHPER_XPNO, AHD_DIST, CMOD_STAT_0, CMOD_STAT_1, CMOD_STAT_2, CMOD_STAT_3, DFLT_MNU_OPT, F3A_TRAFDEST, ES_HELP_SOC3
 	HUD.SET_TEXT_FONT(0)
@@ -90,23 +82,6 @@ function screen_draw_text(text, x, y, p0 , size) --在屏幕上绘制文字
 	HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text)
 	HUD.END_TEXT_COMMAND_DISPLAY_TEXT(x, y) --占坐标轴的比例
 end
-
---[[  暂未使用
-function attach_to_player(hash, bone, x, y, z, xrot, yrot, zrot)     --附加实体到自己
-    local user_ped = PLAYER.PLAYER_PED_ID()
-    hash = joaat(hash)
-
-    STREAMING.REQUEST_MODEL(hash)
-    while not STREAMING.HAS_MODEL_LOADED(hash) do		
-        script_util:yield()
-    end
-    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
-
-    local object = OBJECT.CREATE_OBJECT(hash, 0.0,0.0,0, true, true, false)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(object, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), bone), x, y, z, xrot, yrot, zrot, false, false, false, false, 2, true) 
-
-end
-]]
 
 function CreatePed(index, Hash, Pos, Heading)
     script.run_in_fiber(function (ctped)
@@ -929,7 +904,10 @@ gentab:add_sameline()
 
 gentab:add_button("地堡出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
-    locals.set_int("gb_gunrunning","1980","0") --bunkerAutoComplete: {('1206', '774')}  LOCAL gb_gunrunning set to 0 to autocomplete 
+    locals.set_int("gb_gunrunning","1980","0")
+    --  gb_gunrunning.c iLocal_1206.f_774
+    --	for (i = 0; i < func_833(func_3786(), func_60(), iLocal_1206.f_774, iLocal_1206.f_809); i = i + 1)
+    --  REMOVE_PARTICLE_FX_FROM_ENTITY
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
 
@@ -984,7 +962,7 @@ gentab:add_sameline()
 
 gentab:add_button("CEO仓库员工进货一次", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-
+    --freemode.c void func_17501(int iParam0, BOOL bParam1) // Position - 0x56C7B6
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32360,1,playerid)
     STATS.SET_PACKED_STAT_BOOL_CODE(32361,1,playerid)
@@ -3702,8 +3680,6 @@ script.register_looped("schlua-ectrlservice", function()
             end
         end
     end
-
-
 end)
 
 script.register_looped("schlua-ptfxservice", function() 
@@ -3804,14 +3780,12 @@ script.register_looped("schlua-drawservice", function()
                 fmmc2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
                 screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmc2020host)), 0.180, 0.910, 0.4 , 0.4)
             end
-            
         end
     end
 
     if  DrawInteriorID:is_enabled() then
         local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0)
         local Interior = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
-
         screen_draw_text(string.format("Interior ID:".. Interior),0.875,0.2, 0.4 , 0.4)
     end
 end)
@@ -3830,7 +3804,7 @@ event.register_handler(menu_event.PlayerMgrInit, function ()
 
     verchka1 = verchka1 + 1 --触发lua版本检查:检查lua是否适配当前游戏版本
 
-    if cashmtpin:get_value() == 0 then
+    if cashmtpin:get_value() == 0 then -- 读取在线模式当前联系人差事 现金奖励倍率
         cashmtpin:set_value(globals.get_float(262145))
     end
 
@@ -3866,10 +3840,10 @@ end)
         log.info(globals.get_int(1574996))
     end
 
-	赌场右下角收入    func_3521(iLocal_19710.f_2686, "MONEY_HELD" /*TAKE*/, 1000, 6, 2, 0, "HUD_CASH" /*$~1~*/, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 1, -1);
+	1.67 赌场右下角收入    func_3521(iLocal_19710.f_2686, "MONEY_HELD" /*TAKE*/, 1000, 6, 2, 0, "HUD_CASH" /*$~1~*/, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 1, -1);
 
 
-------------------------------------------------技工 呼叫 载具资产 freemode.c began
+------------------------------------------------GTAOL 1.67 技工 呼叫 载具资产 freemode.c began
 
 void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip* pblParam4, Blip* pblParam5, Blip* pblParam6, Blip* pblParam7, Blip* pblParam8) // Position - 0x42ED1D
 {
@@ -3930,333 +3904,7 @@ void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 
 
----------------------------------------------------------------------------------------以下是废弃的但又不想删的东西
-
---[[
-gentab:add_sameline()
-
-gentab:add_button("测试2", function()
-
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
-    while STREAMING.HAS_MODEL_LOADED(3613262246) ~= 1 do
-        STREAMING.REQUEST_MODEL(3613262246)
-        script_util:sleep(100)
-    end
-    while STREAMING.HAS_MODEL_LOADED(2155335200) ~= 1 do
-        STREAMING.REQUEST_MODEL(2155335200)
-        script_util:sleep(100)
-    end
-    while STREAMING.HAS_MODEL_LOADED(3026699584) ~= 1 do
-        STREAMING.REQUEST_MODEL(3026699584)
-        script_util:sleep(100)
-    end
-    while STREAMING.HAS_MODEL_LOADED(-1348598835) ~= 1 do
-        STREAMING.REQUEST_MODEL(-1348598835)
-        script_util:sleep(100)
-    end
-    local Object_pizza1 = OBJECT.CREATE_OBJECT(3613262246, pos.x,pos.y,pos.z, true, false, false)
-    local crashstaff1 = OBJECT.CREATE_OBJECT(2155335200, pos.x,pos.y,pos.z, true, false, false)
-    local Object_pizza3 = OBJECT.CREATE_OBJECT(3026699584, pos.x,pos.y,pos.z, true, false, false)
-    local Object_pizza4 = OBJECT.CREATE_OBJECT(-1348598835, pos.x,pos.y,pos.z, true, false, false)
-    for i = 0, 100 do 
-        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza1, pos.x, pos.y, pos.z, false, true, true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, pos.x, pos.y, pos.z, false, true, true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza3, pos.x, pos.y, pos.z, false, true, true)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza4, pos.x, pos.y, pos.z, false, true, true)
-        script_util:yield()
-    end
-
-end)
-
-gentab:add_sameline()
-
-gentab:add_button("测试3", function()
-
-    local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), true)
-    local PED1 =     PED.CREATE_PED(26,joaat("cs_beverly"),TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z,0,true,true)
-    ENTITY.SET_ENTITY_VISIBLE(PED1, false, 0)
-    script_util:sleep(100)
-    WEAPON.GIVE_WEAPON_TO_PED(PED1,-270015777,80,true,true)
-    script_util:sleep(100)
-    FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, 2, 50, true, false, 0.0)
-
-end)
-]]
-
---[[
-gui.get_tab(""):add_sameline()
-
-gui.get_tab(""):add_button("武装动物崩溃", function()
-    local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    local PED1  = CreatePed(28,-1011537562,TargetPPos,0)
-    local PED2  = CreatePed(28,-541762431,TargetPPos,0)
-    local PED3  = CreatePed(28,1553815115,TargetPPos,0)
-
-    WEAPON.GIVE_WEAPON_TO_PED(PED1,-1813897027,1,true,true)
-    WEAPON.GIVE_WEAPON_TO_PED(PED2,-1813897027,1,true,true)
-    WEAPON.GIVE_WEAPON_TO_PED(PED3,-1813897027,1,true,true)
-
-    script_util:sleep(1000)
-    TASK.TASK_THROW_PROJECTILE(PED1,TargetPPos.x,TargetPPos.y,TargetPPos.z,0,0)
-    TASK.TASK_THROW_PROJECTILE(PED2,TargetPPos.x,TargetPPos.y,TargetPPos.z,0,0)
-    TASK.TASK_THROW_PROJECTILE(PED3,TargetPPos.x,TargetPPos.y,TargetPPos.z,0,0)
-    script_util:sleep(500)
-    TASK.CLEAR_PED_TASKS(PED1)
-    TASK.CLEAR_PED_TASKS(PED2)
-    TASK.CLEAR_PED_TASKS(PED3)
-    TASK.TASK_THROW_PROJECTILE(PED1,TargetPPos.x,TargetPPos.y,TargetPPos.z,0,0)
-    TASK.TASK_THROW_PROJECTILE(PED2,TargetPPos.x,TargetPPos.y,TargetPPos.z,0,0)
-    TASK.TASK_THROW_PROJECTILE(PED3,TargetPPos.x,TargetPPos.y,TargetPPos.z,0,0)
-
-end)
-
-gui.get_tab(""):add_sameline()
-
-gui.get_tab(""):add_button("无效模型崩溃", function()
-    local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    local a1 = create_object(-930879665, cord)
-    local a2 = create_object(3613262246, cord)
-    local b1 = create_object(452618762, cord)
-    local b2 = create_object(3613262246, cord)
-    local c1 = create_object(1888301071, cord)
-    local c2 = create_object(-1011537562, cord)
-    local c3 = create_object(-541762431, cord)
-    for i = 1, 10 do
-        request_model(-930879665)
-        script_util:sleep(10)
-        request_model(3613262246)
-        script_util:sleep(10)
-        request_model(452618762)
-        script_util:sleep(300)
-        request_model(1888301071)
-        script_util:sleep(300)
-        ENTITY.DELETE_ENTITY(a1)
-        ENTITY.DELETE_ENTITY(a2)
-        ENTITY.DELETE_ENTITY(b1)
-        ENTITY.DELETE_ENTITY(b2)
-        ENTITY.DELETE_ENTITY(c1)
-        ENTITY.DELETE_ENTITY(c2)
-        ENTITY.DELETE_ENTITY(c3)
-        request_model(452618762)
-        script_util:sleep(10)
-        request_model(3613262246)
-        script_util:sleep(10)
-        request_model(-930879665)
-        script_util:sleep(10)
-        request_model(1888301071)
-        script_util:sleep(10)
-    end
-
-end)
-]]
---[[
-gui.get_tab(""):add_sameline()
-
-gui.get_tab(""):add_button("模型2", function()
-
-local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-local object = create_object(joaat("virgo"), cord)
-local object = create_object(joaat("osiris"), cord)
-local object = create_object(joaat("v_serv_firealarm"), cord)
-local object = create_object(joaat("v_serv_bs_cond"), cord)
-local object = create_object(joaat("v_serv_bs_foamx3"), cord)
-local object = create_object(joaat("v_serv_ct_monitor07"), cord)
-local object = create_object(joaat("v_serv_ct_monitor06"), cord)
-local object = create_object(joaat("v_serv_ct_monitor05"), cord)
-local object = create_object(joaat("v_serv_bs_gelx3"), cord)
-local object = create_object(joaat("v_serv_ct_monitor01"), cord)
-local object = create_object(joaat("feltzer3"), cord)
-local object = create_object(joaat("v_serv_ct_monitor02"), cord)
-local object = create_object(joaat("windsor"), cord)
-local object = create_object(joaat("v_serv_ct_monitor04"), cord)
-local object = create_object(joaat("v_serv_ct_monitor03"), cord)
-local object = create_object(joaat("v_serv_bs_clutter"), cord)
-ENTITY.SET_ENTITY_AS_MISSION_ENTITY(object, true, true)
-ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(object, 1, 0.0, 10000.0, 0.0, 0.0, 0.0, 0.0, false, true, true, false, true)
-ENTITY.SET_ENTITY_ROTATION(object, math.random(0, 360), math.random(0, 360), math.random(0, 360), 0, true)
-ENTITY.SET_ENTITY_VELOCITY(object, math.random(-10, 10), math.random(-10, 10), math.random(30, 50))
-ENTITY.ATTACH_ENTITY_TO_ENTITY(object, object, 0, 0, -1, 2.5, 0, 180, 0, 0, false, true, false, 0, true)
-script_util:sleep(300)
-MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(cord.x, cord.y, cord.z + 1, cord.x, cord.y, cord.z, 0, true, joaat("weapon_heavysniper_mk2"), PLAYER.GET_PLAYER_PED(network.get_selected_player()), false, true, 1.0)
-ENTITY.DETACH_ENTITY(object, object)
---delete_by_handle(object)
-end)
-
-gui.get_tab(""):add_sameline()
-
-gui.get_tab(""):add_button("模型4", function()
-    local TTPed = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-    local TTPos = ENTITY.GET_ENTITY_COORDS(TTPed, true)
-            local spped = PLAYER.PLAYER_PED_ID()
-            local SelfPlayerPos = ENTITY.GET_ENTITY_COORDS(spped, true)
-            SelfPlayerPos.x = SelfPlayerPos.x + 10
-            TTPos.x = TTPos.x + 10
-            local carc = CreateObject(joaat("apa_prop_flag_china"), TTPos, ENTITY.GET_ENTITY_HEADING(spped), true)
-            local carcPos = ENTITY.GET_ENTITY_COORDS(vehicle, true)
-            local pedc = CreatePed(26, joaat("A_C_HEN"), TTPos, 0)
-            local pedcPos = ENTITY.GET_ENTITY_COORDS(vehicle, true)
-            local ropec = PHYSICS.ADD_ROPE(TTPos.x, TTPos.y, TTPos.z, 0, 0, 0, 1, 1, 0.00300000000000000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, 0)
-            PHYSICS.ATTACH_ENTITIES_TO_ROPE(ropec,carc,pedc,carcPos.x, carcPos.y, carcPos.z ,pedcPos.x, pedcPos.y, pedcPos.z,2, false, false, 0, 0, "Center","Center")
-            script_util:sleep(3500)
-            PHYSICS.DELETE_CHILD_ROPE(ropec)
-           -- ENTITY.DELETE_ENTITY(pedc)
-    
-end)
-
-gui.get_tab(""):add_sameline()
-
-gui.get_tab(""):add_button("模型3", function()
-    pedp = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    towtruck = CreateVehicle(-1323100960, pos, 0)
-    skylift = CreateVehicle(-692292317, pos, 0)
-    cargobob = CreateVehicle(4244420235, pos, 0)
-    cargobob2 = CreateVehicle(4244420235, pos, 0)
-    cargobob1 = CreateVehicle(4244420235, pos, 0)
-    handler = CreateVehicle(444583674, pos, 0)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(cargobob, skylift, 0, 0, 0, 0.2, 0, 0, 0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(cargobob1, skylift, 0, 0, 0, -0.2, 0, 0, 0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(handler, skylift, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(towtruck, skylift, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(cargobob2, towtruck, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(skylift, pedp, 0, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
-
-end)
-]]
---[[
-gentab:add_button("IN MD C", function()
-    for i = 1, 10 do
-		local cord = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-        STREAMING.REQUEST_MODEL(-930879665)
-        script_util:sleep(10)
-        STREAMING.REQUEST_MODEL(3613262246)
-        script_util:sleep(10)
-        STREAMING.REQUEST_MODEL(452618762)
-        script_util:sleep(10)
-        while not STREAMING.HAS_MODEL_LOADED(-930879665) do script_util:sleep() end
-        while not STREAMING.HAS_MODEL_LOADED(3613262246) do script_util:sleep() end
-        while not STREAMING.HAS_MODEL_LOADED(452618762) do script_util:sleep() end
-        local a1 = create_object(-930879665, cord)
-        script_util:sleep(10)
-        local a2 = create_object(3613262246, cord)
-        script_util:sleep(10)
-        local b1 = create_object(452618762, cord)
-        script_util:sleep(10)
-        local b2 = create_object(3613262246, cord)
-    end
-end)
-
-gentab:add_sameline()
-
-gentab:add_button("测试5", function()
-    local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    coords.z = coords.z + 63
-    local ufoModel = joaat("p_spinning_anus_s")
-    while STREAMING.HAS_MODEL_LOADED(ufoModel) ~= 1 do
-    
-        STREAMING.REQUEST_MODEL(ufoModel)
-        script_util:sleep(100)
-        
-    end
-    local Object = OBJECT.CREATE_OBJECT(ufoModel, coords.x, coords.y, coords.z, TRUE, TRUE, FALSE)
-    local player = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(player, false)
-
-    if PED.IS_PED_IN_VEHICLE(player, vehicle, false) == 1 then 
-        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehicle)
-        VEHICLE.BRING_VEHICLE_TO_HALT(vehicle, 3, 4, false)
-        VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, false, true, true)
-        ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, 0.0, 65, 0.0, 0.0, 0.0, 1, false, true, true, true, true)
-        VEHICLE.SET_VEHICLE_DOORS_LOCKED_FOR_ALL_PLAYERS(vehicle, true)
-
-    else
-        gui.show_message("错误","玩家不在载具中")
-    end
-end)
-
-
-gentab:add_sameline()
-]]--
-
---[[
-gui.add_tab(""):add_button("载具状态崩溃", function()
-
-    if PLAYER.GET_PLAYER_PED(network.get_selected_player()) ==PLAYER.PLAYER_PED_ID() then
-        gui.show_message("提示","你正试图崩溃自己")
-        return
-    end
-
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
-    for i = 0, 30 do
-        vehw = CreateVehicle(joaat("banshee"),pos,ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())) - 180)
-        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehw)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehw, pos.x,pos.y,pos.z, ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED(network.get_selected_player())), 10)
-        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 18, 777)
-        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 17, 888)
-        TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), vehw, 16, 999)
-        script_util:sleep(500)
-    end
-
-end)
-]]
-
---[[
-script.register_looped("refreshpid", function()
-    pid = network.get_selected_player()
-  end)
-
-gui.get_tab(""):add_button("TSE C", function()
-
-    if pid == PLAYER.PLAYER_ID() then
-        gui.show_message("提示","不可对自己使用")
-        return
-     end
-     local int_min = -2147483647
-     local int_max = 2147483647
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {879177392, pid, 7264839016258354765, 10597, 73295, 3274114858851387039, 4862623901289893625, 54483})
-     network.trigger_script_event(1 << pid, {548471420, pid, 804923209, 1128590390, 136699892, -168325547, -814593329, 1630974017, 1101362956, 1510529262, 2, 1875285955, 633832161, -1097780228})
-     network.trigger_script_event(1 << pid, {2765370640, pid, 3747643341, math.random(int_min, int_max), math.random(int_min, int_max), 
-     math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-     math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-     network.trigger_script_event(1 << pid, { -555356783, pid ,85952,99999,52682274855,526822745 })
-     network.trigger_script_event(1 << pid, { 526822748, pid ,78552,99999 ,7949161,789454312})
-     network.trigger_script_event(1 << pid, { -66669983, pid ,526822748,555555, math.random(80521,2959749521) })
-     network.trigger_script_event(1 << pid, { -1733737974, pid ,789522 ,59486,48512151,-9545440,5845131,848153,math.random(1,2959749),189958})
-     network.trigger_script_event(1 << pid, { -1529596656, pid ,795221,59486,48512151,-9545440 , math.random(1,2959749) })
-     network.trigger_script_event(1 << pid, { -8965204809, pid ,795221,59486,48512151,-9545440 })
-     gui.show_message("正在发送脚本事件崩溃",pid)
-     network.trigger_script_event(1 << pid, {495813132, pid, 0, 0, -12988, -99097, 0})
-     network.trigger_script_event(1 << pid, {495813132, pid, -4640169, 0, 0, 0, -36565476, -53105203})
-     network.trigger_script_event(1 << pid, {495813132, pid,  0, 1, 23135423, 3, 3, 4, 827870001, 5, 2022580431, 6, -918761645, 7, 1754244778, 8, 827870001, 9, 17})
- 
- 
-     for i = 1, 50 do
-        --network.trigger_script_event(1 << pid,{-642704387, pid, 782258655, math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max) })
-     end
-
-
-    for i = 1, 15 do
-        network.trigger_script_event(1 << pid, {891653640, 0, 81468, 96773, 84776, 2939, 20158,  14219,  38254,  22206})
-        network.trigger_script_event(1 << pid, {1348481963, pid, math.random(int_min, int_max)})
-        network.trigger_script_event(1 << pid,{-642704387, pid, 782258655, math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max) })
-
-        network.trigger_script_event(1 << pid, {-992162568, 0, 40778, 85683, 32561, 49696, 24000,  78834,  1860,  37655, math.random(int_min, int_max), math.random(int_min, int_max), -- Crash Event S1
-        math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max),
-        math.random(int_min, int_max), pid, math.random(int_min, int_max), math.random(int_min, int_max), math.random(int_min, int_max)})
-        network.trigger_script_event(1 << pid, {891653640, 0, 81468, 96773, 84776, 2939, 20158,  14219,  38254,  22206})
-    end
-    network.trigger_script_event(1 << pid, {495813132, pid, 0, 0, -12988, -99097, 0})
-    network.trigger_script_event(1 << pid, {495813132, pid, -4640169, 0, 0, 0, -36565476, -53105203})
-    network.trigger_script_event(1 << pid, {495813132, pid,  0, 1, 23135423, 3, 3, 4, 827870001, 5, 2022580431, 6, -918761645, 7, 1754244778, 8, 827870001, 9, 17})
-
-end)
-]]
-
--- local checkmovefree = gentab:add_checkbox("战局切换时自由移动")
+---------------------------------------------------------------------------------------以下是废弃的东西
 
 --[[  已被检测
 gentab:add_button("移除赌场轮盘冷却", function()

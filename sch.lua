@@ -1,4 +1,4 @@
--- v1.69 -- 
+-- v1.70 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.69"
+local luaversion = "v1.70"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -925,12 +925,6 @@ gentab:add_button("致幻剂出货一键完成", function()
     locals.set_int("fm_content_acid_lab_sell",6530,2)
 end)
 
-local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
-
-gentab:add_sameline()
-
-local bussp = gentab:add_checkbox("摩托帮产业+地堡+致幻剂快速生产(!)")
-
 gentab:add_sameline()
 
 gentab:add_button("地堡出货一键完成", function()
@@ -947,6 +941,16 @@ gentab:add_button("机库(空运)出货一键完成", function()
     locals.set_int("gb_smuggler","2964",integer)
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
+
+local ccrgsl = gentab:add_checkbox("CEO仓库出货锁定运输船")
+
+gentab:add_sameline()
+
+local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
+
+gentab:add_sameline()
+
+local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂快速生产(!)")
 
 gentab:add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
@@ -2406,8 +2410,15 @@ script.register_looped("schlua-dataservice", function()
 
     if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 
         if locals.get_int("gb_biker_contraband_sell",716) ~= 0 then
-            log.info("已锁定摩托帮产业出货任务类型.注意:此功能与摩托帮一键完成出货冲突")
+            log.info("已锁定摩托帮产业出货任务类型.目标出货载具生成前不要关闭此开关.注意:此功能与摩托帮一键完成出货冲突")
             locals.set_int("gb_biker_contraband_sell",716,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
+        end
+    end
+
+    if  ccrgsl:is_enabled() then--锁定CEO仓库出货任务 
+        if locals.get_int("gb_contraband_sell",548) ~= 12 then
+            log.info("已锁定CEO仓库出货任务类型.目标出货载具生成前不要关闭此开关")
+            locals.set_int("gb_contraband_sell",548,12) -- gb_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 14); --iLocal_541.f_7 = randomIntInRange;
         end
     end
 

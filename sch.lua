@@ -1,4 +1,4 @@
--- v1.73 -- 
+-- v1.74 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.73"
+local luaversion = "v1.74"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -181,8 +181,7 @@ end
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 --[[
 gentab:add_button("测试6", function()
-
-
+    log.info(globals.get_float(262145+ 34020))
 end)
 ]]
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
@@ -1259,7 +1258,7 @@ gentab:add_sameline()
 
 gentab:add_button("移除安保合约/电话暗杀冷却", function()
     globals.set_int(262145 + 31908, 0)   --tuneables_processing.c   	func_6(iParam0, iParam1, joaat("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME") /* collision: FIXER_SECURITY_CONTRACT_COOLDOWN_TIME */, &(Global_262145.f_31908), true);
-    globals.set_int(262145 + 31973, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, -2036534141, &(Global_262145.f_31973), true);    	Global_262145.f_31973 = 500;
+    globals.set_int(262145 + 31989, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, 1872071131, &(Global_262145.f_31989), true);
 end)
 
 gentab:add_sameline()
@@ -1893,6 +1892,20 @@ end)
 
 gui.add_tab(""):add_sameline()
 
+gui.add_tab(""):add_button("载具事件崩溃", function()
+    local tarply = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+    local tarplypos = ENTITY.GET_ENTITY_COORDS(tarply, true)
+    vehtb = entities.get_all_vehicles_as_handles()                       
+    for i = 1, #vehtb do
+     NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehtb[i])
+     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehtb[i], tarplypos.x, tarplypos.y, tarplypos.z + 5, ENTITY.GET_ENTITY_HEADING(tarply), 10)
+     TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 18, 999)
+     TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 16, 999)
+    end
+end)
+
+gui.add_tab(""):add_sameline()
+
 local audiospam = gui.add_tab(""):add_checkbox("声音轰炸")
 
 gui.add_tab(""):add_button("向上发射", function()
@@ -2147,7 +2160,7 @@ local cashmtp = gentab:add_checkbox("设置联系人任务收入倍率")
 
 gentab:add_sameline()
 
-local cashmtpin = gentab:add_input_float("倍")
+local cashmtpin = gentab:add_input_float("倍-联系人")
 
 gui.get_tab(""):add_text("调试") 
 
@@ -2252,7 +2265,7 @@ script.register_looped("schlua-taxiservice", function()
                 local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
                 local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
                 if calcDistance(selfpos, ped_pos) <= 15 and peds ~= PLAYER.PLAYER_PED_ID() then 
-                    PED.SET_PED_MOVE_RATE_OVERRIDE(ped, 10.0)
+                    PED.SET_PED_MOVE_RATE_OVERRIDE(ped, 50.0)
                 end
             end
             while HUD.DOES_BLIP_EXIST(HUD.GET_CLOSEST_BLIP_INFO_ID(280)) do
@@ -2353,7 +2366,7 @@ script.register_looped("schlua-recoveryservice", function()
     end
 
     if  checkxsdpednet:is_enabled() then --NPC掉落2000元循环    --玩家选项
-        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) ~= PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
             PED.SET_AMBIENT_PEDS_DROP_MONEY(true) --自由模式NPC是否掉钱
             local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
             TargetPPos.z = TargetPPos.z + 10 --让 席桑达 生成在空中然后摔下来

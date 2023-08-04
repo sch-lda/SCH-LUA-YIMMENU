@@ -1,6 +1,6 @@
 # SCH-LUA-YIMMENU by sch-lda
-English Version translated by DrSexo https://github.com/Drsexo/English-Sch-lua \
-Original version can be found here : https://github.com/sch-lda/SCH-LUA-YIMMENU \
+English Version translated by DrSexo https://github.com/Drsexo/English-Sch-lua 
+Original version can be found here : https://github.com/sch-lda/SCH-LUA-YIMMENU 
 # Dont expect a perfect translation as im not chinese
 
 

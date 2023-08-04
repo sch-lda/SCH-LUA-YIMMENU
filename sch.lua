@@ -16,6 +16,7 @@ No guarantees (I can only guarantee that there is no subjective malice when writ
 
 Please also make sure to download the file through the official discord user yeahsch(sch) of the assistant, any other method may be a malicious script
 Github: https://github.com/sch-lda/SCH-LUA-YIMMENU
+English version : https://github.com/Drsexo/English-Sch-lua
 
 external link
 Yimmenu lib By Discord@alice2333 https://discord.com/channels/388227343862464513/1124473215436214372 can provide support for developers

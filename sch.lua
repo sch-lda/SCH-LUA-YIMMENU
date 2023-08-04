@@ -1348,26 +1348,26 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("模糊", function()
+gentab:add_button("Blurred", function()
     GRAPHICS.ANIMPOSTFX_PLAY("MenuMGSelectionIn", 5, true)
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("提升亮度", function()
+gentab:add_button("increase brightness", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("AmbientPush")
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("大雾", function()
+gentab:add_button("heavy fog", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("casino_main_floor_heist")
 end)
 
 
 gentab:add_sameline()
 
-gentab:add_button("醉酒", function()
+gentab:add_button("drunk", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("Drunk")
 end)
 
@@ -1453,7 +1453,7 @@ local vehnoclr = gui.get_tab(""):add_checkbox("载具完全无碰撞")
 
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("修理载具", function()
+gui.get_tab(""):add_button("repair vehicle", function()
     script.run_in_fiber(function (repvehr)
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
             gui.show_error("警告","玩家不在载具内")
@@ -1478,7 +1478,7 @@ end)
 --[[
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("移除载具", function()
+gui.get_tab(""):add_button("remove vehicle", function()
     script.run_in_fiber(function (rmvehr)
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(network.get_selected_player()),true) then
             gui.show_error("警告","玩家不在载具内")
@@ -1505,7 +1505,7 @@ end)
 
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("德罗索", function()
+gui.get_tab(""):add_button("deluxo", function()
     script.run_in_fiber(function (giftdls)
         local giftvehhash = joaat("deluxo")
         STREAMING.REQUEST_MODEL(giftvehhash)
@@ -1524,7 +1524,7 @@ end)
 ]]
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("传送到玩家(粒子效果)", function()
+gui.get_tab(""):add_button("Teleport to player (particle effect)", function()
     script.run_in_fiber(function (ptfxtp2ply)
         local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), targpos.x, targpos.y, targpos.z)
@@ -1539,7 +1539,7 @@ gui.get_tab(""):add_button("传送到玩家(粒子效果)", function()
     end)
 end)
 
-gui.get_tab(""):add_button("小笼子", function()
+gui.get_tab(""):add_button("small cage", function()
     script.run_in_fiber(function (smallcage)
         local objHash = joaat("prop_gold_cont_01")
         STREAMING.REQUEST_MODEL(objHash)
@@ -1555,7 +1555,7 @@ end)
 
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("栅栏笼子", function()
+gui.get_tab(""):add_button("fence cage", function()
     local objHash = joaat("prop_fnclink_03e")
     STREAMING.REQUEST_MODEL(objHash)
 
@@ -1591,7 +1591,7 @@ end)
 
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("竞技管笼子", function()
+gui.get_tab(""):add_button("competitive tube cage", function()
     script.run_in_fiber(function (dubcage)
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         STREAMING.REQUEST_MODEL(2081936690)
@@ -1611,7 +1611,7 @@ end)
 
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("保险箱笼子", function()
+gui.get_tab(""):add_button("safe cage", function()
     script.run_in_fiber(function (safecage)
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         local hash = 1089807209
@@ -1641,14 +1641,14 @@ local pedvehctl = gui.get_tab(""):add_checkbox("载具旋转")
 
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("电击", function()
+gui.get_tab(""):add_button("electric shock", function()
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 1000, true, joaat("weapon_stungun"), false, false, true, 1.0)
 end)
 
 gui.get_tab(""):add_sameline()
 
-gui.get_tab(""):add_button("轰炸", function()
+gui.get_tab(""):add_button("bombing", function()
     script.run_in_fiber(function (airst)
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         airshash = joaat("vehicle_weapon_trailer_dualaa")
@@ -1824,7 +1824,7 @@ gui.add_tab(""):add_sameline()
 
 local checkxsdpednet = gui.add_tab(""):add_checkbox("NPC掉落2000元循环")
 
-gui.add_tab(""):add_button("碎片崩溃", function()
+gui.add_tab(""):add_button("debris crash", function()
     script.run_in_fiber(function (fragcrash)
         fraghash = joaat("prop_fragtest_cnst_04")
         STREAMING.REQUEST_MODEL(fraghash)
@@ -1892,7 +1892,7 @@ end)
 
 gui.add_tab(""):add_sameline()
 
-gui.add_tab(""):add_button("载具事件崩溃", function()
+gui.add_tab(""):add_button("vehicle event crash", function()
     local tarply = PLAYER.GET_PLAYER_PED(network.get_selected_player())
     local tarplypos = ENTITY.GET_ENTITY_COORDS(tarply, true)
     vehtb = entities.get_all_vehicles_as_handles()                       
@@ -1908,7 +1908,7 @@ gui.add_tab(""):add_sameline()
 
 local audiospam = gui.add_tab(""):add_checkbox("声音轰炸")
 
-gui.add_tab(""):add_button("向上发射", function()
+gui.add_tab(""):add_button("launch upwards", function()
     script.run_in_fiber(function (launchply)
 
     local ped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
@@ -1930,7 +1930,7 @@ end)
 
 gui.get_tab(""):add_sameline()
 
-gui.add_tab(""):add_button("向下挤压", function()
+gui.add_tab(""):add_button("squeeze down", function()
     script.run_in_fiber(function (launchply)
 
     local ped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
@@ -1955,7 +1955,7 @@ local plydist = gui.get_tab(""):add_input_float("距离(m)")
 gentab:add_separator()
 gentab:add_text("全局选项") 
 
-gentab:add_button("全局爆炸", function()
+gentab:add_button("global explosion", function()
     for i = 0, 31 do
             FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
     end
@@ -1963,7 +1963,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("赠送暴君MK2", function()
+gentab:add_button("Give away the MK2", function()
     script.run_in_fiber(function (giftmk2)
         STREAMING.REQUEST_MODEL(joaat("oppressor2"))
         while STREAMING.HAS_MODEL_LOADED(joaat("oppressor2")) ~= 1 do
@@ -1978,7 +1978,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("防空警报", function()
+gentab:add_button("Air defense alert", function()
     for pid = 0, 31 do
         AUDIO.PLAY_SOUND_FROM_COORD(-1, "Air_Defences_Activated", ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, "DLC_sum20_Business_Battle_AC_Sounds", true, 999999999, true)
     end
@@ -1986,7 +1986,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("公寓邀请", function()
+gentab:add_button("apartment invitation", function()
     for pid = 0, 31 do
     network.trigger_script_event(1 << pid, {3592101251, 1, 0, -1, 4, 127, 0, 0, 0,PLAYER.GET_PLAYER_INDEX(), pid})
     end
@@ -1994,7 +1994,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("PED伞崩", function() --恶毒的东西
+gentab:add_button("PED collapse", function() --恶毒的东西
     script.run_in_fiber(function (pedpacrash)
         gui.show_message("伞崩","请耐心等待直至人物落地")
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -74.94, -818.58, 327)
@@ -2064,7 +2064,7 @@ taximax:set_value(0)
 gentab:add_sameline()
 local taximina = 0
 local taximaxa = 0
-gentab:add_button("写入间隔", function()
+gentab:add_button("Write Interval", function()
     if taximax:get_value() >= taximin:get_value() and taximin:get_value() >= 0 then
         taximina = taximin:get_value()
         taximaxa = taximax:get_value()
@@ -2105,7 +2105,7 @@ gentab:add_text("obj生成(Name)")
 gentab:add_sameline()
 local iputobjname = gentab:add_input_string("objname")
 gentab:add_sameline()
-gentab:add_button("生成N", function()
+gentab:add_button("Generate N", function()
     script.run_in_fiber(function (cusobj2)
         objHash = joaat(iputobjname:get_value())
         while not STREAMING.HAS_MODEL_LOADED(objHash) do	
@@ -2123,7 +2123,7 @@ gentab:add_text("obj生成(Hash)")
 gentab:add_sameline()
 local iputobjhash = gentab:add_input_string("objhash")
 gentab:add_sameline()
-gentab:add_button("生成H", function()
+gentab:add_button("Generate H", function()
     script.run_in_fiber(function (cusobj1)
         objHash = iputobjhash:get_value()
         while not STREAMING.HAS_MODEL_LOADED(objHash) do	
@@ -2141,7 +2141,7 @@ gentab:add_text("PTFX生成") ;gentab:add_sameline()
 local iputptfxdic = gentab:add_input_string("PTFX Dic")
 local iputptfxname = gentab:add_input_string("PTFX Name")
 gentab:add_sameline()
-gentab:add_button("生成ptfx", function()
+gentab:add_button("generate ptfx", function()
     script.run_in_fiber(function (cusptfx)
         iputptfxdicval = iputptfxdic:get_value()
         iputptfxnameval = iputptfxname:get_value()
@@ -2168,7 +2168,7 @@ gui.get_tab(""):add_text("obj生成(Name)")
 gui.get_tab(""):add_sameline()
 local iputobjnamer = gui.get_tab(""):add_input_string("objname")
 gui.get_tab(""):add_sameline()
-gui.get_tab(""):add_button("生成N", function()
+gui.get_tab(""):add_button("Generate N", function()
     script.run_in_fiber(function (cusobj2r)
         local targetplyped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
         local remotePos = ENTITY.GET_ENTITY_COORDS(targetplyped, false)
@@ -2187,7 +2187,7 @@ gui.get_tab(""):add_text("obj生成(Hash)")
 gui.get_tab(""):add_sameline()
 local iputobjhashr = gui.get_tab(""):add_input_string("objhash")
 gui.get_tab(""):add_sameline()
-gui.get_tab(""):add_button("生成H", function()
+gui.get_tab(""):add_button("Generate H", function()
     script.run_in_fiber(function (cusobj1r)
         local targetplyped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
         local remotePos = ENTITY.GET_ENTITY_COORDS(targetplyped, false)
@@ -2206,7 +2206,7 @@ gui.get_tab(""):add_text("PTFX生成") ;gui.get_tab(""):add_sameline()
 local iputptfxdicr = gui.get_tab(""):add_input_string("PTFX Dic")
 local iputptfxnamer = gui.get_tab(""):add_input_string("PTFX Name")
 gui.get_tab(""):add_sameline()
-gui.get_tab(""):add_button("生成ptfx", function()
+gui.get_tab(""):add_button("generate ptfx", function()
     script.run_in_fiber(function (cusptfxr)
         iputptfxdicvalr = iputptfxdicr:get_value()
         iputptfxnamevalr = iputptfxnamer:get_value()
@@ -4175,7 +4175,7 @@ void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip
 ---------------------------------------------------------------------------------------以下是废弃的东西
 
 --[[  已被检测
-gentab:add_button("移除赌场轮盘冷却", function()
+gentab:add_button("Removed casino roulette cooldown", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
 local mpx = "MP0_"

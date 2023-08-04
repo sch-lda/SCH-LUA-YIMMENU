@@ -1,37 +1,36 @@
--- v1.74 --
---I do not limit or even encourage players to modify and customize lua according to their own needs.
---I even added comments to some codes to explain what this is used for and the location of the relevant global in the decompiled script
+-- v1.74 -- 
+--我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
+--有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
-     Use Agreement:
-allow:
-          personal use
-          Modified for personal use
-          Secondary distribution after modification
+    使用协议：
+允许：
+         个人使用
+         修改后个人使用
+         修改后二次分发
 
-prohibit:
-          Commercial
-          After modification, the secondary distribution still uses the name containing sch
+禁止:
+         商用
+         修改后二次分发仍使用包含sch的名称
 
-No guarantees (I can only guarantee that there is no subjective malice when writing, and I will not be responsible for any unexpected consequences)
+无任何保障(我只能保证编写时无主观恶意,造成各种意想不到的后果概不负责)
 
-Please also make sure to download the file through the official discord user yeahsch(sch) of the assistant, any other method may be a malicious script
-Github: https://github.com/sch-lda/SCH-LUA-YIMMENU
-English version : https://github.com/Drsexo/English-Sch-lua
+另请确保通过小助手官方discord用户yeahsch(sch)发布的文件下载，其他任何方式均有可能是恶意脚本
+Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
-external link
-Yimmenu lib By Discord@alice2333 https://discord.com/channels/388227343862464513/1124473215436214372 can provide support for developers
-YimMenu-HeistLua https://github.com/wangzixuank/YimMenu-HeistLua A Yim open source task script
+外部链接
+Yimmenu lib By Discord@alice2333 https://discord.com/channels/388227343862464513/1124473215436214372 能够为开发者提供支持
+YimMenu-HeistLua https://github.com/wangzixuank/YimMenu-HeistLua 一个Yim开源任务脚本
 
-The Globals and Locals used in Lua are widely copied from the UnknownCheats forum, Heist Control script and MusinessBanager script. Although Blue-Flag Lua is a bit outdated, it also provides some inspiration
-Alice, wangzixuan, and nord123 in the official Discord of the assistant provided help in writing Lua
+Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Control脚本和MusinessBanager脚本，Blue-Flag Lua虽然有些过时但也提供了一些灵感
+小助手官方Discord中 Alice、wangzixuan、nord123对Lua的编写提供了帮助
 
-Websites that may be helpful for lua writing
-     1. Yimmenu Lua API https://github.com/YimMenu/YimMenu/tree/master/docs/lua
-     2. GTA5 Native Reference (native function) https://nativedb.dotindustries.dev/natives
-     3. GTA5 decompiled scripts https://github.com/Primexz/GTAV-Decompiled-Scripts
-     4. PlebMaster (quick search model Hash) https://forge.plebmasters.de
-     5.gta-v-data-dumps (check ptfx/sound/model) https://github.com/DurtyFree/gta-v-data-dumps
-     5. FiveM Native Reference https://docs.fivem.net/docs/
+对于lua编写可能有帮助的网站
+    1.Yimmenu Lua API  https://github.com/YimMenu/YimMenu/tree/master/docs/lua
+    2.GTA5 Native Reference (本机函数)  https://nativedb.dotindustries.dev/natives
+    3.GTA5 反编译脚本  https://github.com/Primexz/GTAV-Decompiled-Scripts
+    4.PlebMaster (快速搜索模型Hash)  https://forge.plebmasters.de
+    5.gta-v-data-dumps (查ptfx/声音/模型)  https://github.com/DurtyFree/gta-v-data-dumps
+    5.FiveM Native Reference  https://docs.fivem.net/docs/
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数

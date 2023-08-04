@@ -3053,7 +3053,7 @@ script.register_looped("schlua-miscservice", function()
             objectsix3 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
             ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix3, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), -1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
         
-            gui.show_message("Overhead 666", generating")
+            gui.show_message("Overhead 666", "generating")
         end
         loopa2 = 1
     else

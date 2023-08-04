@@ -312,7 +312,7 @@ gentab:add_button("Reset Pey Island", function()
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 0, true)
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 0, true)
     locals.set_int("heist_island_planning", 1526, 2)
-    gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
+    gui.show_message("Attention", "The planning panel will be restored to the state just bought the killer whale!")
 end)
 
 gentab:add_button("Configure Casino Front (Diamond)", function()
@@ -396,13 +396,13 @@ gentab:add_button("Switch CEO/Leader", function()
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then --1895156+playerIndex*609+10+429+1 = 0 为CEO =1为摩托帮首领
         globals.set_int(1895156+playerIndex*609+10+429+1,1)
-        gui.show_message("提示","已转换为摩托帮首领")
+        gui.show_message("Prompt "," has been converted to the leader of the motorcycle gang")
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             globals.set_int(1895156+playerIndex*609+10+429+1,0)
-            gui.show_message("提示","已转换为CEO")
+            gui.show_message("Prompt","has been converted to CEO")
         else
-            gui.show_message("您不是老大","您既不是CEO也不是首领")
+            gui.show_message("You are not the boss","You are neither the CEO nor the leader")
         end
     end
 end)
@@ -416,10 +416,10 @@ gentab:add_button("Show office computer", function()
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             globals.set_int(1895156+playerIndex*609+10+429+1,0)
-            gui.show_message("提示","已转换为CEO")
+            gui.show_message("Prompt","has been converted to CEO")
             run_script("appfixersecurity")
             else
-            gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+            gui.show_message("Don't forget to register as CEO/Leader","It may also be a script detection error, a known problem, no feedback required")
             run_script("appfixersecurity")
         end
     end
@@ -435,7 +435,7 @@ gentab:add_button("Show bunker computer", function()
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             run_script("appbunkerbusiness")
             else
-                gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+                gui.show_message("Don't forget to register as CEO/Leader","It may also be a script detection error, a known problem, no feedback required")
                 run_script("appbunkerbusiness")
             end
     end
@@ -451,7 +451,7 @@ gentab:add_button("Show hangar computer", function()
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             run_script("appsmuggler")
             else
-                gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+                gui.show_message("Don't forget to register as CEO/Leader","It may also be a script detection error, a known problem, no feedback required")
                 run_script("appsmuggler")
             end
     end
@@ -467,7 +467,7 @@ gentab:add_button("Display game hall industry master control computer", function
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             run_script("apparcadebusinesshub")
         else
-                gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+                gui.show_message("Don't forget to register as CEO/Leader","It may also be a script detection error, a known problem, no feedback required")
                 run_script("apparcadebusinesshub")
         end
     end
@@ -483,7 +483,7 @@ gentab:add_button("Show the Terrorist Dashboard", function()
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             run_script("apphackertruck")
         else
-            gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+            gui.show_message("Don't forget to register as CEO/Leader","It may also be a script detection error, a known problem, no feedback required")
             run_script("apphackertruck")
         end
     end
@@ -499,7 +499,7 @@ gentab:add_button("Show Avengers panel", function()
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             run_script("appAvengerOperations")
         else
-            gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+            gui.show_message("Don't forget to register as CEO/Leader","It may also be a script detection error, a known problem, no feedback required")
             run_script("appAvengerOperations")
         end
     end
@@ -927,10 +927,10 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("One-click completion of hangar (air freight) shipment", function()
-    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+    gui.show_message("Autoship "," may show that the task failed, but you should get the money!")
     local integer = locals.get_int("gb_smuggler", "3007")
     locals.set_int("gb_smuggler","2964",integer)
-    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+    gui.show_message("Autoship "," may show that the task failed, but you should get the money!")
 end)
 
 local ccrgsl = gentab:add_checkbox("CEO仓库出货锁定运输船")
@@ -964,14 +964,14 @@ gentab:add_button("The motorcycle industry is full of raw materials", function()
     globals.set_int(1648657+1+4,1) --证件
     globals.set_int(1648657+1+0,1) --假钞
     globals.set_int(1648657+1+6,1) --致幻剂
-    gui.show_message("自动补货","全部完成")
+    gui.show_message("Auto-replenishment","All done")
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("The bunker is full of raw materials", function()
     globals.set_int(1648657+1+5,1) --bunker
-    gui.show_message("自动补货","全部完成")
+    gui.show_message("Auto-replenishment","All done")
 end)
 
 gentab:add_sameline()
@@ -1027,13 +1027,13 @@ gentab:add_button("Nightclub safe 300,000 cycles 10 times", function()
         a2 =0
         while a2 < 10 do --循环次数
             a2 = a2 + 1
-            gui.show_message("已执行次数", a2)
+            gui.show_message("Auto-replenishment","All done", a2)
             globals.set_int(262145 + 24227,300000) -- 	if (func_22904(MP_STAT_CLUB_SAFE_CASH_VALUE, -1) != Global_262145.f_24227)
             globals.set_int(262145 + 24223,300000) -- 	func_6(iParam0, iParam1, joaat("NIGHTCLUBINCOMEUPTOPOP100"), &(Global_262145.f_24223), true);
             STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 10000, true)
             STATS.STAT_SET_INT(joaat(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
             STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 100000, true)
-            gui.show_message("警告", "此方法仅用于偶尔小额恢复")
+            gui.show_message("Warning", "This method is only used for occasional small recovery")
             ncsafeloop:sleep(10000) --执行间隔，单位ms
         end
     end)
@@ -1093,7 +1093,7 @@ gentab:add_button("facility", function()
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
 
     if intr == 269313 then 
-        gui.show_message("无需传送","您已在设施内")
+        gui.show_message("No need to teleport","You are already in the facility")
     else
         tpfac()
     end
@@ -1109,7 +1109,7 @@ gentab:add_button("Facility Plan Screen", function()
             PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), 350.69284, 4872.308, -60.794243)
         end
     else
-        gui.show_message("确保自己在设施内","请先进入设施再传送到计划屏幕")
+        gui.show_message("Make sure you are in the facility","Please enter the facility before teleporting to the planning screen")
         tpfac()
     end
 end)
@@ -1233,11 +1233,11 @@ gentab:add_button("Remove balance", function()
         SE = SE - 10000
         stats.set_int(mpx.."MONEY_EARN_JOBS",stats.get_int(mpx.."MONEY_EARN_JOBS") + SE )
         stats.set_int("MPPLY_TOTAL_EVC",stats.get_int("MPPLY_TOTAL_EVC") + SE )
-        gui.show_message("移除收支差","执行成功")
+        gui.show_message("Remove balance difference","executed successfully")
         log.info("已移除收支差:"..SE)    
         SEa = 1
     else
-        gui.show_message("您的收支差正常无需移除或已移除过","完全没有收支差可能反而不正常")
+        gui.show_message("Your income-expenditure gap is normal and does not need to be removed or has been removed.","No income-expenditure gap at all may be abnormal")
         SEa = 1
     end
 
@@ -1996,7 +1996,7 @@ gentab:add_sameline()
 
 gentab:add_button("PED collapse", function() --恶毒的东西
     script.run_in_fiber(function (pedpacrash)
-        gui.show_message("伞崩","请耐心等待直至人物落地")
+        gui.show_message("Umbrella collapse", "Please wait patiently until the character lands")
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -74.94, -818.58, 327)
         local spped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID())
         local ppos = ENTITY.GET_ENTITY_COORDS(spped, true)
@@ -2068,9 +2068,9 @@ gentab:add_button("Write Interval", function()
     if taximax:get_value() >= taximin:get_value() and taximin:get_value() >= 0 then
         taximina = taximin:get_value()
         taximaxa = taximax:get_value()
-        gui.show_message("成功","已应用")
+        gui.show_message("SUCCESS","applied")
     else
-        gui.show_message("错误","输入不合法,已重置")
+        gui.show_message("Error ","Illegal input, has been reset")
         taximin:set_value(0)
         taximax:set_value(0)
     end
@@ -2377,7 +2377,7 @@ script.register_looped("schlua-recoveryservice", function()
             script_util:sleep(300) --间隔 300 毫秒
 
         else
-            gui.show_message("已停止", "目标不能是自己!")
+            gui.show_message("Stopped", "The target cannot be yourself!")
             checkxsdpednet:set_enabled(nil) --目标是自己，自动关掉开关
         end
     end
@@ -2420,7 +2420,7 @@ script.register_looped("schlua-dataservice", function()
     if  cashmtp:is_enabled() and cashmtpin:get_value() >= 0 then--锁定普通联系人差事奖励倍率
         if globals.get_float(262145) ~= cashmtpin:get_value() then
             formattedcashmtpin = string.format("%.3f", cashmtpin:get_value())
-            gui.show_message("联系人任务收入倍率",formattedcashmtpin.."倍")
+            gui.show_message("Contact Task Revenue Multiplier",formattedcashmtpin.."倍")
             globals.set_float(262145,cashmtpin:get_value())
         end
     end
@@ -2452,7 +2452,7 @@ script.register_looped("schlua-dataservice", function()
             mpx = "MP1_" --用于判断当前是角色1还是角色2
         end
         if loopa19 == 0 then
-            gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
+            gui.show_message("The next time the production is triggered, it will take effect", "Sometimes the battle change can take effect immediately?")
         end
         if globals.get_int(262145 + 17571) ~= 5000 then
             globals.set_int(262145 + 17571, 5000) -- BIKER_WEED_PRODUCTION_TIME
@@ -2541,7 +2541,7 @@ script.register_looped("schlua-dataservice", function()
 
     if  ncspup:is_enabled() then--锁定夜总会生产速度
         if loopa20 == 0 then
-            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+            gui.show_message("It will take effect the next time production is triggered","reassign employees to take effect immediately")
         end
         if globals.get_int(262145 + 24548) ~= 5000 then
             globals.set_int(262145 + 24548, 5000) -- tuneables_processing.c -147565853
@@ -2589,7 +2589,7 @@ script.register_looped("schlua-dataservice", function()
 
     if  ncspupa1:is_enabled() then--锁定夜总会生产速度x4
         if loopa21 == 0 then
-            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+            gui.show_message("It will take effect the next time production is triggered","reassign employees to take effect immediately")
         end
         if globals.get_int(262145 + 24548) ~= 3600000 then
             globals.set_int(262145 + 24548, 3600000) -- tuneables_processing.c -147565853
@@ -2628,7 +2628,7 @@ script.register_looped("schlua-dataservice", function()
 
     if  ncspupa2:is_enabled() then--锁定夜总会生产速度x10
         if loopa22 == 0 then
-            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+            gui.show_message("It will take effect the next time production is triggered","reassign employees to take effect immediately")
         end
         if globals.get_int(262145 + 24548) ~= 1440000 then
             globals.set_int(262145 + 24548, 1440000) -- tuneables_processing.c -147565853
@@ -2667,7 +2667,7 @@ script.register_looped("schlua-dataservice", function()
 
     if  ncspupa3:is_enabled() then--锁定夜总会生产速度x20
         if loopa23 == 0 then
-            gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
+            gui.show_message("It will take effect the next time production is triggered","reassign employees to take effect immediately")
         end
         if globals.get_int(262145 + 24548) ~= 720000 then
             globals.set_int(262145 + 24548, 720000) -- tuneables_processing.c -147565853
@@ -2746,7 +2746,7 @@ script.register_looped("schlua-defpservice", function()
             MISC.SET_RIOT_MODE_ENABLED(true)
             script_util:sleep(30)
         else
-            gui.show_message("掉帧攻击已停止", "你在攻击自己!")
+            gui.show_message("The frame drop attack has stopped", "You are attacking yourself!")
             checkspped:set_enabled(nil) --目标是自己，自动关掉开关
         end
     end
@@ -2782,7 +2782,7 @@ script.register_looped("schlua-defpservice", function()
             ENTITY.SET_ENTITY_AS_MISSION_ENTITY(defpttable[defpscount2], true, false)
             ENTITY.SET_ENTITY_VISIBLE(defpttable[defpscount2], false, 0)
             else
-                gui.show_message("掉帧攻击已停止", "你在攻击自己!")
+                gui.show_message("The frame drop attack has stopped", "You are attacking yourself!")
                 check2:set_enabled(nil)--目标是自己，自动关掉开关
             end
         end
@@ -2801,7 +2801,7 @@ script.register_looped("schlua-defpservice", function()
                 GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx.dic)
                 GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD( ptfx.name, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 10.0, true, true, true)
             else
-                gui.show_message("ptfx轰炸已停止", "你在攻击自己!")
+                gui.show_message("ptfx bombing stopped", "You are attacking yourself!")
                 check5:set_enabled(nil)--目标是自己，自动关掉开关
             end
 
@@ -2823,13 +2823,13 @@ script.register_looped("schlua-miscservice", function()
     if  checkfootaudio:is_enabled() then --控制自己是否产生脚步声
         AUDIO.SET_PED_FOOTSTEPS_EVENTS_ENABLED(PLAYER.PLAYER_PED_ID(),false)
         if loopa1 == 0 then --这段代码只会在开启开关时执行一次，而不是循环
-            gui.show_message("脚步声控制","静音")
+            gui.show_message("Footsteps Control","Mute")
         end
         loopa1 = 1
     else
         if loopa1 == 1 then     --这段代码只会在关掉开关时执行一次，而不是循环               
         AUDIO.SET_PED_FOOTSTEPS_EVENTS_ENABLED(PLAYER.PLAYER_PED_ID(),true)
-        gui.show_message("脚步声控制","有声")
+        gui.show_message("Footstep control","with sound")
         loopa1 = 0
         end
     end
@@ -2837,13 +2837,13 @@ script.register_looped("schlua-miscservice", function()
     if  checkSONAR:is_enabled() then --控制声纳开关
         if loopa4 == 0 then  --这段代码只会在开启开关时执行一次，而不是循环
             HUD.SET_MINIMAP_SONAR_SWEEP(true)
-            gui.show_message("声纳","开启")
+            gui.show_message("sonar","on")
         end
         loopa4 = 1
     else
         if loopa4 == 1 then   
             HUD.SET_MINIMAP_SONAR_SWEEP(false)        
-            gui.show_message("声纳","关闭")
+            gui.show_message("sonar","close")
             loopa4 = 0
         end
     end
@@ -2884,7 +2884,7 @@ script.register_looped("schlua-miscservice", function()
                 ENTITY.SET_ENTITY_PROOFS(tarveh, true, true, true, true, true, 0, 0, true) --似乎没啥用...
                 ENTITY.SET_ENTITY_INVINCIBLE(tarveh, true)
                 VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(tarveh, false)
-                gui.show_message("载具无敌","已应用")
+                gui.show_message("Vehicle Invulnerability","Applied")
                 loopa14 = 1
             end
         end
@@ -2911,7 +2911,7 @@ script.register_looped("schlua-miscservice", function()
                 ENTITY.SET_ENTITY_PROOFS(tarveh, false, false, false, false, false, 0, 0, false)
                 ENTITY.SET_ENTITY_INVINCIBLE(tarveh, false)
                 VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(tarveh, true)
-                gui.show_message("载具无敌","已撤销")
+                gui.show_message("Vehicle invulnerability","removed")
                 loopa14 = 0
             end
         end
@@ -2938,7 +2938,7 @@ script.register_looped("schlua-miscservice", function()
                     end
                 end
                 ENTITY.SET_ENTITY_COLLISION(tarveh2,false,false)
-                gui.show_message("载具无碰撞","已应用")
+                gui.show_message("Vehicle No Collision","Applied")
                 loopa15 = 1
             end
         end
@@ -2963,7 +2963,7 @@ script.register_looped("schlua-miscservice", function()
                     end
                 end
                 ENTITY.SET_ENTITY_COLLISION(tarveh2,true,true)
-                gui.show_message("载具无碰撞","已撤销")
+                gui.show_message("Vehicle has no collision","removed")
                 loopa15 = 0
             end
         end
@@ -2996,13 +2996,13 @@ script.register_looped("schlua-miscservice", function()
     if  checkpedaudio:is_enabled() then --控制自己的PED是否产生声音
         PLAYER.SET_PLAYER_NOISE_MULTIPLIER(PLAYER.PLAYER_ID(), 0.0)
         if loopa3 == 0 then
-            gui.show_message("PED声音控制","静音")
+            gui.show_message("PED sound control "," Mute")
         end
         loopa3 = 1
     else
         if loopa3 == 1 then                    
         PLAYER.SET_PLAYER_NOISE_MULTIPLIER(PLAYER.PLAYER_ID(), 1.0)
-        gui.show_message("PED声音控制","有声")
+        gui.show_message("PED sound control "," with sound")
         loopa3 = 0
         end
     end
@@ -3015,7 +3015,7 @@ script.register_looped("schlua-miscservice", function()
     if loopa8 == 1 then 
         PED.RESET_AI_WEAPON_DAMAGE_MODIFIER()
         PED.RESET_AI_MELEE_WEAPON_DAMAGE_MODIFIER()
-        gui.show_message("提示","NPC伤害已还原")
+        gui.show_message("Prompt ","NPC damage has been restored")
     loopa8 = 0
     end
     end
@@ -3053,7 +3053,7 @@ script.register_looped("schlua-miscservice", function()
             objectsix3 = OBJECT.CREATE_OBJECT(md6hash, 0.0,0.0,0, true, true, false)
             ENTITY.ATTACH_ENTITY_TO_ENTITY(objectsix3, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0), -1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
         
-            gui.show_message("头顶666","生成")
+            gui.show_message("Overhead 666", generating")
         end
         loopa2 = 1
     else
@@ -3061,7 +3061,7 @@ script.register_looped("schlua-miscservice", function()
             ENTITY.DELETE_ENTITY(objectsix1)
             ENTITY.DELETE_ENTITY(objectsix2)
             ENTITY.DELETE_ENTITY(objectsix3)
-            gui.show_message("头顶666","移除")
+            gui.show_message("Overhead 666"," removed")
             loopa2 = 0
         end
     end
@@ -3103,7 +3103,7 @@ script.register_looped("schlua-miscservice", function()
             object5203 = OBJECT.CREATE_OBJECT(num0hash, 0.0,0.0,0, true, true, false)
             ENTITY.ATTACH_ENTITY_TO_ENTITY(object5203, user_ped, PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 0),   1.0, 0, 1.7, 0, 0, 0, false, false, false, false, 2, true) 
         
-            gui.show_message("头顶520","生成")
+            gui.show_message("Overhead 520", "generated")
         end
         loopa17 = 1
     else
@@ -3111,7 +3111,7 @@ script.register_looped("schlua-miscservice", function()
             ENTITY.DELETE_ENTITY(object5201)
             ENTITY.DELETE_ENTITY(object5202)
             ENTITY.DELETE_ENTITY(object5203)
-            gui.show_message("头顶520","移除")
+            gui.show_message("Overhead 520"," removed")
             loopa17 = 0
         end
     end
@@ -3161,13 +3161,13 @@ script.register_looped("schlua-miscservice", function()
 
         GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(vehptfx1, 200, 200, 200, false)
         
-        gui.show_message("恶灵骑士","开")
+        gui.show_message("Ghost Rider","on")
         end
         loopa10 = 1
     else
         if loopa10 == 1 then 
             ENTITY.DELETE_ENTITY(firemtcrtveh)
-            gui.show_message("恶灵骑士","关")
+            gui.show_message("Ghost Rider", "Off")
             loopa10 = 0
         end
     end
@@ -3264,7 +3264,7 @@ script.register_looped("schlua-miscservice", function()
     else
         if loopa7 == 1 then 
         PLAYER.SET_DISPATCH_COPS_FOR_PLAYER(PLAYER.PLAYER_ID(), true)
-        gui.show_message("提示","通缉时会派遣警察")
+        gui.show_message("Prompt "," the police will be dispatched when wanted")
         loopa7 = 0
         end
     end
@@ -3296,13 +3296,13 @@ script.register_looped("schlua-miscservice", function()
     if  desync:is_enabled() then --创建新手教程战局以取消与其他玩家同步
         if loopa9 == 0 then
             NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
-            gui.show_message("取消同步","将与所有玩家取消同步")
+            gui.show_message("Unsync"," will unsync with all players")
         end
         loopa9 = 1
     else
         if loopa9 == 1 then                    
             NETWORK.NETWORK_END_TUTORIAL_SESSION()
-            gui.show_message("取消同步","关")
+            gui.show_message("cancel sync","off")
         loopa9 = 0
         end
     end
@@ -3396,7 +3396,7 @@ script.register_looped("schlua-ectrlservice", function()
                     end
                 end
             end
-            gui.show_message("提示","已解锁") 
+            gui.show_message("Prompt "," unlocked") 
         end
         loopa18 = 0
     end

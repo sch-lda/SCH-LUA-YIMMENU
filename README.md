@@ -56,12 +56,7 @@ GTA5 Online Assistant Lua Repo (ZH_CN) GTA5OnlineTools' Online Lua Repo https://
 RScript (ZH_CN) https://github.com/TCRoid/YimMenu-Lua-RScript \
 Alestarov_Menu (EN) https://github.com/Alestarov/YimMenu-lua-script-Alestarov_Menu \
 YIMMENU Official Lua Repo (EN) YIMMENU Official Lua Repo https://github.com/YimMenu-Lua
-## Screenshots screenshots
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/1701c218-b701-4f44-92fb-6d3be247b990)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/c5491b03-67e4-4686-92bf-4c6a3ca60ce7)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/aba5cbc7-eac1-487c-8bbd-4da9b4db6bd4)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/430eb9e4-6a42-4169-987b-9de2b8154125)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/bb748b7a-3d95-434f-8e77-e9aec1661d40)
-
-
-
+## Screenshots 
+![1](https://github.com/Drsexo/English-Sch-lua/assets/101467921/39d49dfa-870b-4b32-a2ce-61b95426c0c3)
+![2](https://github.com/Drsexo/English-Sch-lua/assets/101467921/5ad1dc9c-9cb1-4917-8444-9d525d0e3f60)
+![3](https://github.com/Drsexo/English-Sch-lua/assets/101467921/cc6e8f0d-f633-4c90-83f5-eb168cfc08d5)

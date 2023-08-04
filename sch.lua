@@ -1015,7 +1015,7 @@ local check4 = gentab:add_checkbox("Lock hangar staff single purchase quantity i
 
 gentab:add_sameline()
 
-local iputint3 = gentab:add_input_int("箱")
+local iputint3 = gentab:add_input_int("box")
 
 gentab:add_button("Nightclub safe 300,000 cycles 10 times", function()
     script.run_in_fiber(function (ncsafeloop)
@@ -1387,7 +1387,7 @@ local checkzhongjia = gentab:add_checkbox("Request heavy armor spend (used to re
 
 gentab:add_sameline()
 
-local iputintzhongjia = gentab:add_input_int("元")
+local iputintzhongjia = gentab:add_input_int("cash")
 
 local checkfootaudio = gentab:add_checkbox("turn off footsteps") --只是一个开关，代码往后面找
 

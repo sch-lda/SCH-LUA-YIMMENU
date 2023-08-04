@@ -1,9 +1,9 @@
 # SCH-LUA-YIMMENU by sch-lda
-[English Version translated by DrSexo]( https://github.com/Drsexo/English-Sch-lua) \
-An attempt to learn to use Lua. Trying to make the free menu Yimmenu have more practical functions of P2C menu \
-An attempt to learn Lua. Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
-It is experimental, only reserved for backup archives, not optimized for users, stability and security are not guaranteed \
-This Github Repo is experimental and only kept as a backup archive. There is no guarantee of user optimization, stability, and security.
+English Version translated by DrSexo https://github.com/Drsexo/English-Sch-lua \
+Original version can be found here : https://github.com/sch-lda/SCH-LUA-YIMMENU \
+# Dont expect a perfect translation as im not chinese
+
+
 ## User Agreement TOS
 ### Allowed:
 Personal use Personal use \

@@ -1,5 +1,6 @@
 # SCH-LUA-YIMMENU
-[English Version translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
+[English Version v1.74 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
+[English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
 学习使用Lua的一次尝试.试图让免费菜单Yimmenu具备更多P2C菜单的实用功能 \
 An attempt to learn Lua.Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
 它是实验性的，仅留作备份存档，没有针对用户优化，稳定性和安全性没有保障 \

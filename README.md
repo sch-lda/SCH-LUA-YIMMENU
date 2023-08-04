@@ -1,62 +1,62 @@
-# SCH-LUA-YIMMENU
-[English Version translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
-学习使用Lua的一次尝试.试图让免费菜单Yimmenu具备更多P2C菜单的实用功能 \
-An attempt to learn Lua.Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
-它是实验性的，仅留作备份存档，没有针对用户优化，稳定性和安全性没有保障 \
+# SCH-LUA-YIMMENU by sch-lda
+[English Version translated by DrSexo]( https://github.com/Drsexo/English-Sch-lua) 
+An attempt to learn to use Lua. Trying to make the free menu Yimmenu have more practical functions of P2C menu \
+An attempt to learn Lua. Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
+It is experimental, only reserved for backup archives, not optimized for users, stability and security are not guaranteed \
 This Github Repo is experimental and only kept as a backup archive. There is no guarantee of user optimization, stability, and security.
-## 用户协议 TOS
-### 允许 Allowed:
-个人使用 Personal use \
-修改后个人使用 Personal use after modification \
-修改后二次分发(二次分发不得使用含有sch的名称) Secondary distribution after modification (Do not use the name containing "sch") 
-### 禁止 Prohibited:
-商用 Commercial use
-### 没有保障 No Warranty
-## 功能概述 features
-### 1.任务功能 Mission 
-快速配置佩里科岛和赌场抢劫前置任务 Prerequisite skip for Perico & Casino\
-一键完成佩里科岛终章 Instant perico Pass \
-远程访问产业电脑(游戏厅、恐霸...) Remote access terminals in Terrorbyte、Bunker、Arcade...
-### 2.产业功能 Business 
-一键进货 Instant Buy for MC、Bunker、CEO cargo、Air cargo\
-一键出货(不稳定) Instant Sell for MC(Unstable)、Bunker、CEO cargo、Air cargo\
-获得赌场轮盘载具 Casino Lucky wheel control
-### 3.娱乐功能 Entertainment 
-烟花 Firework \
-飞天扫帚 Flying Broom \
-恶灵骑士 No clue how to translate \
-火焰翅膀 Fire Wing 
-### 4.实体控制 Entity Control
-载具力场 Vehicle force field \
-NPC批量控制 NPC control \
-MPC瞄准惩罚(摔倒/杀死/中断/上天/燃烧...) NPC aiming reaction(ragdoll/kill/interrupt/launch/light) \
-移除摄像头 Remove all CCTV cameras
-### 5.传送 Teleport 
-带有粒子效果的传送到导航点 TP to Waypoint with PTFX \
-传送到常用计划面板和保险箱 TP to NC safe、Heist panel(Facility & Kosatka) 
-### 6.杂项 Misc 
-过多选项，不一一列举 Too many cluttered options to list
-### 7.全局选项 Global Troll 
-爆炸 Explode \
-防空警报 Sound spam \
-伞崩 Parachute crash \
-赠送暴君MK2 Spawn Oppressor Mk II
-### 8.调试 Debug 
-自定义物体和粒子效果生成 Create object、PTFX with name\
-取消同步(龟壳) Block sync with others\
-清理附近粒子效果和物体表面痕迹 Clear PTFX in range
-### 9.玩家选项 PlayerMenu
-带有粒子效果的传送到玩家 TP to player with PTFX \
-载具无敌 Vehicle Godmode \
-修理载具 Repair Vehicle \
-恶搞 Troll
-## 关联Github仓库 Related Github Repositories
+## User Agreement TOS
+### Allowed:
+Personal use Personal use \
+Personal use after modification \
+Secondary distribution after modification (Do not use the name containing "sch") Secondary distribution after modification (Do not use the name containing "sch")
+### Prohibited:
+Commercial use
+### No Warranty No Warranty
+## Feature overview features
+### 1. Mission function Mission
+Quick Configuration Prerequisite skip for Perico & Casino\
+Complete the final chapter of Perico Island with one click Instant perico Pass \
+Remote access to industrial computers (Game Hall, Terrorbyte...) Remote access terminals in Terrorbyte, Bunker, Arcade...
+### 2. Industrial Function Business
+One-click purchase Instant Buy for MC, Bunker, CEO cargo, Air cargo\
+One-click shipping (unstable) Instant Sell for MC (Unstable), Bunker, CEO cargo, Air cargo\
+Get Casino Lucky wheel control
+### 3. Entertainment function Entertainment
+Fireworks \
+Flying Broom \
+Ghost Rider No clue how to translate \
+Fire Wing Fire Wing
+### 4. Entity Control Entity Control
+Vehicle force field \
+NPC batch control NPC control \
+MPC aiming reaction(fall/kill/interrupt/go up/burn...) NPC aiming reaction(ragdoll/kill/interrupt/launch/light) \
+Remove all CCTV cameras Remove all CCTV cameras
+### 5. Send Teleport
+TP to Waypoint with PTFX \
+Teleport to common plan panel and safe TP to NC safe, Heist panel(Facility & Kosatka)
+### 6. Miscellaneous Misc
+Too many options to list Too many cluttered options to list
+### 7. Global options Global Troll
+Explode \
+Air Raid Siren Sound spam \
+Parachute crash \
+Give away the Tyrant MK2 Spawn Oppressor Mk II
+### 8. Debug Debug
+Generate custom objects and particle effects Create object, PTFX with name\
+Unsync (turtle shell) Block sync with others\
+Clean up nearby particle effects and object surface traces Clear PTFX in range
+### 9. Player Options PlayerMenu
+TP to player with PTFX \
+Vehicle Godmode \
+Repair Vehicle Repair Vehicle \
+Spoof Troll
+## Related Github Repositories Related Github Repositories
 Heist Lua by Wang (ZH_CN) https://github.com/wangzixuank/YimMenu-HeistLua \
-GTA5线上小助手Lua仓库 (ZH_CN) GTA5OnlineTools' Online Lua Repo https://github.com/CrazyZhang666/GTA5OnlineLua \
+GTA5 Online Assistant Lua Repo (ZH_CN) GTA5OnlineTools' Online Lua Repo https://github.com/CrazyZhang666/GTA5OnlineLua \
 RScript (ZH_CN) https://github.com/TCRoid/YimMenu-Lua-RScript \
 Alestarov_Menu (EN) https://github.com/Alestarov/YimMenu-lua-script-Alestarov_Menu \
-YIMMENU官方Lua仓库 (EN) YIMMENU Official Lua Repo https://github.com/YimMenu-Lua
-## 截图 screenshots
+YIMMENU Official Lua Repo (EN) YIMMENU Official Lua Repo https://github.com/YimMenu-Lua
+## Screenshots screenshots
 ![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/1701c218-b701-4f44-92fb-6d3be247b990)
 ![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/c5491b03-67e4-4686-92bf-4c6a3ca60ce7)
 ![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/aba5cbc7-eac1-487c-8bbd-4da9b4db6bd4)

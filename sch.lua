@@ -1,36 +1,36 @@
--- v1.74 -- 
---我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
---有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
+-- v1.74 --
+--I do not limit or even encourage players to modify and customize lua according to their own needs.
+--I even added comments to some codes to explain what this is used for and the location of the relevant global in the decompiled script
 --[[
-    使用协议：
-允许：
-         个人使用
-         修改后个人使用
-         修改后二次分发
+     Use Agreement:
+allow:
+          personal use
+          Modified for personal use
+          Secondary distribution after modification
 
-禁止:
-         商用
-         修改后二次分发仍使用包含sch的名称
+prohibit:
+          Commercial
+          After modification, the secondary distribution still uses the name containing sch
 
-无任何保障(我只能保证编写时无主观恶意,造成各种意想不到的后果概不负责)
+No guarantees (I can only guarantee that there is no subjective malice when writing, and I will not be responsible for any unexpected consequences)
 
-另请确保通过小助手官方discord用户yeahsch(sch)发布的文件下载，其他任何方式均有可能是恶意脚本
-Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
+Please also make sure to download the file through the official discord user yeahsch(sch) of the assistant, any other method may be a malicious script
+Github: https://github.com/sch-lda/SCH-LUA-YIMMENU
 
-外部链接
-Yimmenu lib By Discord@alice2333 https://discord.com/channels/388227343862464513/1124473215436214372 能够为开发者提供支持
-YimMenu-HeistLua https://github.com/wangzixuank/YimMenu-HeistLua 一个Yim开源任务脚本
+external link
+Yimmenu lib By Discord@alice2333 https://discord.com/channels/388227343862464513/1124473215436214372 can provide support for developers
+YimMenu-HeistLua https://github.com/wangzixuank/YimMenu-HeistLua A Yim open source task script
 
-Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Control脚本和MusinessBanager脚本，Blue-Flag Lua虽然有些过时但也提供了一些灵感
-小助手官方Discord中 Alice、wangzixuan、nord123对Lua的编写提供了帮助
+The Globals and Locals used in Lua are widely copied from the UnknownCheats forum, Heist Control script and MusinessBanager script. Although Blue-Flag Lua is a bit outdated, it also provides some inspiration
+Alice, wangzixuan, and nord123 in the official Discord of the assistant provided help in writing Lua
 
-对于lua编写可能有帮助的网站
-    1.Yimmenu Lua API  https://github.com/YimMenu/YimMenu/tree/master/docs/lua
-    2.GTA5 Native Reference (本机函数)  https://nativedb.dotindustries.dev/natives
-    3.GTA5 反编译脚本  https://github.com/Primexz/GTAV-Decompiled-Scripts
-    4.PlebMaster (快速搜索模型Hash)  https://forge.plebmasters.de
-    5.gta-v-data-dumps (查ptfx/声音/模型)  https://github.com/DurtyFree/gta-v-data-dumps
-    5.FiveM Native Reference  https://docs.fivem.net/docs/
+Websites that may be helpful for lua writing
+     1. Yimmenu Lua API https://github.com/YimMenu/YimMenu/tree/master/docs/lua
+     2. GTA5 Native Reference (native function) https://nativedb.dotindustries.dev/natives
+     3. GTA5 decompiled scripts https://github.com/Primexz/GTAV-Decompiled-Scripts
+     4. PlebMaster (quick search model Hash) https://forge.plebmasters.de
+     5.gta-v-data-dumps (check ptfx/sound/model) https://github.com/DurtyFree/gta-v-data-dumps
+     5. FiveM Native Reference https://docs.fivem.net/docs/
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
@@ -180,7 +180,7 @@ end
 
 --------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
 --[[
-gentab:add_button("测试6", function()
+gentab:add_button("test 6", function()
     log.info(globals.get_float(262145+ 34020))
 end)
 ]]
@@ -192,7 +192,7 @@ gentab:add_text("要使用玩家功能,请在yim玩家列表选中一个玩家�
 
 gentab:add_text("任务功能") 
 
-gentab:add_button("佩里科终章一键完成", function()
+gentab:add_button("Complete the final chapter of Perico with one click", function()
     script.run_in_fiber(function (pericoinstcpl)
         local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
         local FMMChost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0)
@@ -219,7 +219,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("佩里科终章一键完成(强制)", function()
+gentab:add_button("Complete the final chapter of Perico with one click (mandatory)", function()
         locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
         locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
         locals.set_int("fm_mission_controller", 19710, 12)
@@ -229,7 +229,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("配置佩岛前置(猎豹雕像)", function()
+gentab:add_button("Configure the front of Pei Island (cheetah statue)", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
     local mpx = "MP0_"--用于判断当前是角色1还是角色2
     if playerid == 1 then --用于判断当前是角色1还是角色2
@@ -258,7 +258,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("配置佩岛前置(粉钻)", function()
+gentab:add_button("Configuration Pei island front (pink diamond)", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -287,7 +287,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("重置佩岛", function()
+gentab:add_button("Reset Pey Island", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -315,7 +315,7 @@ gentab:add_button("重置佩岛", function()
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
 
-gentab:add_button("配置赌场前置(钻石)", function()
+gentab:add_button("Configure Casino Front (Diamond)", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -342,7 +342,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("配置赌场前置(黄金)", function()
+gentab:add_button("Configure Casino Front (Gold)", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -369,7 +369,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("重置赌场计划面板", function()
+gentab:add_button("Reset casino plan panel", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -390,7 +390,7 @@ gentab:add_button("重置赌场计划面板", function()
 end)
 
 
-gentab:add_button("转换CEO/首领", function()
+gentab:add_button("Switch CEO/Leader", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
@@ -409,7 +409,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示事务所电脑", function()
+gentab:add_button("Show office computer", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appfixersecurity")
@@ -427,7 +427,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示地堡电脑", function()
+gentab:add_button("Show bunker computer", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appbunkerbusiness")
@@ -443,7 +443,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示机库电脑", function()
+gentab:add_button("Show hangar computer", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appsmuggler")
@@ -459,7 +459,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示游戏厅产业总控电脑", function()
+gentab:add_button("Display game hall industry master control computer", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("apparcadebusinesshub")
@@ -475,7 +475,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示恐霸主控面板", function()
+gentab:add_button("Show the Terrorist Dashboard", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("apphackertruck")
@@ -491,7 +491,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示复仇者面板", function()
+gentab:add_button("Show Avengers panel", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
         run_script("appAvengerOperations")
@@ -508,7 +508,7 @@ end)
 gentab:add_separator()
 gentab:add_text("娱乐功能(稳定性不高,全是bug)(粒子效果达到内存限制后将无法继续生成,请开启然后关闭本页最下方的清理PTFX水柱火柱功能)") --不解释，我自己也搞不明白
 
-gentab:add_button("放烟花", function()
+gentab:add_button("light fireworks", function()
     script.run_in_fiber(function (firew)
         
     local animlib = 'anim@mp_fireworks'
@@ -572,7 +572,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("飞天扫帚", function()
+gentab:add_button("broomstick", function()
     script.run_in_fiber(function (mk2ac1)
         local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
         local broomstick = joaat("prop_tool_broom")
@@ -724,7 +724,7 @@ local react4any = gentab:add_checkbox("起飞a") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-gentab:add_button("收为保镖", function()
+gentab:add_button("bodyguard", function()
     local pedtable = entities.get_all_peds_as_handles()
     for _, peds in pairs(pedtable) do
         local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -877,7 +877,7 @@ CamList = {   --从heist control抄的
 
 gentab:add_sameline()
 
-gentab:add_button("移除佩里科重甲兵", function()
+gentab:add_button("Removed Perico hoplites", function()
     for _, ent in pairs(entities.get_all_peds_as_handles()) do
         if ENTITY.GET_ENTITY_MODEL(ent) == 193469166 then
             ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent,true,true) --不执行这个下面会删除失败
@@ -890,13 +890,13 @@ gentab:add_separator()
 
 gentab:add_text("产业功能-中高风险") 
 
-gentab:add_button("CEO仓库出货一键完成", function()
+gentab:add_button("One-click completion of CEO warehouse shipments", function()
     locals.set_int("gb_contraband_sell","542","99999")
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("摩托帮出货一键完成", function()
+gentab:add_button("One-click completion of motorcycle shipment", function()
     if locals.get_int("gb_biker_contraband_sell",716) >= 1 then
         locals.set_int("gb_biker_contraband_sell","821","15")
     else
@@ -907,7 +907,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("致幻剂出货一键完成", function()
+gentab:add_button("One-click delivery of hallucinogens", function()
     locals.set_int("fm_content_acid_lab_sell",6596,9)
     locals.set_int("fm_content_acid_lab_sell",6597,10)
     locals.set_int("fm_content_acid_lab_sell",6530,2)
@@ -915,7 +915,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("地堡出货一键完成", function()
+gentab:add_button("One-click completion of bunker shipment", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     locals.set_int("gb_gunrunning","1980","0")
     --  gb_gunrunning.c iLocal_1206.f_774
@@ -926,7 +926,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("机库(空运)出货一键完成", function()
+gentab:add_button("One-click completion of hangar (air freight) shipment", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     local integer = locals.get_int("gb_smuggler", "3007")
     locals.set_int("gb_smuggler","2964",integer)
@@ -957,7 +957,7 @@ gentab:add_sameline()
 
 local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(!)")
 
-gentab:add_button("摩托帮产业满原材料", function()
+gentab:add_button("The motorcycle industry is full of raw materials", function()
     globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
     globals.set_int(1648657+1+2,1) --冰毒
     globals.set_int(1648657+1+3,1) --大麻
@@ -969,14 +969,14 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("地堡满原材料", function()
+gentab:add_button("The bunker is full of raw materials", function()
     globals.set_int(1648657+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("夜总会满人气", function()
+gentab:add_button("Popular nightclubs", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -987,7 +987,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("CEO仓库员工进货一次", function()
+gentab:add_button("CEO warehouse staff purchase once", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     --freemode.c void func_17501(int iParam0, BOOL bParam1) // Position - 0x56C7B6
     STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
@@ -999,7 +999,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("机库员工进货一次", function()
+gentab:add_button("Hangar staff restock once", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
     STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
@@ -1017,7 +1017,7 @@ gentab:add_sameline()
 
 local iputint3 = gentab:add_input_int("箱")
 
-gentab:add_button("夜总会保险箱30万循环10次", function()
+gentab:add_button("Nightclub safe 300,000 cycles 10 times", function()
     script.run_in_fiber(function (ncsafeloop)
         local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
         local mpx = "MP0_"
@@ -1048,7 +1048,7 @@ local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(高危)")
 gentab:add_separator()
 gentab:add_text("传送")
 
-gentab:add_button("导航点(粒子效果)", function()
+gentab:add_button("Navigation Points (Particle Effects)", function()
     script.run_in_fiber(function (tp2wp)
         command.call("waypointtp",{}) --调用Yimmenu自身传送到导航点命令
         STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_rcbarry2") --小丑出现烟雾
@@ -1069,7 +1069,7 @@ function tpfac() --传送到设施
 
 end
 
-gentab:add_button("虎鲸计划面板", function()
+gentab:add_button("Killer Whale Project Panel", function()
     script.run_in_fiber(function (callkos)
         local SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
         local SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
@@ -1088,7 +1088,7 @@ gentab:add_button("虎鲸计划面板", function()
     end)
 end)
 
-gentab:add_button("设施", function()
+gentab:add_button("facility", function()
     local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
 
@@ -1101,7 +1101,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("设施计划屏幕", function()
+gentab:add_button("Facility Plan Screen", function()
     local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
     local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
     if intr == 269313 then 
@@ -1164,17 +1164,17 @@ function tpnc() --传送到夜总会
     end
 end
 
-gentab:add_button("夜总会", function()
+gentab:add_button("nightclub", function()
     tpnc()
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("夜总会保险箱(先进入夜总会)", function()
+gentab:add_button("Nightclub safe (enter the nightclub first)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -1615.6832, -3015.7546, -75.204994)
 end)
 
-gentab:add_button("游戏厅", function()
+gentab:add_button("gaming room", function()
 
     local Blip = HUD.GET_FIRST_BLIP_INFO_ID(740) -- Arcade Blip
     local Pos = HUD.GET_BLIP_COORDS(Blip)
@@ -1212,7 +1212,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("游戏厅计划面板(先进游戏厅)", function()
+gentab:add_button("Arcade Plan Panel (Advanced Arcade)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  2711.773, -369.458, -54.781)
 end)
 
@@ -1221,7 +1221,7 @@ gentab:add_text("杂项")
 
 local SEa = 0
 
-gentab:add_button("移除收支差", function()
+gentab:add_button("Remove balance", function()
 
     SE = MONEY.NETWORK_GET_VC_BANK_BALANCE() + stats.get_int("MPPLY_TOTAL_SVC") - stats.get_int("MPPLY_TOTAL_EVC")
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
@@ -1245,7 +1245,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("移除达克斯冷却", function()
+gentab:add_button("Dax cooldown removed", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
     if playerid == 1 then 
@@ -1256,32 +1256,32 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("移除安保合约/电话暗杀冷却", function()
+gentab:add_button("Security Contract/Phone Assassination cooldown removed", function()
     globals.set_int(262145 + 31908, 0)   --tuneables_processing.c   	func_6(iParam0, iParam1, joaat("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME") /* collision: FIXER_SECURITY_CONTRACT_COOLDOWN_TIME */, &(Global_262145.f_31908), true);
     globals.set_int(262145 + 31989, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, 1872071131, &(Global_262145.f_31989), true);
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("移除CEO载具冷却", function()
+gentab:add_button("Removed CEO vehicle cooldown", function()
     globals.set_int(262145 + 13005, 0)   --tuneables_processing.c 	func_6(iParam0, iParam1, joaat("GB_CALL_VEHICLE_COOLDOWN") /* collision: GB_CALL_VEHICLE_COOLDOWN */, &(Global_262145.f_13005), true);
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("移除自身悬赏", function()
+gentab:add_button("Remove self bounty", function()
     globals.set_int(1+2359296+5150+13,2880000)   
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("卡云退线下", function()
+gentab:add_button("Ka Yun retreats offline", function()
     if NETWORK.NETWORK_CAN_BAIL() then
         NETWORK.NETWORK_BAIL(0, 0, 0)
     end
 end)
 
-gentab:add_button("跳过一条NPC对话", function()
+gentab:add_button("Skip an NPC dialogue", function()
     AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE()
 end)
 
@@ -1291,7 +1291,7 @@ local checkbypassconv = gentab:add_checkbox("自动跳过NPC对话")
 
 gentab:add_sameline()
 
-gentab:add_button("停止本地所有声音", function()
+gentab:add_button("stop all local sounds", function()
     for i=-1,100 do
         AUDIO.STOP_SOUND(i)
         AUDIO.RELEASE_SOUND_ID(i)
@@ -1300,7 +1300,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("生成地面加速条", function()
+gentab:add_button("Generate ground speed bar", function()
     script.run_in_fiber(function (crtspeedm)
     objHash = joaat("stt_prop_track_speedup_t1")
     while not STREAMING.HAS_MODEL_LOADED(objHash) do	
@@ -1316,7 +1316,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("生成空中加速条", function()
+gentab:add_button("Generate Air Acceleration Bar", function()
     script.run_in_fiber(function (crtspeedm)
     objHash = joaat("ar_prop_ar_speed_ring")
     while not STREAMING.HAS_MODEL_LOADED(objHash) do	
@@ -1334,7 +1334,7 @@ gentab:add_text("视觉效果")
 
 gentab:add_sameline()
 
-gentab:add_button("移除所有视觉效果", function()
+gentab:add_button("remove all visual effects", function()
     GRAPHICS.ANIMPOSTFX_STOP_ALL()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("DEFAULT")
 
@@ -1342,7 +1342,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("视觉效果:吸毒", function()
+gentab:add_button("Visual Effects: Taking Drugs", function()
     GRAPHICS.ANIMPOSTFX_PLAY("DrugsDrivingIn", 5, true)
 end)
 

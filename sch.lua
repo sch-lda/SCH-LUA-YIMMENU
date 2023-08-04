@@ -188,9 +188,9 @@ end)
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 
-gentab:add_text("要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
+gentab:add_text("To use the player function, please select a player in the yim player list and scroll to the bottom of the player page") 
 
-gentab:add_text("任务功能") 
+gentab:add_text("task function") 
 
 gentab:add_button("Complete the final chapter of Perico with one click", function()
     script.run_in_fiber(function (pericoinstcpl)
@@ -506,7 +506,7 @@ gentab:add_button("Show Avengers panel", function()
 end)
 
 gentab:add_separator()
-gentab:add_text("娱乐功能(稳定性不高,全是bug)(粒子效果达到内存限制后将无法继续生成,请开启然后关闭本页最下方的清理PTFX水柱火柱功能)") --不解释，我自己也搞不明白
+gentab:add_text("Entertainment function (low stability, full of bugs) (the particle effect will not continue to be generated after reaching the memory limit, please enable and disable the function of cleaning PTFX water column and fire column at the bottom of this page)") --不解释，我自己也搞不明白
 
 gentab:add_button("light fireworks", function()
     script.run_in_fiber(function (firew)
@@ -654,7 +654,7 @@ local checkfirew = gentab:add_checkbox("火焰翅膀")
 
 gentab:add_separator()
 
-gentab:add_text("实体控制") 
+gentab:add_text("entity control") 
 
 local vehforcefield = gentab:add_checkbox("载具力场") --只是一个开关，代码往后面找
 
@@ -674,7 +674,7 @@ gentab:add_sameline()
 
 local vehboost = gentab:add_checkbox("Shift键控制的简易载具加速(测试)") --只是一个开关，代码往后面找
 
-gentab:add_text("载具批量控制") 
+gentab:add_text("Vehicle Batch Control") 
 
 gentab:add_sameline()
 
@@ -700,7 +700,7 @@ gentab:add_sameline()
 
 local vehbr = gentab:add_checkbox("混乱模式") --只是一个开关，代码往后面找
 
-gentab:add_text("NPC批量控制") 
+gentab:add_text("NPC batch control") 
 
 gentab:add_sameline()
 
@@ -769,7 +769,7 @@ gentab:add_sameline()
 
 local rmdied = gentab:add_checkbox("移除尸体") --只是一个开关，代码往后面找
 
-gentab:add_text("敌对NPC批量控制") 
+gentab:add_text("Hostile NPC batch control") 
 
 gentab:add_sameline()
 
@@ -795,7 +795,7 @@ gentab:add_sameline()
 
 local react5anyac = gentab:add_checkbox("收为保镖a1") --只是一个开关，代码往后面找
 
-gentab:add_text("被NPC瞄准自动反击") 
+gentab:add_text("Being targeted by an NPC to automatically counterattack") 
 
 gentab:add_sameline()
 
@@ -825,7 +825,7 @@ gentab:add_sameline()
 
 local aimreact6 = gentab:add_checkbox("移除b") --只是一个开关，代码往后面找
 
-gentab:add_text("NPC瞄准任何人自动反击") 
+gentab:add_text("NPC targets anyone and automatically counterattacks") 
 
 gentab:add_sameline()
 
@@ -888,7 +888,7 @@ end)
 
 gentab:add_separator()
 
-gentab:add_text("产业功能-中高风险") 
+gentab:add_text("Industry function - medium and high risk") 
 
 gentab:add_button("One-click completion of CEO warehouse shipments", function()
     locals.set_int("gb_contraband_sell","542","99999")
@@ -1046,7 +1046,7 @@ local checklkw = gentab:add_checkbox("赌场转盘抽车(转盘可能显示为�
 local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(高危)")
 
 gentab:add_separator()
-gentab:add_text("传送")
+gentab:add_text("Send")
 
 gentab:add_button("Navigation Points (Particle Effects)", function()
     script.run_in_fiber(function (tp2wp)
@@ -1217,7 +1217,7 @@ gentab:add_button("Arcade Plan Panel (Advanced Arcade)", function()
 end)
 
 gentab:add_separator()
-gentab:add_text("杂项")
+gentab:add_text("miscellaneous")
 
 local SEa = 0
 
@@ -1330,7 +1330,7 @@ gentab:add_button("Generate Air Acceleration Bar", function()
     end)
 end)
 
-gentab:add_text("视觉效果")
+gentab:add_text("Visual effect")
 
 gentab:add_sameline()
 
@@ -1439,9 +1439,9 @@ local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关
 
 --------------------------------------------------------------------------------------- Players 页面
 
-gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
+gui.get_tab(""):add_text("SCH LUA PLAYER OPTIONS -!!!!! NO FEEDBACK ACCEPTED!!!!!") 
 
-local spcam = gui.get_tab(""):add_checkbox("间接观看(不易被检测)")
+local spcam = gui.get_tab(""):add_checkbox("Indirect viewing (not easily detected)")
 
 gui.get_tab(""):add_sameline()
 
@@ -1950,10 +1950,10 @@ gui.add_tab(""):add_button("squeeze down", function()
     end)
 end)
 
-local plydist = gui.get_tab(""):add_input_float("距离(m)")
+local plydist = gui.get_tab(""):add_input_float("distance (m)")
 
 gentab:add_separator()
-gentab:add_text("全局选项") 
+gentab:add_text("global options") 
 
 gentab:add_button("global explosion", function()
     for i = 0, 31 do
@@ -2038,28 +2038,28 @@ gentab:add_button("PED collapse", function() --恶毒的东西
 end)
 
 gentab:add_separator()
-gentab:add_text("变量调整-即使你将作用范围设置为一个较大值,但实际上仍然受游戏的限制") 
+gentab:add_text("Variable Adjustment - Even if you set the scope to a large value, it is actually still limited by the game") 
 
-gentab:add_text("NPC/载具力场作用范围") 
+gentab:add_text("NPC/vehicle force field range") 
 gentab:add_sameline()
-local ffrange = gentab:add_input_int("力场半径(米)")
+local ffrange = gentab:add_input_int("Force field radius (meters)")
 ffrange:set_value(15)
 
-gentab:add_text("NPC/载具批量控制范围") 
+gentab:add_text("NPC/vehicle batch control range") 
 gentab:add_sameline()
-local npcctrlr = gentab:add_input_int("控制半径(米)")
+local npcctrlr = gentab:add_input_int("Control radius (m)")
 npcctrlr:set_value(200)
 
-gentab:add_text("NPC瞄准惩罚作用范围") 
+gentab:add_text("NPC targeting penalty area of effect") 
 gentab:add_sameline()
-local npcaimprange = gentab:add_input_int("惩罚半径(米)")
+local npcaimprange = gentab:add_input_int("Penalty radius (meters)")
 npcaimprange:set_value(1000)
 
-gentab:add_text("出租车自动化随机间隔") 
+gentab:add_text("Taxi automation at random intervals") 
 gentab:add_sameline()
-local taximin = gentab:add_input_int("最小值(毫秒)")
+local taximin = gentab:add_input_int("Min (milliseconds)")
 taximin:set_value(0)
-local taximax = gentab:add_input_int("最大值(毫秒)")
+local taximax = gentab:add_input_int("max(ms)")
 taximax:set_value(0)
 gentab:add_sameline()
 local taximina = 0
@@ -2077,7 +2077,7 @@ gentab:add_button("Write Interval", function()
 end)
 
 gentab:add_separator()
-gentab:add_text("调试") 
+gentab:add_text("debugging") 
 
 local DrawInteriorID = gentab:add_checkbox("Show Interior ID") --只是一个开关，代码往后面找
 
@@ -2097,11 +2097,11 @@ gentab:add_sameline()
 
 gentab:add_button("Diasble Ver Check", function()
     verchka1 = 100
-    log.warning("将忽略lua与游戏版本不匹配的校验,使用过时的脚本您必须自行承担在线存档损坏的风险")
-    gui.show_error("将忽略lua与游戏版本不匹配的校验","您必须承担在线存档损坏的风险")
+    log.warning("The verification that the lua does not match the game version will be ignored, and you must bear the risk of online archive damage by using outdated scripts")
+    gui.show_error("The verification that the lua does not match the game version will be ignored","You must bear the risk of online archive damage")
 end)
 
-gentab:add_text("obj生成(Name)") 
+gentab:add_text("obj generation (Name)") 
 gentab:add_sameline()
 local iputobjname = gentab:add_input_string("objname")
 gentab:add_sameline()
@@ -2119,7 +2119,7 @@ gentab:add_button("Generate N", function()
         end)
 end)
 
-gentab:add_text("obj生成(Hash)") 
+gentab:add_text("obj generation (Hash)") 
 gentab:add_sameline()
 local iputobjhash = gentab:add_input_string("objhash")
 gentab:add_sameline()
@@ -2137,7 +2137,7 @@ gentab:add_button("Generate H", function()
         end)
 end)
 
-gentab:add_text("PTFX生成") ;gentab:add_sameline()
+gentab:add_text("PTFX generation") ;gentab:add_sameline()
 local iputptfxdic = gentab:add_input_string("PTFX Dic")
 local iputptfxname = gentab:add_input_string("PTFX Name")
 gentab:add_sameline()
@@ -2162,9 +2162,9 @@ gentab:add_sameline()
 
 local cashmtpin = gentab:add_input_float("倍-联系人")
 
-gui.get_tab(""):add_text("调试") 
+gui.get_tab(""):add_text("debugging") 
 
-gui.get_tab(""):add_text("obj生成(Name)") 
+gui.get_tab(""):add_text("obj generation (Name)") 
 gui.get_tab(""):add_sameline()
 local iputobjnamer = gui.get_tab(""):add_input_string("objname")
 gui.get_tab(""):add_sameline()
@@ -2183,7 +2183,7 @@ gui.get_tab(""):add_button("Generate N", function()
         end)
 end)
 
-gui.get_tab(""):add_text("obj生成(Hash)") 
+gui.get_tab(""):add_text("obj generation (Hash)") 
 gui.get_tab(""):add_sameline()
 local iputobjhashr = gui.get_tab(""):add_input_string("objhash")
 gui.get_tab(""):add_sameline()
@@ -2202,7 +2202,7 @@ gui.get_tab(""):add_button("Generate H", function()
         end)
 end)
 
-gui.get_tab(""):add_text("PTFX生成") ;gui.get_tab(""):add_sameline()
+gui.get_tab(""):add_text("PTFX generation") ;gui.get_tab(""):add_sameline()
 local iputptfxdicr = gui.get_tab(""):add_input_string("PTFX Dic")
 local iputptfxnamer = gui.get_tab(""):add_input_string("PTFX Name")
 gui.get_tab(""):add_sameline()

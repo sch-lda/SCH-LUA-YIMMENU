@@ -602,23 +602,23 @@ local object5201 --注册为全局变量以便后续移除520
 local object5202--注册为全局变量以便后续移除520
 local object5203--注册为全局变量以便后续移除520
 
-local check666 = gentab:add_checkbox("头顶666") --这只是一个复选框,代码往最后的循环脚本部分找
+local check666 = gentab:add_checkbox("Head666") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
-local check520 = gentab:add_checkbox("头顶520") --这只是一个复选框,代码往最后的循环脚本部分找
+local check520 = gentab:add_checkbox("Overhead 520") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
-local check6 = gentab:add_checkbox("游泳模式") --这只是一个复选框,代码往最后的循环脚本部分找
+local check6 = gentab:add_checkbox("swim mode") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
-local checkfirebreath = gentab:add_checkbox("喷火")--这只是一个复选框,代码往最后的循环脚本部分找
+local checkfirebreath = gentab:add_checkbox("fire breathing")--这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
-local firemt = gentab:add_checkbox("恶灵骑士") --这只是一个复选框,代码往最后的循环脚本部分找
+local firemt = gentab:add_checkbox("Ghost Rider") --这只是一个复选框,代码往最后的循环脚本部分找
 
 
 bigfireWings = {
@@ -650,77 +650,77 @@ bigfireWings = {
 
 gentab:add_sameline()
 
-local checkfirew = gentab:add_checkbox("火焰翅膀")
+local checkfirew = gentab:add_checkbox("flame wings")
 
 gentab:add_separator()
 
 gentab:add_text("entity control") 
 
-local vehforcefield = gentab:add_checkbox("载具力场") --只是一个开关，代码往后面找
+local vehforcefield = gentab:add_checkbox("Vehicle force field") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local pedforcefield = gentab:add_checkbox("NPC力场") --只是一个开关，代码往后面找
+local pedforcefield = gentab:add_checkbox("NPC force field") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local forcefield = gentab:add_checkbox("力场(载具+NPC)") --只是一个开关，代码往后面找
+local forcefield = gentab:add_checkbox("Force field (vehicle + NPC)") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local objforcefield = gentab:add_checkbox("物体力场") --只是一个开关，代码往后面找
+local objforcefield = gentab:add_checkbox("Object force field") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehboost = gentab:add_checkbox("Shift键控制的简易载具加速(测试)") --只是一个开关，代码往后面找
+local vehboost = gentab:add_checkbox("Simple vehicle acceleration controlled by Shift key (test)") --只是一个开关，代码往后面找
 
 gentab:add_text("Vehicle Batch Control") 
 
 gentab:add_sameline()
 
-local vehengdmg = gentab:add_checkbox("载具熄火") --只是一个开关，代码往后面找
+local vehengdmg = gentab:add_checkbox("vehicle flameout") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehfixr = gentab:add_checkbox("载具修复") --只是一个开关，代码往后面找
+local vehfixr = gentab:add_checkbox("vehicle repair") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehstopr = gentab:add_checkbox("载具停止") --只是一个开关，代码往后面找
+local vehstopr = gentab:add_checkbox("vehicle stop") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehjmpr = gentab:add_checkbox("载具跳跃") --只是一个开关，代码往后面找
+local vehjmpr = gentab:add_checkbox("vehicle jump") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehdoorlk4p = gentab:add_checkbox("对所有玩家锁门") --只是一个开关，代码往后面找
+local vehdoorlk4p = gentab:add_checkbox("Lock the door for all players") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehbr = gentab:add_checkbox("混乱模式") --只是一个开关，代码往后面找
+local vehbr = gentab:add_checkbox("chaos mode") --只是一个开关，代码往后面找
 
 gentab:add_text("NPC batch control") 
 
 gentab:add_sameline()
 
-local reactany = gentab:add_checkbox("中断a") --只是一个开关，代码往后面找
+local reactany = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react1any = gentab:add_checkbox("摔倒a") --只是一个开关，代码往后面找
+local react1any = gentab:add_checkbox("fall") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react2any = gentab:add_checkbox("击杀a") --只是一个开关，代码往后面找
+local react2any = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react3any = gentab:add_checkbox("燃烧a") --只是一个开关，代码往后面找
+local react3any = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react4any = gentab:add_checkbox("起飞a") --只是一个开关，代码往后面找
+local react4any = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -763,43 +763,43 @@ end)
 
 gentab:add_sameline()
 
-local revitalizationped = gentab:add_checkbox("复活(不稳定)") --只是一个开关，代码往后面找
+local revitalizationped = gentab:add_checkbox("resurrection (unstable)") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local rmdied = gentab:add_checkbox("移除尸体") --只是一个开关，代码往后面找
+local rmdied = gentab:add_checkbox("remove the body") --只是一个开关，代码往后面找
 
 gentab:add_text("Hostile NPC batch control") 
 
 gentab:add_sameline()
 
-local reactanyac = gentab:add_checkbox("中断a1") --只是一个开关，代码往后面找
+local reactanyac = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react1anyac = gentab:add_checkbox("摔倒a1") --只是一个开关，代码往后面找
+local react1anyac = gentab:add_checkbox("fall") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react2anyac = gentab:add_checkbox("击杀a1") --只是一个开关，代码往后面找
+local react2anyac = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react3anyac = gentab:add_checkbox("燃烧a1") --只是一个开关，代码往后面找
+local react3anyac = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react4anyac = gentab:add_checkbox("起飞a1") --只是一个开关，代码往后面找
+local react4anyac = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react5anyac = gentab:add_checkbox("收为保镖a1") --只是一个开关，代码往后面找
+local react5anyac = gentab:add_checkbox("Received as a bodyguard") --只是一个开关，代码往后面找
 
 gentab:add_text("Being targeted by an NPC to automatically counterattack") 
 
 gentab:add_sameline()
 
-local aimreact = gentab:add_checkbox("中断b") --只是一个开关，代码往后面找
+local aimreact = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -807,55 +807,55 @@ local aimreact1 = gentab:add_checkbox("摔倒b") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-local aimreact2 = gentab:add_checkbox("击杀b") --只是一个开关，代码往后面找
+local aimreact2 = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact3 = gentab:add_checkbox("燃烧b") --只是一个开关，代码往后面找
+local aimreact3 = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact4 = gentab:add_checkbox("起飞b") --只是一个开关，代码往后面找
+local aimreact4 = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact5 = gentab:add_checkbox("收为保镖b") --只是一个开关，代码往后面找
+local aimreact5 = gentab:add_checkbox("accepted as a bodyguard") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact6 = gentab:add_checkbox("移除b") --只是一个开关，代码往后面找
+local aimreact6 = gentab:add_checkbox("remove") --只是一个开关，代码往后面找
 
 gentab:add_text("NPC targets anyone and automatically counterattacks") 
 
 gentab:add_sameline()
 
-local aimreactany = gentab:add_checkbox("中断c") --只是一个开关，代码往后面找
+local aimreactany = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact1any = gentab:add_checkbox("摔倒c") --只是一个开关，代码往后面找
+local aimreact1any = gentab:add_checkbox("fall") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact2any = gentab:add_checkbox("击杀c") --只是一个开关，代码往后面找
+local aimreact2any = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact3any = gentab:add_checkbox("燃烧c") --只是一个开关，代码往后面找
+local aimreact3any = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact4any = gentab:add_checkbox("起飞c") --只是一个开关，代码往后面找
+local aimreact4any = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact5any = gentab:add_checkbox("收为保镖c") --只是一个开关，代码往后面找
+local aimreact5any = gentab:add_checkbox("received as a bodyguard") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact6any = gentab:add_checkbox("移除c") --只是一个开关，代码往后面找
+local aimreact6any = gentab:add_checkbox("remove") --只是一个开关，代码往后面找
 
-local delallcam = gentab:add_checkbox("移除所有摄像头") --只是一个开关，代码往后面找
+local delallcam = gentab:add_checkbox("remove all cameras") --只是一个开关，代码往后面找
 
 CamList = {   --从heist control抄的
     joaat("prop_cctv_cam_01a"),
@@ -933,29 +933,29 @@ gentab:add_button("One-click completion of hangar (air freight) shipment", funct
     gui.show_message("Autoship "," may show that the task failed, but you should get the money!")
 end)
 
-local ccrgsl = gentab:add_checkbox("CEO仓库出货锁定运输船")
+local ccrgsl = gentab:add_checkbox("CEO warehouse shipment locks the transport ship")
 
 gentab:add_sameline()
 
-local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
+local bkeasyms = gentab:add_checkbox("The motorcycle gang shipped only one truck")
 
 gentab:add_sameline()
 
-local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂极速生产(!)")
+local bussp = gentab:add_checkbox("Motorcycle Industrial Bunker Hallucinogens Extremely Rapid Production(!)")
 
 gentab:add_sameline()
 
-local ncspup = gentab:add_checkbox("夜总会极速进货(!)")
+local ncspup = gentab:add_checkbox("Nightclub Fast Restock(!)")
 
-local ncspupa1 = gentab:add_checkbox("夜总会4倍速进货(!)")
-
-gentab:add_sameline()
-
-local ncspupa2 = gentab:add_checkbox("夜总会10倍速进货(!)")
+local ncspupa1 = gentab:add_checkbox("Nightclubs restock 4x faster(!)")
 
 gentab:add_sameline()
 
-local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(!)")
+local ncspupa2 = gentab:add_checkbox("Nightclubs restock 10x faster(!)")
+
+gentab:add_sameline()
+
+local ncspupa3 = gentab:add_checkbox("Nightclubs restock 20x faster(!)")
 
 gentab:add_button("The motorcycle industry is full of raw materials", function()
     globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
@@ -1005,13 +1005,13 @@ gentab:add_button("Hangar staff restock once", function()
     STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
 end)
 
-local checkCEOcargo = gentab:add_checkbox("锁定仓库员工单次进货数量为")
+local checkCEOcargo = gentab:add_checkbox("The single purchase quantity of locked warehouse staff is")
 
 gentab:add_sameline()
 
-local inputCEOcargo = gentab:add_input_int("个板条箱")
+local inputCEOcargo = gentab:add_input_int("crates")
 
-local check4 = gentab:add_checkbox("锁定机库员工单次进货数量为")
+local check4 = gentab:add_checkbox("Lock hangar staff single purchase quantity is")
 
 gentab:add_sameline()
 
@@ -1041,9 +1041,9 @@ end)
 
 gentab:add_sameline()
 
-local checklkw = gentab:add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具)")
+local checklkw = gentab:add_checkbox("Casino carousel draw (the carousel may appear as something else, but you do get vehicles)")
 
-local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(高危)")
+local checkxsdped = gentab:add_checkbox("NPC drops 2000 yuan cycle (high risk)")
 
 gentab:add_separator()
 gentab:add_text("Send")
@@ -1287,7 +1287,7 @@ end)
 
 gentab:add_sameline()
 
-local checkbypassconv = gentab:add_checkbox("自动跳过NPC对话")
+local checkbypassconv = gentab:add_checkbox("Automatically skip NPC dialogue")
 
 gentab:add_sameline()
 
@@ -1371,71 +1371,71 @@ gentab:add_button("drunk", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("Drunk")
 end)
 
-local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
+local check1 = gentab:add_checkbox("Remove transaction error warning") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local checkmiss = gentab:add_checkbox("移除虎鲸导弹冷却并提升射程")--只是一个开关，代码往后面找
+local checkmiss = gentab:add_checkbox("Removed Orca missile cooldown and increased range")--只是一个开关，代码往后面找
 
-local taxisvs = gentab:add_checkbox("线上出租车工作自动化(连续传送)")--只是一个开关，代码往后面找
+local taxisvs = gentab:add_checkbox("Automation of online taxi work (continuous transmission)")--只是一个开关，代码往后面找
   
 gentab:add_sameline()
 
-local taxisvs2 = gentab:add_checkbox("线上出租车工作自动化(仿真驾驶)")--只是一个开关，代码往后面找
+local taxisvs2 = gentab:add_checkbox("Automation of online taxi work (simulation driving)")--只是一个开关，代码往后面找
 
-local checkzhongjia = gentab:add_checkbox("请求重甲花费(用于删除黑钱)")--只是一个开关，代码往后面找
+local checkzhongjia = gentab:add_checkbox("Request heavy armor spend (used to remove black money)")--只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
 local iputintzhongjia = gentab:add_input_int("元")
 
-local checkfootaudio = gentab:add_checkbox("关闭脚步声") --只是一个开关，代码往后面找
+local checkfootaudio = gentab:add_checkbox("turn off footsteps") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local checkpedaudio = gentab:add_checkbox("关闭自身PED声音") --只是一个开关，代码往后面找
+local checkpedaudio = gentab:add_checkbox("Turn off your own PED sound") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local disableAIdmg = gentab:add_checkbox("锁定NPC零伤害") --只是一个开关，代码往后面找
+local disableAIdmg = gentab:add_checkbox("Lock NPC Zero Damage") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local checkSONAR = gentab:add_checkbox("小地图显示声纳") --只是一个开关，代码往后面找
+local checkSONAR = gentab:add_checkbox("Minimap showing sonar") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local disalight = gentab:add_checkbox("全局熄灯") --只是一个开关，代码往后面找
+local disalight = gentab:add_checkbox("global lights out") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local DrawHost = gentab:add_checkbox("显示主机信息") --只是一个开关，代码往后面找
+local DrawHost = gentab:add_checkbox("display host information") --只是一个开关，代码往后面找
 
-local pedgun = gentab:add_checkbox("PED枪(射出NPC)") --只是一个开关，代码往后面找
-
-gentab:add_sameline()
-
-local bsktgun = gentab:add_checkbox("篮球枪") --只是一个开关，代码往后面找
+local pedgun = gentab:add_checkbox("PED gun (shoots NPC)") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local bballgun = gentab:add_checkbox("大球枪") --只是一个开关，代码往后面找
+local bsktgun = gentab:add_checkbox("basketball gun") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local drawcs = gentab:add_checkbox("绘制+准星") --只是一个开关，代码往后面找
+local bballgun = gentab:add_checkbox("big ball gun") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local disablecops = gentab:add_checkbox("阻止派遣警察") --只是一个开关，代码往后面找
+local drawcs = gentab:add_checkbox("Draw + Sight") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local disapedheat = gentab:add_checkbox("无温度(反热成像)") --只是一个开关，代码往后面找
+local disablecops = gentab:add_checkbox("stop the police from being dispatched") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关，代码往后面找
+local disapedheat = gentab:add_checkbox("No temperature (anti-thermal imaging)") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local canafrdly = gentab:add_checkbox("Allow to attack teammate") --只是一个开关，代码往后面找
 
 --------------------------------------------------------------------------------------- Players 页面
 
@@ -1445,11 +1445,11 @@ local spcam = gui.get_tab(""):add_checkbox("Indirect viewing (not easily detecte
 
 gui.get_tab(""):add_sameline()
 
-local vehgodr = gui.get_tab(""):add_checkbox("给与载具无敌")
+local vehgodr = gui.get_tab(""):add_checkbox("Gives Vehicle Invulnerability")
 
 gui.get_tab(""):add_sameline()
 
-local vehnoclr = gui.get_tab(""):add_checkbox("载具完全无碰撞")
+local vehnoclr = gui.get_tab(""):add_checkbox("The vehicle is completely collision-free")
 
 gui.get_tab(""):add_sameline()
 
@@ -1637,7 +1637,7 @@ end)
 
 gui.get_tab(""):add_sameline()
 
-local pedvehctl = gui.get_tab(""):add_checkbox("载具旋转")
+local pedvehctl = gui.get_tab(""):add_checkbox("Vehicle rotation")
 
 gui.get_tab(""):add_sameline()
 
@@ -1800,29 +1800,29 @@ end)
 
 gui.get_tab(""):add_sameline()
 
-local check8 = gui.get_tab(""):add_checkbox("循环水柱")
+local check8 = gui.get_tab(""):add_checkbox("circulating water column")
 
 gui.get_tab(""):add_sameline()
 
-local checknodmgexp = gui.get_tab(""):add_checkbox("无伤爆炸")
+local checknodmgexp = gui.get_tab(""):add_checkbox("No damage explosion")
 
 gui.get_tab(""):add_sameline()
 
-local checkcollection1 = gui.get_tab(""):add_checkbox("循环刷纸牌")
+local checkcollection1 = gui.get_tab(""):add_checkbox("Cycle swiping cards")
 
-local check2 = gui.get_tab(""):add_checkbox("掉帧攻击(尽可能远离目标)")
+local check2 = gui.get_tab(""):add_checkbox("Drop frame attack (as far away from the target as possible)")
 
 gui.get_tab(""):add_sameline()
 
-local check5 = gui.get_tab(""):add_checkbox("粒子效果轰炸(尽可能远离目标)")
+local check5 = gui.get_tab(""):add_checkbox("Particle effect bombing (as far away from the target as possible)")
 
 gui.add_tab(""):add_sameline()
 
-local checkspped = gui.get_tab(""):add_checkbox("循环刷PED")
+local checkspped = gui.get_tab(""):add_checkbox("Cycle brush PED")
 
 gui.add_tab(""):add_sameline()
 
-local checkxsdpednet = gui.add_tab(""):add_checkbox("NPC掉落2000元循环")
+local checkxsdpednet = gui.add_tab(""):add_checkbox("NPC drops 2000 yuan cycle")
 
 gui.add_tab(""):add_button("debris crash", function()
     script.run_in_fiber(function (fragcrash)
@@ -1906,7 +1906,7 @@ end)
 
 gui.add_tab(""):add_sameline()
 
-local audiospam = gui.add_tab(""):add_checkbox("声音轰炸")
+local audiospam = gui.add_tab(""):add_checkbox("sound bombing")
 
 gui.add_tab(""):add_button("launch upwards", function()
     script.run_in_fiber(function (launchply)
@@ -2083,15 +2083,15 @@ local DrawInteriorID = gentab:add_checkbox("Show Interior ID") --只是一个开
 
 gentab:add_sameline()
 
-local desync = gentab:add_checkbox("取消同步") --只是一个开关，代码往后面找
+local desync = gentab:add_checkbox("cancel sync") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local ptfxrm = gentab:add_checkbox("清理PTFX火焰水柱") --只是一个开关，代码往后面找
+local ptfxrm = gentab:add_checkbox("Clean up PTFX flame water column") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local DECALrm = gentab:add_checkbox("清理物体表面痕迹") --只是一个开关，代码往后面找
+local DECALrm = gentab:add_checkbox("Clean up traces on the surface of objects") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -2156,11 +2156,11 @@ gentab:add_button("generate ptfx", function()
     end)
 end)
 
-local cashmtp = gentab:add_checkbox("设置联系人任务收入倍率")
+local cashmtp = gentab:add_checkbox("Set contact task income multiplier")
 
 gentab:add_sameline()
 
-local cashmtpin = gentab:add_input_float("倍-联系人")
+local cashmtpin = gentab:add_input_float("times-contact")
 
 gui.get_tab(""):add_text("debugging") 
 

@@ -1,4 +1,4 @@
--- v1.75 -- 
+-- v1.76 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.75"
+local luaversion = "v1.76"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -594,6 +594,10 @@ end)
 
 gentab:add_sameline()
 
+local fwglb = gentab:add_checkbox("范围烟花") --这只是一个复选框,代码往最后的循环脚本部分找
+
+gentab:add_sameline()
+
 local objectsix1 --注册为全局变量以便后续移除666
 local objectsix2--注册为全局变量以便后续移除666
 local objectsix3--注册为全局变量以便后续移除666
@@ -699,6 +703,10 @@ gentab:add_sameline()
 
 local vehbr = gentab:add_checkbox("混乱模式") --只是一个开关，代码往后面找
 
+gentab:add_sameline()
+
+local vehrm = gentab:add_checkbox("批量删除") --只是一个开关，代码往后面找
+
 gentab:add_text("NPC批量控制") 
 
 gentab:add_sameline()
@@ -794,6 +802,10 @@ gentab:add_sameline()
 
 local react5anyac = gentab:add_checkbox("收为保镖a1") --只是一个开关，代码往后面找
 
+gentab:add_sameline()
+
+local react6anyac = gentab:add_checkbox("光柱标记a1") --只是一个开关，代码往后面找
+
 gentab:add_text("被NPC瞄准自动反击") 
 
 gentab:add_sameline()
@@ -823,6 +835,10 @@ local aimreact5 = gentab:add_checkbox("收为保镖b") --只是一个开关，�
 gentab:add_sameline()
 
 local aimreact6 = gentab:add_checkbox("移除b") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact7 = gentab:add_checkbox("光柱标记b") --只是一个开关，代码往后面找
 
 gentab:add_text("NPC瞄准任何人自动反击") 
 
@@ -1532,6 +1548,14 @@ local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关
 gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
 
 local spcam = gui.get_tab(""):add_checkbox("间接观看(不易被检测)")
+
+gui.get_tab(""):add_sameline()
+
+local plymk = gui.get_tab(""):add_checkbox("光柱标记")
+
+gui.get_tab(""):add_sameline()
+
+local plyline = gui.get_tab(""):add_checkbox("连线标记")
 
 gui.get_tab(""):add_sameline()
 
@@ -3082,6 +3106,19 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
+    if  plymk:is_enabled() then --控制玩家光柱标记开关
+        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT("golfputting", true)
+        local tarm = TargetPPos
+        GRAPHICS.DRAW_MARKER(3, tarm.x, tarm.y, tarm.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 190.0, 255, 255, 255, 100, false, true, 2, false, 'golfputting', 'puttingmarker')
+    end
+
+    if  plyline:is_enabled() then --控制玩家连线标记开关
+        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        local selfpos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
+        GRAPHICS.DRAW_LINE(selfpos.x, selfpos.y, selfpos.z, TargetPPos.x, TargetPPos.y, TargetPPos.z, 255, 255, 255, 100)    
+    end
+
     if  checkpedaudio:is_enabled() then --控制自己的PED是否产生声音
         PLAYER.SET_PLAYER_NOISE_MULTIPLIER(PLAYER.PLAYER_ID(), 0.0)
         if loopa3 == 0 then
@@ -3459,6 +3496,21 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
         
+    if  vehrm:is_enabled() then --控制载具移除
+        local vehtable = entities.get_all_vehicles_as_handles()
+        local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+        for _, vehicle in pairs(vehtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
+            if calcDistance(selfpos, vehicle_pos) <= npcctrlr:get_value() then
+                if vehicle ~= vehisin then
+                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(vehicle,true,true) --不执行这个下面会删除失败
+                    ENTITY.DELETE_ENTITY(vehicle)        
+                end
+            end
+        end
+    end
+
     if  vehdoorlk4p:is_enabled() then --控制载具锁门
         local vehtable = entities.get_all_vehicles_as_handles()
         local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
@@ -3641,6 +3693,19 @@ script.register_looped("schlua-ectrlservice", function()
             if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
                 ENTITY.SET_ENTITY_AS_MISSION_ENTITY(peds,true,true) --不执行这个下面会删除失败
                 ENTITY.DELETE_ENTITY(peds)            
+            end
+        end
+    end
+
+    if  aimreact7:is_enabled() then --控制NPC瞄准反应7 -光柱标记
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT("golfputting", true)
+                local tarm = ped_pos
+                GRAPHICS.DRAW_MARKER(3, tarm.x, tarm.y, tarm.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 190.0, 255, 255, 255, 100, false, true, 2, false, 'golfputting', 'puttingmarker')
             end
         end
     end
@@ -3994,6 +4059,19 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
+    if  react6anyac:is_enabled() then --控制敌对NPC-光柱标记
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
+                GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT("golfputting", true)
+                local tarm = ped_pos
+                GRAPHICS.DRAW_MARKER(3, tarm.x, tarm.y, tarm.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 190.0, 255, 255, 255, 100, false, true, 2, false, 'golfputting', 'puttingmarker')
+            end
+        end
+    end
+
     if  revitalizationped:is_enabled() then --控制NPC-复活
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -4053,6 +4131,17 @@ script.register_looped("schlua-ptfxservice", function()
         end
         loopa5 = 0
     end 
+
+    if  fwglb:is_enabled() then --天空范围烟花
+        local tarm = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
+
+        STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_indep_fireworks")
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_indep_fireworks") do script_util:yield() end
+        GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
+        GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_indep_firework_trailburst", tarm.x + math.random(-100, 100), tarm.y + math.random(-100, 100), tarm.z + math.random(10, 30), 180, 0, 0, 1.0, true, true, true)
+
+        script_util:sleep(100)
+    end
 
     if  checkfirew:is_enabled() then --不太好用的火焰翅膀功能
         if loopa6 == 0 then

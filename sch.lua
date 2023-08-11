@@ -1,4 +1,4 @@
--- v1.74 -- 
+-- v1.75 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.74"
+local luaversion = "v1.75"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -543,25 +543,24 @@ gentab:add_button("放烟花", function()
     while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_indep_fireworks") do firew:yield() end
 
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_indep_firework_trailburst", firework_box_pos.x, firework_box_pos.y, firework_box_pos.z + 1, 0, 0, 0, 10.0, true, true, true)
 
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
-
-    firew:sleep(1500)
-    GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     firew:sleep(1500)
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     firew:sleep(1500)
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     firew:sleep(1500)
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
+
+    firew:sleep(1500)
+    GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     ENTITY.SET_ENTITY_AS_MISSION_ENTITY(firework_box, true, true)
     ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(firework_box)
@@ -1241,6 +1240,97 @@ gentab:add_button("移除收支差", function()
         SEa = 1
     end
 
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("恢复1.66下架载具", function()
+    for x = 14908, 14916 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 17482, 17500 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 17654, 17675 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 19311, 19335 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 20392, 20395 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 21274, 21279 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 22073, 22092 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 23041, 23068 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 24262, 24375 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 25969, 25975 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 25980, 26000 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 26956, 26957 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 28820, 28840 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    globals.set_int(262145 + 28863, 1)
+    globals.set_int(262145 + 28866, 1)
+
+    for x = 29534, 29541 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 29883, 29889 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 30348, 30364 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 31216, 31232 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 32099, 32113 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 33341, 33359 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 34212, 34227 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 35167, 35443 do
+        globals.set_int(262145 + x, 1)
+    end
 end)
 
 gentab:add_sameline()
@@ -2150,7 +2240,6 @@ gentab:add_button("生成ptfx", function()
             cusptfx:yield()
         end
         GRAPHICS.USE_PARTICLE_FX_ASSET(iputptfxdicval)
-        --GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(iputptfxnameval, PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x8b93, 1.0, false, false, false, 0, 0, 0, 0)
         local tar1 = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(iputptfxnameval, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 1.0, true, true, true)
     end)

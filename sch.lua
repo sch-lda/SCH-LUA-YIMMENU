@@ -711,27 +711,27 @@ gentab:add_text("NPC batch control")
 
 gentab:add_sameline()
 
-local reactany = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
+local reactany = gentab:add_checkbox("interrupt A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react1any = gentab:add_checkbox("fall") --只是一个开关，代码往后面找
+local react1any = gentab:add_checkbox("fall A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react2any = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
+local react2any = gentab:add_checkbox("kill A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react3any = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
+local react3any = gentab:add_checkbox("burn A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react4any = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
+local react4any = gentab:add_checkbox("take off A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-gentab:add_button("bodyguard", function()
+gentab:add_button("bodyguard A", function()
     local pedtable = entities.get_all_peds_as_handles()
     for _, peds in pairs(pedtable) do
         local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -774,39 +774,39 @@ local revitalizationped = gentab:add_checkbox("resurrection (unstable)") --只�
 
 gentab:add_sameline()
 
-local rmdied = gentab:add_checkbox("remove the body") --只是一个开关，代码往后面找
+local rmdied = gentab:add_checkbox("remove the body A") --只是一个开关，代码往后面找
 
 gentab:add_text("Hostile NPC batch control") 
 
 gentab:add_sameline()
 
-local reactanyac = gentab:add_checkbox("interrupt A") --只是一个开关，代码往后面找
+local reactanyac = gentab:add_checkbox("interrupt B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react1anyac = gentab:add_checkbox("fall A") --只是一个开关，代码往后面找
+local react1anyac = gentab:add_checkbox("fall B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react2anyac = gentab:add_checkbox("kill A") --只是一个开关，代码往后面找
+local react2anyac = gentab:add_checkbox("kill B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react3anyac = gentab:add_checkbox("burn A") --只是一个开关，代码往后面找
+local react3anyac = gentab:add_checkbox("burn B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react4anyac = gentab:add_checkbox("take off A") --只是一个开关，代码往后面找
+local react4anyac = gentab:add_checkbox("take off B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react5anyac = gentab:add_checkbox("Received as a bodyguard A") --只是一个开关，代码往后面找
+local react5anyac = gentab:add_checkbox("Received as a bodyguard B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
 local react6anyac = gentab:add_checkbox("Beam marker A1") --只是一个开关，代码往后面找
 
-gentab:add_text("Being targeted by an NPC to automatically counterattack") 
+gentab:add_text("Being targeted by an NPC to automatically counterattack B") 
 
 gentab:add_sameline()
 
@@ -931,12 +931,12 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("One-click completion of bunker shipment", function()
-    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+    gui.show_message("Autoship "," may show that the task failed, but you should get the money!")
     locals.set_int("gb_gunrunning","1980","0")
     --  gb_gunrunning.c iLocal_1206.f_774
     --	for (i = 0; i < func_833(func_3786(), func_60(), iLocal_1206.f_774, iLocal_1206.f_809); i = i + 1)
     --  REMOVE_PARTICLE_FX_FROM_ENTITY
-    gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
+    gui.show_message("Autoship "," may show that the task failed, but you should get the money!")
 end)
 
 gentab:add_sameline()

@@ -1,4 +1,4 @@
--- v1.74 --
+-- v1.76 --
 --I do not limit or even encourage players to modify and customize lua according to their own needs.
 --I even added comments to some codes to explain what this is used for and the location of the relevant global in the decompiled script
 --[[
@@ -34,7 +34,7 @@ Websites that may be helpful for lua writing
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.74"
+local luaversion = "v1.76"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -543,25 +543,24 @@ gentab:add_button("light fireworks", function()
     while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_indep_fireworks") do firew:yield() end
 
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_indep_firework_trailburst", firework_box_pos.x, firework_box_pos.y, firework_box_pos.z + 1, 0, 0, 0, 10.0, true, true, true)
 
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
-
-    firew:sleep(1500)
-    GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     firew:sleep(1500)
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     firew:sleep(1500)
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     firew:sleep(1500)
     GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0, 0)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
+
+    firew:sleep(1500)
+    GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY("scr_indep_firework_trailburst",firework_box, 0.0, 0.0, -1.0, 180.0, 0.0, 0.0, 1.0, 0, 0, 0)
 
     ENTITY.SET_ENTITY_AS_MISSION_ENTITY(firework_box, true, true)
     ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(firework_box)
@@ -592,6 +591,10 @@ gentab:add_button("broomstick", function()
         ENTITY.ATTACH_ENTITY_TO_ENTITY(obj, veh, 0, 0, 0, 0.3, -80.0, 0, 0, true, false, false, false, 0, true) 
     end)
 end)
+
+gentab:add_sameline()
+
+local fwglb = gentab:add_checkbox("范围烟花") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
@@ -700,6 +703,10 @@ gentab:add_sameline()
 
 local vehbr = gentab:add_checkbox("chaos mode") --只是一个开关，代码往后面找
 
+gentab:add_sameline()
+
+local vehrm = gentab:add_checkbox("Batch delete") --只是一个开关，代码往后面找
+
 gentab:add_text("NPC batch control") 
 
 gentab:add_sameline()
@@ -773,87 +780,95 @@ gentab:add_text("Hostile NPC batch control")
 
 gentab:add_sameline()
 
-local reactanyac = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
+local reactanyac = gentab:add_checkbox("interrupt A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react1anyac = gentab:add_checkbox("fall") --只是一个开关，代码往后面找
+local react1anyac = gentab:add_checkbox("fall A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react2anyac = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
+local react2anyac = gentab:add_checkbox("kill A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react3anyac = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
+local react3anyac = gentab:add_checkbox("burn A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react4anyac = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
+local react4anyac = gentab:add_checkbox("take off A") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react5anyac = gentab:add_checkbox("Received as a bodyguard") --只是一个开关，代码往后面找
+local react5anyac = gentab:add_checkbox("Received as a bodyguard A") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local react6anyac = gentab:add_checkbox("Beam marker A1") --只是一个开关，代码往后面找
 
 gentab:add_text("Being targeted by an NPC to automatically counterattack") 
 
 gentab:add_sameline()
 
-local aimreact = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
+local aimreact = gentab:add_checkbox("interrupt B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact1 = gentab:add_checkbox("摔倒b") --只是一个开关，代码往后面找
+local aimreact1 = gentab:add_checkbox("Fall B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact2 = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
+local aimreact2 = gentab:add_checkbox("kill B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact3 = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
+local aimreact3 = gentab:add_checkbox("burn B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact4 = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
+local aimreact4 = gentab:add_checkbox("take off B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact5 = gentab:add_checkbox("accepted as a bodyguard") --只是一个开关，代码往后面找
+local aimreact5 = gentab:add_checkbox("Received as a bodyguard B") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact6 = gentab:add_checkbox("remove") --只是一个开关，代码往后面找
+local aimreact6 = gentab:add_checkbox("remove B") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local aimreact7 = gentab:add_checkbox("Beam marker B") --只是一个开关，代码往后面找
 
 gentab:add_text("NPC targets anyone and automatically counterattacks") 
 
 gentab:add_sameline()
 
-local aimreactany = gentab:add_checkbox("interrupt") --只是一个开关，代码往后面找
+local aimreactany = gentab:add_checkbox("interrupt C") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact1any = gentab:add_checkbox("fall") --只是一个开关，代码往后面找
+local aimreact1any = gentab:add_checkbox("fall C") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact2any = gentab:add_checkbox("kill") --只是一个开关，代码往后面找
+local aimreact2any = gentab:add_checkbox("kill C") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact3any = gentab:add_checkbox("burn") --只是一个开关，代码往后面找
+local aimreact3any = gentab:add_checkbox("burn C") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact4any = gentab:add_checkbox("take off") --只是一个开关，代码往后面找
+local aimreact4any = gentab:add_checkbox("take off C") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact5any = gentab:add_checkbox("received as a bodyguard") --只是一个开关，代码往后面找
+local aimreact5any = gentab:add_checkbox("received as a bodyguard C") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local aimreact6any = gentab:add_checkbox("remove") --只是一个开关，代码往后面找
+local aimreact6any = gentab:add_checkbox("remove C") --只是一个开关，代码往后面找
 
 local delallcam = gentab:add_checkbox("remove all cameras") --只是一个开关，代码往后面找
 
@@ -1245,6 +1260,97 @@ end)
 
 gentab:add_sameline()
 
+gentab:add_button("Restoration of deleted vehicules in 1.66", function()
+    for x = 14908, 14916 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 17482, 17500 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 17654, 17675 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 19311, 19335 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 20392, 20395 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 21274, 21279 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 22073, 22092 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 23041, 23068 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 24262, 24375 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 25969, 25975 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 25980, 26000 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 26956, 26957 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 28820, 28840 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    globals.set_int(262145 + 28863, 1)
+    globals.set_int(262145 + 28866, 1)
+
+    for x = 29534, 29541 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 29883, 29889 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 30348, 30364 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 31216, 31232 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 32099, 32113 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 33341, 33359 do
+        globals.set_int(262145 + x, 1)
+    end
+
+    for x = 34212, 34227 do
+        globals.set_int(262145 + x, 1)
+    end
+    
+    for x = 35167, 35443 do
+        globals.set_int(262145 + x, 1)
+    end
+end)
+
+gentab:add_sameline()
+
 gentab:add_button("Dax cooldown removed", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     local mpx = "MP0_"
@@ -1445,7 +1551,16 @@ local spcam = gui.get_tab(""):add_checkbox("Indirect viewing (not easily detecte
 
 gui.get_tab(""):add_sameline()
 
+local plymk = gui.get_tab(""):add_checkbox("Light beam marker")
+
+gui.get_tab(""):add_sameline()
+
+local plyline = gui.get_tab(""):add_checkbox("Wire mark")
+
+gui.get_tab(""):add_sameline()
+
 local vehgodr = gui.get_tab(""):add_checkbox("Gives Vehicle Invulnerability")
+
 
 gui.get_tab(""):add_sameline()
 
@@ -2150,7 +2265,6 @@ gentab:add_button("generate ptfx", function()
             cusptfx:yield()
         end
         GRAPHICS.USE_PARTICLE_FX_ASSET(iputptfxdicval)
-        --GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(iputptfxnameval, PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0x8b93, 1.0, false, false, false, 0, 0, 0, 0)
         local tar1 = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(iputptfxnameval, tar1.x, tar1.y, tar1.z + 1, 0, 0, 0, 1.0, true, true, true)
     end)
@@ -2993,6 +3107,19 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
+    if  plymk:is_enabled() then --控制玩家光柱标记开关
+        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT("golfputting", true)
+        local tarm = TargetPPos
+        GRAPHICS.DRAW_MARKER(3, tarm.x, tarm.y, tarm.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 190.0, 255, 255, 255, 100, false, true, 2, false, 'golfputting', 'puttingmarker')
+    end
+
+    if  plyline:is_enabled() then --控制玩家连线标记开关
+        local TargetPPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        local selfpos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
+        GRAPHICS.DRAW_LINE(selfpos.x, selfpos.y, selfpos.z, TargetPPos.x, TargetPPos.y, TargetPPos.z, 255, 255, 255, 100)    
+    end
+
     if  checkpedaudio:is_enabled() then --控制自己的PED是否产生声音
         PLAYER.SET_PLAYER_NOISE_MULTIPLIER(PLAYER.PLAYER_ID(), 0.0)
         if loopa3 == 0 then
@@ -3370,6 +3497,21 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
         
+    if  vehrm:is_enabled() then --控制载具移除
+        local vehtable = entities.get_all_vehicles_as_handles()
+        local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+        for _, vehicle in pairs(vehtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
+            if calcDistance(selfpos, vehicle_pos) <= npcctrlr:get_value() then
+                if vehicle ~= vehisin then
+                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(vehicle,true,true) --不执行这个下面会删除失败
+                    ENTITY.DELETE_ENTITY(vehicle)        
+                end
+            end
+        end
+    end
+
     if  vehdoorlk4p:is_enabled() then --控制载具锁门
         local vehtable = entities.get_all_vehicles_as_handles()
         local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
@@ -3552,6 +3694,19 @@ script.register_looped("schlua-ectrlservice", function()
             if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
                 ENTITY.SET_ENTITY_AS_MISSION_ENTITY(peds,true,true) --不执行这个下面会删除失败
                 ENTITY.DELETE_ENTITY(peds)            
+            end
+        end
+    end
+
+    if  aimreact7:is_enabled() then --控制NPC瞄准反应7 -光柱标记
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT("golfputting", true)
+                local tarm = ped_pos
+                GRAPHICS.DRAW_MARKER(3, tarm.x, tarm.y, tarm.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 190.0, 255, 255, 255, 100, false, true, 2, false, 'golfputting', 'puttingmarker')
             end
         end
     end
@@ -3905,6 +4060,19 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
+    if  react6anyac:is_enabled() then --控制敌对NPC-光柱标记
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
+                GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT("golfputting", true)
+                local tarm = ped_pos
+                GRAPHICS.DRAW_MARKER(3, tarm.x, tarm.y, tarm.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 190.0, 255, 255, 255, 100, false, true, 2, false, 'golfputting', 'puttingmarker')
+            end
+        end
+    end
+
     if  revitalizationped:is_enabled() then --控制NPC-复活
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -3964,6 +4132,17 @@ script.register_looped("schlua-ptfxservice", function()
         end
         loopa5 = 0
     end 
+
+    if  fwglb:is_enabled() then --天空范围烟花
+        local tarm = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
+
+        STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_indep_fireworks")
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_indep_fireworks") do script_util:yield() end
+        GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
+        GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_indep_firework_trailburst", tarm.x + math.random(-100, 100), tarm.y + math.random(-100, 100), tarm.z + math.random(10, 30), 180, 0, 0, 1.0, true, true, true)
+
+        script_util:sleep(100)
+    end
 
     if  checkfirew:is_enabled() then --不太好用的火焰翅膀功能
         if loopa6 == 0 then

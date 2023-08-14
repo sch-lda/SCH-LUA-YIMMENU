@@ -594,7 +594,7 @@ end)
 
 gentab:add_sameline()
 
-local fwglb = gentab:add_checkbox("范围烟花") --这只是一个复选框,代码往最后的循环脚本部分找
+local fwglb = gentab:add_checkbox("range fireworks") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
@@ -780,33 +780,33 @@ gentab:add_text("Hostile NPC batch control")
 
 gentab:add_sameline()
 
-local reactanyac = gentab:add_checkbox("interrupt B") --只是一个开关，代码往后面找
+local reactanyac = gentab:add_checkbox("interrupt A1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react1anyac = gentab:add_checkbox("fall B") --只是一个开关，代码往后面找
+local react1anyac = gentab:add_checkbox("fall A1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react2anyac = gentab:add_checkbox("kill B") --只是一个开关，代码往后面找
+local react2anyac = gentab:add_checkbox("kill A1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react3anyac = gentab:add_checkbox("burn B") --只是一个开关，代码往后面找
+local react3anyac = gentab:add_checkbox("burn A1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react4anyac = gentab:add_checkbox("take off B") --只是一个开关，代码往后面找
+local react4anyac = gentab:add_checkbox("take off A1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local react5anyac = gentab:add_checkbox("Received as a bodyguard B") --只是一个开关，代码往后面找
+local react5anyac = gentab:add_checkbox("Received as a bodyguard A1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
 local react6anyac = gentab:add_checkbox("Beam marker A1") --只是一个开关，代码往后面找
 
-gentab:add_text("Being targeted by an NPC to automatically counterattack B") 
+gentab:add_text("Being targeted by an NPC to automatically counterattack") 
 
 gentab:add_sameline()
 

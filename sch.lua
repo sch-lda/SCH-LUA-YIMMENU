@@ -1,4 +1,4 @@
--- v1.76 -- 
+-- v1.77 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.76"
+local luaversion = "v1.77"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -54,6 +54,24 @@ function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
     local dz = pos.z - tarpos.z
     local distance = math.sqrt(dx*dx + dy*dy + dz*dz)
     return distance
+end
+
+function get_closest_veh(coords) -- 获取最近的载具
+    local coords = ENTITY.GET_ENTITY_COORDS(entity, true)
+    local vehicles = entities.get_all_vehicles_as_handles()
+    local closestdist = 1000000
+    local closestveh = 0
+    for k, veh in pairs(vehicles) do
+        if veh ~= PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false) and ENTITY.GET_ENTITY_HEALTH(veh) ~= 0 then
+            local vehcoord = ENTITY.GET_ENTITY_COORDS(veh, true)
+            local dist = MISC.GET_DISTANCE_BETWEEN_COORDS(coords['x'], coords['y'], coords['z'], vehcoord['x'], vehcoord['y'], vehcoord['z'], true)
+            if dist < closestdist then
+                closestdist = dist
+                closestveh = veh
+            end
+        end
+    end
+    return closestveh
 end
 
 function upgrade_vehicle(vehicle)
@@ -87,7 +105,6 @@ end
 
 function CreatePed(index, Hash, Pos, Heading)
     script.run_in_fiber(function (ctped)
-
     STREAMING.REQUEST_MODEL(Hash)
     while not STREAMING.HAS_MODEL_LOADED(Hash) do ctped:yield() end
     local Spawnedp = PED.CREATE_PED(index, Hash, Pos.x, Pos.y, Pos.z, Heading, true, true)
@@ -178,13 +195,13 @@ end
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
---------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
---[[
-gentab:add_button("测试6", function()
-    log.info(globals.get_float(262145+ 34020))
-end)
-]]
---------------------------------------------------------------------------------------- MPx 读取角色1还是角色2，由于不稳定而被移除
+--------------------------------------------------------------------------------------- TEST
+
+--gentab:add_button("测试6", function()
+
+--end)
+
+--------------------------------------------------------------------------------------- TEST
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 
@@ -1244,7 +1261,8 @@ gentab:add_button("移除收支差", function()
     if playerid == 1 then --用于判断当前是角色1还是角色2
         mpx = "MP1_" --用于判断当前是角色1还是角色2
     end
-    if SE >= 20000 and SEa == 0 then
+    log.info(SE)
+    if SE >= 20000 and SEa == 0 and stats.get_int("MPPLY_TOTAL_SVC")>0 and stats.get_int("MPPLY_TOTAL_EVC")>0 then
         SE = SE - 10000
         stats.set_int(mpx.."MONEY_EARN_JOBS",stats.get_int(mpx.."MONEY_EARN_JOBS") + SE )
         stats.set_int("MPPLY_TOTAL_EVC",stats.get_int("MPPLY_TOTAL_EVC") + SE )
@@ -1252,7 +1270,7 @@ gentab:add_button("移除收支差", function()
         log.info("已移除收支差:"..SE)    
         SEa = 1
     else
-        gui.show_message("您的收支差正常无需移除或已移除过","完全没有收支差可能反而不正常")
+        gui.show_message("您的收支差正常无需移除或触发数值异常保护","完全没有收支差可能反而不正常")
         SEa = 1
     end
 
@@ -1436,20 +1454,38 @@ gentab:add_button("生成空中加速条", function()
     end)
 end)
 
-gentab:add_text("视觉效果")
+gentab:add_sameline()
+
+local npcvehbr = gentab:add_checkbox("NPC载具倒行") --只是一个开关，代码往后面找
+
+gentab:add_text("视觉")
 
 gentab:add_sameline()
 
 gentab:add_button("移除所有视觉效果", function()
     GRAPHICS.ANIMPOSTFX_STOP_ALL()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("DEFAULT")
-
+	PED.SET_PED_MOTION_BLUR(PLAYER.PLAYER_PED_ID(), false)
+	CAM.SHAKE_GAMEPLAY_CAM("DEATH_FAIL_IN_EFFECT_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("DRUNK_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("FAMILY5_DRUG_TRIP_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("HAND_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("JOLT_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("LARGE_EXPLOSION_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("MEDIUM_EXPLOSION_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("SMALL_EXPLOSION_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("ROAD_VIBRATION_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("SKY_DIVING_SHAKE", 0.0)
+	CAM.SHAKE_GAMEPLAY_CAM("VIBRATE_SHAKE", 0.0)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("视觉效果:吸毒", function()
-    GRAPHICS.ANIMPOSTFX_PLAY("DrugsDrivingIn", 5, true)
+    GRAPHICS.SET_TIMECYCLE_MODIFIER("spectator6")
+    PED.SET_PED_MOTION_BLUR(PLAYER.PLAYER_PED_ID(), true)
+    AUDIO.SET_PED_IS_DRUNK(PLAYER.PLAYER_PED_ID(), true)
+    CAM.SHAKE_GAMEPLAY_CAM("DRUNK_SHAKE", 3.0)
 end)
 
 gentab:add_sameline()
@@ -1470,11 +1506,56 @@ gentab:add_button("大雾", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("casino_main_floor_heist")
 end)
 
-
 gentab:add_sameline()
 
 gentab:add_button("醉酒", function()
     GRAPHICS.SET_TIMECYCLE_MODIFIER("Drunk")
+end)
+
+gentab:add_sameline()
+
+local fakeban1 = gentab:add_checkbox("显示虚假的封号警告") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+gentab:add_button("阻止所有人使用天基炮", function()
+    script.run_in_fiber(function (blockorbroom)
+
+        local objHash = joaat("prop_fnclink_03e")
+        STREAMING.REQUEST_MODEL(objHash)
+        while not STREAMING.HAS_MODEL_LOADED(objHash) do
+            STREAMING.REQUEST_MODEL(objHash)
+            log.info(3)
+            blockorbroom:yield()
+        end   
+
+        local object = {}
+    
+        object[1] = OBJECT.CREATE_OBJECT(objHash, 335.8 - 1.5,4833.9 + 1.5, -60,true, 1, 0)
+        object[2] = OBJECT.CREATE_OBJECT(objHash, 335.8 - 1.5,4833.9 - 1.5, -60,true, 1, 0)
+    
+        object[3] = OBJECT.CREATE_OBJECT(objHash, 335.8 + 1.5,4833.9 + 1.5, -60,true, 1, 0)
+        local rot_3 = ENTITY.GET_ENTITY_ROTATION(object[3], 2)
+        rot_3.z = -90.0
+        ENTITY.SET_ENTITY_ROTATION(object[3], rot_3.x, rot_3.y, rot_3.z, 1, true)
+    
+        object[4] = OBJECT.CREATE_OBJECT(objHash, 335.8 - 1.5,4833.9 + 1.5, -60,true, 1, 0)
+        local rot_4 = ENTITY.GET_ENTITY_ROTATION(object[4], 2)
+        rot_4.z = -90.0
+        ENTITY.SET_ENTITY_ROTATION(object[4], rot_4.x, rot_4.y,rot_4.z, 1, true)
+        ENTITY.IS_ENTITY_STATIC(object[1]) 
+        ENTITY.IS_ENTITY_STATIC(object[2])
+        ENTITY.IS_ENTITY_STATIC(object[3])
+        ENTITY.IS_ENTITY_STATIC(object[4])
+        ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[1], false) 
+        ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[2], false) 
+        ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[3], false) 
+        ENTITY.SET_ENTITY_CAN_BE_DAMAGED(object[4], false) 
+    
+        for i = 1, 4 do ENTITY.FREEZE_ENTITY_POSITION(object[i], true) end
+        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(objHash)
+    
+    end)
 end)
 
 local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
@@ -1482,6 +1563,10 @@ local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开
 gentab:add_sameline()
 
 local checkmiss = gentab:add_checkbox("移除虎鲸导弹冷却并提升射程")--只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local lockmapang = gentab:add_checkbox("锁定小地图角度")--只是一个开关，代码往后面找
 
 local taxisvs = gentab:add_checkbox("线上出租车工作自动化(连续传送)")--只是一个开关，代码往后面找
   
@@ -2006,7 +2091,40 @@ end)
 
 gui.add_tab(""):add_sameline()
 
-gui.add_tab(""):add_button("载具事件崩溃", function()
+gui.add_tab(""):add_button("降落伞崩溃2", function()
+    script.run_in_fiber(function (t2crash)
+        PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),0xE5022D03)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID()))
+        t2crash:sleep(20)
+        local p_pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player()))
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID()),p_pos.x,p_pos.y,p_pos.z,false,true,true)
+        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID()), 0xFBAB5776, 1000, false)
+        TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID()),-1087,-3012,13.94)
+        t2crash:sleep(500)
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID()))
+        t2crash:sleep(1000)
+        PLAYER.CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID())
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID()))
+    end)
+end)
+
+gui.add_tab(""):add_sameline()
+
+gui.add_tab(""):add_button("模型崩溃", function()
+    local pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
+    pos.z = pos.z+1 
+    local ship = {-1043459709, -276744698, 1861786828, -2100640717,}
+    OBJECT.CREATE_OBJECT(0x9CF21E0F, pos.x, pos.y, pos.z, true, true, false)
+    for crash, value in pairs (ship) do 
+        local c = {} 
+        for i = 1, 10, 1 do 
+            c[crash] = CreateVehicle(value, pos, 0)
+
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(c[crash], true, false) 
+            ENTITY.FREEZE_ENTITY_POSITION(c[crash])
+            ENTITY.SET_ENTITY_VISIBLE(c[crash],false)
+        end 
+    end
     local tarply = PLAYER.GET_PLAYER_PED(network.get_selected_player())
     local tarplypos = ENTITY.GET_ENTITY_COORDS(tarply, true)
     vehtb = entities.get_all_vehicles_as_handles()                       
@@ -2015,6 +2133,7 @@ gui.add_tab(""):add_button("载具事件崩溃", function()
      ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehtb[i], tarplypos.x, tarplypos.y, tarplypos.z + 5, ENTITY.GET_ENTITY_HEADING(tarply), 10)
      TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 18, 999)
      TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 16, 999)
+     log.info(vehtb[i])   
     end
 end)
 
@@ -2209,6 +2328,10 @@ local DECALrm = gentab:add_checkbox("清理物体表面痕迹") --只是一个�
 
 gentab:add_sameline()
 
+local efxrm = gentab:add_checkbox("重置滤镜和镜头抖动") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
 gentab:add_button("Diasble Ver Check", function()
     verchka1 = 100
     log.warning("将忽略lua与游戏版本不匹配的校验,使用过时的脚本您必须自行承担在线存档损坏的风险")
@@ -2359,6 +2482,7 @@ local loopa20 = 0  --控制夜总会生产速度
 local loopa21 = 0  --控制夜总会生产速度
 local loopa22 = 0  --控制夜总会生产速度
 local loopa23 = 0  --控制夜总会生产速度
+local loopa24 = 0  --控制锁定小地图角度
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2961,6 +3085,20 @@ script.register_looped("schlua-miscservice", function()
         end
     end
 
+    if  lockmapang:is_enabled() then --锁定小地图角度
+        if loopa24 == 0 then  --这段代码只会在开启开关时执行一次，而不是循环
+            HUD.LOCK_MINIMAP_ANGLE(0)
+            gui.show_message("锁定小地图角度","开启")
+        end
+        loopa24 = 1
+    else
+        if loopa24 == 1 then   
+            HUD.UNLOCK_MINIMAP_ANGLE()        
+            gui.show_message("锁定小地图角度","关闭")
+            loopa24 = 0
+        end
+    end
+
     if  disalight:is_enabled() then --控制世界灯光开关
         if loopa16 == 0 then
             GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(true)
@@ -3448,9 +3586,39 @@ script.register_looped("schlua-miscservice", function()
     else
     end
 
+    if  efxrm:is_enabled() then --阻止镜头抖动、视觉效果滤镜
+        GRAPHICS.ANIMPOSTFX_STOP_ALL()
+        GRAPHICS.SET_TIMECYCLE_MODIFIER("DEFAULT")
+        PED.SET_PED_MOTION_BLUR(PLAYER.PLAYER_PED_ID(), false)
+        CAM.SHAKE_GAMEPLAY_CAM("DEATH_FAIL_IN_EFFECT_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("DRUNK_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("FAMILY5_DRUG_TRIP_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("HAND_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("JOLT_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("LARGE_EXPLOSION_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("MEDIUM_EXPLOSION_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("SMALL_EXPLOSION_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("ROAD_VIBRATION_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("SKY_DIVING_SHAKE", 0.0)
+        CAM.SHAKE_GAMEPLAY_CAM("VIBRATE_SHAKE", 0.0)    else
+    end
+
 end)
 
 script.register_looped("schlua-ectrlservice", function() 
+    
+    if  npcvehbr:is_enabled() then --控制NPC载具倒行
+        for _, ped in pairs(entities.get_all_peds_as_handles()) do
+            local veh = 0
+            if not PED.IS_PED_A_PLAYER(ped) then 
+                veh = PED.GET_VEHICLE_PED_IS_IN(ped, true)
+                if veh ~= 0 and VEHICLE.GET_PED_IN_VEHICLE_SEAT(veh, -1) == ped then 
+                    --request_control_of_entity(ped)
+                    TASK.SET_DRIVE_TASK_DRIVING_STYLE(ped, 1471)
+                end
+            end
+        end
+    end
     
     if  vehengdmg:is_enabled() then --控制载具引擎破坏
         local vehtable = entities.get_all_vehicles_as_handles()
@@ -4226,6 +4394,11 @@ script.register_looped("schlua-drawservice", function()
         local Interior = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
         screen_draw_text(string.format("Interior ID:".. Interior),0.875,0.2, 0.4 , 0.4)
     end
+
+    if  fakeban1:is_enabled() then --虚假的封号警告
+        HUD.SET_WARNING_MESSAGE_WITH_HEADER_AND_SUBSTRING_FLAGS("WARN","JL_INVITE_ND",2,"",true,-1,-1,"您已被永久禁止进入 Grand Theft Auto 在线模式。","返回 Grand Theft Auto V。",true,0)
+    end
+
 end)
 
 script.register_looped("schlua-calcservice", function() 

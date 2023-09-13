@@ -1,4 +1,4 @@
--- v1.77 -- 
+-- v1.78 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -14,7 +14,7 @@
 
 无任何保障(我只能保证编写时无主观恶意,造成各种意想不到的后果概不负责)
 
-另请确保通过小助手官方discord用户yeahsch(sch)发布的文件下载，其他任何方式均有可能是恶意脚本
+另请确保通过小助手下载lua脚本功能或小助手官方discord用户yeahsch(sch)发布的文件下载，其他任何方式获得的sch-lua均有可能是过时的或恶意脚本
 Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 外部链接
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.77"
+local luaversion = "v1.78"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -56,7 +56,7 @@ function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
     return distance
 end
 
-function get_closest_veh(coords) -- 获取最近的载具
+function get_closest_veh(entity) -- 获取最近的载具
     local coords = ENTITY.GET_ENTITY_COORDS(entity, true)
     local vehicles = entities.get_all_vehicles_as_handles()
     local closestdist = 1000000
@@ -160,7 +160,6 @@ function Create_Network_Ped(pedType, modelHash, x, y, z, heading)
     for _, pid in pairs(players.list()) do
         NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(net_id, pid, true)
     end
-
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(modelHash)
     return ped
 end
@@ -196,11 +195,12 @@ end
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- TEST
-
---gentab:add_button("测试6", function()
-
---end)
-
+--[[
+gentab:add_button("测试6", function()
+veh = get_closest_veh(PLAYER.PLAYER_PED_ID())
+ENTITY.APPLY_FORCE_TO_ENTITY(veh, 1, math.random(0, 30), math.random(0, 30), math.random(-3, 10), 0.0, 0.0, 0.0, 0, true, false, true, false, true)
+end)
+]]
 --------------------------------------------------------------------------------------- TEST
 
 --------------------------------------------------------------------------------------- Lua管理器页面
@@ -674,7 +674,7 @@ local checkfirew = gentab:add_checkbox("火焰翅膀")
 
 gentab:add_separator()
 
-gentab:add_text("实体控制") 
+gentab:add_text("实体控制-建议同时只开启一个开关，否则可能严重影响性能并导致某些功能失效") 
 
 local vehforcefield = gentab:add_checkbox("载具力场") --只是一个开关，代码往后面找
 
@@ -693,6 +693,10 @@ local objforcefield = gentab:add_checkbox("物体力场") --只是一个开关�
 gentab:add_sameline()
 
 local vehboost = gentab:add_checkbox("Shift键控制的简易载具加速(测试)") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local npcvehbr = gentab:add_checkbox("NPC载具倒行") --只是一个开关，代码往后面找
 
 gentab:add_text("载具批量控制") 
 
@@ -719,6 +723,10 @@ local vehdoorlk4p = gentab:add_checkbox("对所有玩家锁门") --只是一个�
 gentab:add_sameline()
 
 local vehbr = gentab:add_checkbox("混乱模式") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local vehsp1 = gentab:add_checkbox("旋转") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -793,6 +801,10 @@ gentab:add_sameline()
 
 local rmdied = gentab:add_checkbox("移除尸体") --只是一个开关，代码往后面找
 
+gentab:add_sameline()
+
+local rmpedwp = gentab:add_checkbox("移除武器a") --只是一个开关，代码往后面找
+
 gentab:add_text("敌对NPC批量控制") 
 
 gentab:add_sameline()
@@ -822,6 +834,10 @@ local react5anyac = gentab:add_checkbox("收为保镖a1") --只是一个开关�
 gentab:add_sameline()
 
 local react6anyac = gentab:add_checkbox("光柱标记a1") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local rmpedwp2 = gentab:add_checkbox("移除武器a1") --只是一个开关，代码往后面找
 
 gentab:add_text("被NPC瞄准自动反击") 
 
@@ -857,6 +873,10 @@ gentab:add_sameline()
 
 local aimreact7 = gentab:add_checkbox("光柱标记b") --只是一个开关，代码往后面找
 
+gentab:add_sameline()
+
+local rmpedwp3 = gentab:add_checkbox("移除武器b") --只是一个开关，代码往后面找
+
 gentab:add_text("NPC瞄准任何人自动反击") 
 
 gentab:add_sameline()
@@ -886,6 +906,10 @@ local aimreact5any = gentab:add_checkbox("收为保镖c") --只是一个开关�
 gentab:add_sameline()
 
 local aimreact6any = gentab:add_checkbox("移除c") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local rmpedwp4 = gentab:add_checkbox("移除武器c") --只是一个开关，代码往后面找
 
 local delallcam = gentab:add_checkbox("移除所有摄像头") --只是一个开关，代码往后面找
 
@@ -973,21 +997,21 @@ local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
 
 gentab:add_sameline()
 
-local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂极速生产(!)")
+local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂极速生产(危)")
 
 gentab:add_sameline()
 
-local ncspup = gentab:add_checkbox("夜总会极速进货(!)")
+local ncspup = gentab:add_checkbox("夜总会极速进货(危)")
 
-local ncspupa1 = gentab:add_checkbox("夜总会4倍速进货(!)")
-
-gentab:add_sameline()
-
-local ncspupa2 = gentab:add_checkbox("夜总会10倍速进货(!)")
+local ncspupa1 = gentab:add_checkbox("夜总会4倍速进货(危)")
 
 gentab:add_sameline()
 
-local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(!)")
+local ncspupa2 = gentab:add_checkbox("夜总会10倍速进货(危)")
+
+gentab:add_sameline()
+
+local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(危)")
 
 gentab:add_button("摩托帮产业满原材料", function()
     globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
@@ -1456,7 +1480,9 @@ end)
 
 gentab:add_sameline()
 
-local npcvehbr = gentab:add_checkbox("NPC载具倒行") --只是一个开关，代码往后面找
+gentab:add_button("强制保存", function()
+    globals.set_int(2694471, 27)
+end)
 
 gentab:add_text("视觉")
 
@@ -1558,6 +1584,13 @@ gentab:add_button("阻止所有人使用天基炮", function()
     end)
 end)
 
+gentab:add_sameline()
+
+gentab:add_button("立即穿上重甲", function()
+    globals.set_int(2794162 + 902, 1)
+    globals.set_int(2794162 + 901, 1)
+end)
+
 local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
@@ -1567,6 +1600,18 @@ local checkmiss = gentab:add_checkbox("移除虎鲸导弹冷却并提升射程")
 gentab:add_sameline()
 
 local lockmapang = gentab:add_checkbox("锁定小地图角度")--只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local lockhlt = gentab:add_checkbox("半无敌")--只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local antikl = gentab:add_checkbox("防爆头")--只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local rdded = gentab:add_checkbox("雷达假死")--只是一个开关，代码往后面找
 
 local taxisvs = gentab:add_checkbox("线上出租车工作自动化(连续传送)")--只是一个开关，代码往后面找
   
@@ -1627,6 +1672,10 @@ local disapedheat = gentab:add_checkbox("无温度(反热成像)") --只是一�
 gentab:add_sameline()
 
 local canafrdly = gentab:add_checkbox("允许攻击队友") --只是一个开关，代码往后面找
+
+gentab:add_text("PTFX collection") 
+
+local ptfxt1 = gentab:add_checkbox("雷电a") --只是一个开关，代码往后面找
 
 --------------------------------------------------------------------------------------- Players 页面
 
@@ -2111,6 +2160,8 @@ end)
 gui.add_tab(""):add_sameline()
 
 gui.add_tab(""):add_button("模型崩溃", function()
+    script.run_in_fiber(function (vtcrash)
+        
     local pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
     pos.z = pos.z+1 
     local ship = {-1043459709, -276744698, 1861786828, -2100640717,}
@@ -2119,12 +2170,17 @@ gui.add_tab(""):add_button("模型崩溃", function()
         local c = {} 
         for i = 1, 10, 1 do 
             c[crash] = CreateVehicle(value, pos, 0)
-
             ENTITY.SET_ENTITY_AS_MISSION_ENTITY(c[crash], true, false) 
             ENTITY.FREEZE_ENTITY_POSITION(c[crash])
             ENTITY.SET_ENTITY_VISIBLE(c[crash],false)
         end 
     end
+    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
+    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())
+    local mdl = joaat("mp_m_freemode_01")
+    local veh_mdl = joaat("taxi")
+    request_model(veh_mdl)
+    request_model(mdl)
     local tarply = PLAYER.GET_PLAYER_PED(network.get_selected_player())
     local tarplypos = ENTITY.GET_ENTITY_COORDS(tarply, true)
     vehtb = entities.get_all_vehicles_as_handles()                       
@@ -2135,6 +2191,57 @@ gui.add_tab(""):add_button("模型崩溃", function()
      TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 16, 999)
      log.info(vehtb[i])   
     end
+    end)
+    script.run_in_fiber(function (vtcrash3)
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())
+        local mdl = joaat("mp_m_freemode_01")
+        local veh_mdl = joaat("taxi")
+        request_model(veh_mdl)
+        request_model(mdl)
+            for i = 1, 10 do
+                local veh = CreateVehicle(veh_mdl, pos, 0)
+                local jesus = CreatePed(2, mdl, pos, 0)
+                ENTITY.SET_ENTITY_VISIBLE(veh, false)
+                ENTITY.SET_ENTITY_VISIBLE(jesus, false)
+                PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+                PED.SET_PED_COMBAT_ATTRIBUTES(jesus, 46, true)
+                PED.SET_PED_COMBAT_RANGE(jesus, 4)
+                PED.SET_PED_COMBAT_ABILITY(jesus, 3)
+                vtcrash3:sleep(100)
+                TASK.TASK_VEHICLE_HELI_PROTECT(jesus, veh, ped, 10.0, 0, 10, 0, 0)
+                vtcrash3:sleep(1000)
+                ENTITY.DELETE_ENTITY(jesus)
+                ENTITY.DELETE_ENTITY(veh)
+            end  
+        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(mdl)
+        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(veh_mdl)
+    end)
+    script.run_in_fiber(function (vtcrash2)
+        for i = 1, 10, 1 do 
+        local anim_dict = "anim@mp_player_intupperstinker"
+            STREAMING.REQUEST_ANIM_DICT(anim_dict)
+            while not STREAMING.HAS_ANIM_DICT_LOADED(anim_dict) do
+                vtcrash2:yield()
+            end
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
+        local ped = PED.CREATE_RANDOM_PED(pos.x, pos.y, pos.z+10)
+        ENTITY.SET_ENTITY_VISIBLE(ped, false)
+        ENTITY.FREEZE_ENTITY_POSITION(ped, true)
+        PED.SET_PED_COMBAT_ATTRIBUTES(ped, 46, true)
+        PED.SET_PED_COMBAT_RANGE(ped, 4)
+        PED.SET_PED_COMBAT_ABILITY(ped, 3)
+        for i = 1, 10 do
+            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(ped, pos.x, pos.y, pos.z+5, true, true, true)
+            TASK.TASK_SWEEP_AIM_POSITION(ped, anim_dict, "G", "T", "VIP", -1, 0.0, 0.0, 0.0, 0.0, 0.0)
+            vtcrash2:sleep(1000)
+            TASK.CLEAR_PED_TASKS_IMMEDIATELY(ped)
+        end
+        ENTITY.DELETE_ENTITY(ped)
+        vtcrash2:sleep(750)
+        end
+    end)
 end)
 
 gui.add_tab(""):add_sameline()
@@ -2189,7 +2296,7 @@ gentab:add_separator()
 gentab:add_text("全局选项") 
 
 gentab:add_button("全局爆炸", function()
-    for i = 0, 31 do
+    for i = 0, 32 do
             FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
     end
 end)
@@ -2483,6 +2590,9 @@ local loopa21 = 0  --控制夜总会生产速度
 local loopa22 = 0  --控制夜总会生产速度
 local loopa23 = 0  --控制夜总会生产速度
 local loopa24 = 0  --控制锁定小地图角度
+local loopa25 = 0  --控制防爆头
+local loopa26 = 0  --控制雷达假死
+local loopa27 = 0  --PTFX1
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 
@@ -2720,44 +2830,44 @@ script.register_looped("schlua-dataservice", function()
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY0") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
             globals.set_int(1648657+1+0,1) --假钞
-            log.info("原材料不足,将自动补满")
-            MCprintspl()
+            log.info("假钞原材料不足,将自动补满")
+            --MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY1") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
             globals.set_int(1648657+1+1,1) --kky
-            log.info("原材料不足,将自动补满")
-            MCprintspl()
+            log.info("可卡因原材料不足,将自动补满")
+            --MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY2") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
             globals.set_int(1648657+1+2,1) --bd
-            log.info("原材料不足,将自动补满")
-            MCprintspl()
+            log.info("冰毒原材料不足,将自动补满")
+            --MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY3") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
             globals.set_int(1648657+1+3,1) --dm
-            log.info("原材料不足,将自动补满")
-            MCprintspl()
+            log.info("大麻原材料不足,将自动补满")
+            --MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY4") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
             globals.set_int(1648657+1+4,1) --id
-            log.info("原材料不足,将自动补满")
-            MCprintspl()
+            log.info("证件原材料不足,将自动补满")
+            --MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY5") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
             globals.set_int(1648657+1+5,1) --bk
-            log.info("原材料不足,将自动补满")
-            MCprintspl()
+            log.info("地堡原材料不足,将自动补满")
+            --MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY6") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
             globals.set_int(1648657+1+6,1) --acid
-            log.info("原材料不足,将自动补满")
-            MCprintspl()
+            log.info("致幻剂原材料不足,将自动补满")
+            --MCprintspl()
             autoresply = 1
         end
         loopa19 =1
@@ -3097,6 +3207,36 @@ script.register_looped("schlua-miscservice", function()
             gui.show_message("锁定小地图角度","关闭")
             loopa24 = 0
         end
+    end
+
+    if  antikl:is_enabled() then --防爆头
+        if loopa25 == 0 then  --这段代码只会在开启开关时执行一次，而不是循环
+            PED.SET_PED_SUFFERS_CRITICAL_HITS(PLAYER.PLAYER_PED_ID(),false)
+        end
+        loopa25 = 1
+    else
+        if loopa25 == 1 then   
+            PED.SET_PED_SUFFERS_CRITICAL_HITS(PLAYER.PLAYER_PED_ID(),true)
+            loopa25 = 0
+        end
+    end
+
+    if  rdded:is_enabled() then --雷达假死
+        if loopa26 == 0 then  --这段代码只会在开启开关时执行一次，而不是循环
+            if  ENTITY.GET_ENTITY_MAX_HEALTH(PLAYER.PLAYER_PED_ID()) ~= 0 then
+                ENTITY.SET_ENTITY_MAX_HEALTH(PLAYER.PLAYER_PED_ID(), 0)
+            end
+        end
+        loopa26 = 1
+    else
+        if loopa26 == 1 then   
+            ENTITY.SET_ENTITY_MAX_HEALTH(PLAYER.PLAYER_PED_ID(), 328)
+            loopa26 = 0
+        end
+    end
+
+    if  lockhlt:is_enabled() then --锁血
+        ENTITY.SET_ENTITY_HEALTH(PLAYER.PLAYER_PED_ID(), PED.GET_PED_MAX_HEALTH(PLAYER.PLAYER_PED_ID()))
     end
 
     if  disalight:is_enabled() then --控制世界灯光开关
@@ -3605,6 +3745,24 @@ script.register_looped("schlua-miscservice", function()
 
 end)
 
+script.register_looped("schlua-vehctrl", function() 
+    if  vehjmpr:is_enabled() then --控制载具跳跃
+        local vehtable = entities.get_all_vehicles_as_handles()
+        local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+        for _, vehicle in pairs(vehtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
+            if calcDistance(selfpos, vehicle_pos) <= npcctrlr:get_value() then
+                if vehicle ~= vehisin then
+                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 10, 0.0, 0.0, 0.0, 0, true, false, true, false, true)
+                end
+            end
+        end
+        script_util:sleep(2500)
+        ENTITY.SET_ENTITY_ROTATION(vehicle,0,0,0,2,true)
+    end
+end)
+
 script.register_looped("schlua-ectrlservice", function() 
     
     if  npcvehbr:is_enabled() then --控制NPC载具倒行
@@ -3634,22 +3792,6 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
         
-    if  vehjmpr:is_enabled() then --控制载具跳跃
-        local vehtable = entities.get_all_vehicles_as_handles()
-        local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
-        for _, vehicle in pairs(vehtable) do
-            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-            local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
-            if calcDistance(selfpos, vehicle_pos) <= npcctrlr:get_value() then
-                if vehicle ~= vehisin then
-                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 3, 0, 0, 10, 0.0, 0.0, 0.0, 0, true, false, true, false, true)
-                end
-            end
-        end
-        script_util:sleep(2500)
-        ENTITY.SET_ENTITY_ROTATION(vehicle,0,0,0,2,true)
-    end
-
     if  vehbr:is_enabled() then --控制载具混乱
         local vehtable = entities.get_all_vehicles_as_handles()
         local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
@@ -3674,6 +3816,20 @@ script.register_looped("schlua-ectrlservice", function()
                 if vehicle ~= vehisin then
                     ENTITY.SET_ENTITY_AS_MISSION_ENTITY(vehicle,true,true) --不执行这个下面会删除失败
                     ENTITY.DELETE_ENTITY(vehicle)        
+                end
+            end
+        end
+    end
+        
+    if  vehsp1:is_enabled() then --控制载具旋转
+        local vehtable = entities.get_all_vehicles_as_handles()
+        local vehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+        for _, vehicle in pairs(vehtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local vehicle_pos = ENTITY.GET_ENTITY_COORDS(vehicle)
+            if calcDistance(selfpos, vehicle_pos) <= npcctrlr:get_value() then
+                if vehicle ~= vehisin then
+                    ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 5, 0, 0, 150.0, 0, 0, 0, 0, true, false, true, false, true)
                 end
             end
         end
@@ -3878,6 +4034,17 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
+    if  rmpedwp3:is_enabled() then --控制NPC瞄准反应7 -移除武器
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) then 
+                WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
+            end
+        end
+    end
+
     if  aimreact4:is_enabled() then --控制NPC瞄准惩罚4 -起飞
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -3986,6 +4153,17 @@ script.register_looped("schlua-ectrlservice", function()
             if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
                 ENTITY.SET_ENTITY_AS_MISSION_ENTITY(peds,true,true) --不执行这个下面会删除失败
                 ENTITY.DELETE_ENTITY(peds)            
+            end
+        end
+    end
+
+    if  rmpedwp4:is_enabled() then --控制NPC瞄准任何人惩罚6 -移除武器
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() then 
+                WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
             end
         end
     end
@@ -4161,6 +4339,17 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
+    if  rmpedwp:is_enabled() then --控制NPC-移除武器
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
+                WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
+            end
+        end
+    end
+
     if  react3anyac:is_enabled() then --控制敌对NPC -燃烧
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -4240,6 +4429,17 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
+    if  rmpedwp2:is_enabled() then --控制敌对NPC-移除武器
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
+                WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
+            end
+        end
+    end
+
     if  revitalizationped:is_enabled() then --控制NPC-复活
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
@@ -4298,6 +4498,20 @@ script.register_looped("schlua-ptfxservice", function()
             STREAMING.REMOVE_NAMED_PTFX_ASSET('weap_xs_vehicle_weapons')    
         end
         loopa5 = 0
+    end 
+
+    if  ptfxt1:is_enabled() then --PTFX1
+        if loopa27 == 0 then
+            STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_xs_pits")
+            GRAPHICS.USE_PARTICLE_FX_ASSET("scr_xs_pits")
+            GRAPHICS.START_PARTICLE_FX_LOOPED_ON_ENTITY("scr_xs_sf_pit_long", PLAYER.PLAYER_PED_ID(), 0, 0, 0, 0, 0, 100, 5, false, false, false)
+            loopa27 = 1
+        end
+    else
+        if loopa27 == 1 then 
+            GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(PLAYER.PLAYER_PED_ID())
+        end
+        loopa27 = 0
     end 
 
     if  fwglb:is_enabled() then --天空范围烟花
@@ -4424,7 +4638,7 @@ end)
 script.register_looped("schlua-verckservice", function() 
     if autoresply == 1 then
         time = os.time()
-        while os.time() - time < 10 do
+        while os.time() - time < 7 do
             script_util:yield()
         end
         autoresply = 0

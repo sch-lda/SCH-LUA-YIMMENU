@@ -2186,7 +2186,8 @@ gui.add_tab(""):add_button("模型崩溃", function()
             return
         end
         local ship = {-1043459709, -276744698, 1861786828, -2100640717,}
-        OBJECT.CREATE_OBJECT(0x9CF21E0F, pos.x, pos.y, pos.z, true, true, false)
+        local pos117 = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        OBJECT.CREATE_OBJECT(0x9CF21E0F, pos117.x, pos117.y, pos117.z, true, true, false)
         for crash, value in pairs (ship) do 
             local c = {} 
             for i = 1, 10, 1 do 

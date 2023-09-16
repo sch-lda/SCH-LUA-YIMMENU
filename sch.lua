@@ -1,4 +1,4 @@
--- v1.78 -- 
+-- v1.79 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.78"
+local luaversion = "v1.79"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -1029,6 +1029,10 @@ gentab:add_button("地堡满原材料", function()
     globals.set_int(1648657+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
 end)
+
+gentab:add_sameline()
+
+local autorespl = gentab:add_checkbox("产业自动补货(存在bug)")
 
 gentab:add_sameline()
 
@@ -2074,6 +2078,10 @@ local checkxsdpednet = gui.add_tab(""):add_checkbox("NPC掉落2000元循环")
 
 gui.add_tab(""):add_button("碎片崩溃", function()
     script.run_in_fiber(function (fragcrash)
+        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+            gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+            return
+        end
         fraghash = joaat("prop_fragtest_cnst_04")
         STREAMING.REQUEST_MODEL(fraghash)
         local TargetCrds = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
@@ -2086,6 +2094,10 @@ gui.add_tab(""):add_button("碎片崩溃", function()
         local crashstaff1 = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
             OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
         for i = 0, 100 do 
+            if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+                return
+            end    
             local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
             ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false, true, true)
             ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crashstaff1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false, true, true)
@@ -2103,6 +2115,10 @@ gui.add_tab(""):add_button("碎片崩溃", function()
         fraghash = joaat("prop_fragtest_cnst_04")
         STREAMING.REQUEST_MODEL(fraghash)
         for i=1,10 do
+            if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+                return
+            end    
             local object = OBJECT.CREATE_OBJECT(fraghash, TargetCrds.x, TargetCrds.y, TargetCrds.z, true, false, false)
             OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
             ENTITY.DELETE_ENTITY(object)
@@ -2142,6 +2158,10 @@ gui.add_tab(""):add_sameline()
 
 gui.add_tab(""):add_button("降落伞崩溃2", function()
     script.run_in_fiber(function (t2crash)
+        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+            gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+            return
+        end
         PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),0xE5022D03)
         TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(PLAYER.PLAYER_ID()))
         t2crash:sleep(20)
@@ -2161,47 +2181,72 @@ gui.add_tab(""):add_sameline()
 
 gui.add_tab(""):add_button("模型崩溃", function()
     script.run_in_fiber(function (vtcrash)
-        
-    local pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
-    pos.z = pos.z+1 
-    local ship = {-1043459709, -276744698, 1861786828, -2100640717,}
-    OBJECT.CREATE_OBJECT(0x9CF21E0F, pos.x, pos.y, pos.z, true, true, false)
-    for crash, value in pairs (ship) do 
-        local c = {} 
-        for i = 1, 10, 1 do 
-            c[crash] = CreateVehicle(value, pos, 0)
-            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(c[crash], true, false) 
-            ENTITY.FREEZE_ENTITY_POSITION(c[crash])
-            ENTITY.SET_ENTITY_VISIBLE(c[crash],false)
-        end 
-    end
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
-    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())
-    local mdl = joaat("mp_m_freemode_01")
-    local veh_mdl = joaat("taxi")
-    request_model(veh_mdl)
-    request_model(mdl)
-    local tarply = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-    local tarplypos = ENTITY.GET_ENTITY_COORDS(tarply, true)
-    vehtb = entities.get_all_vehicles_as_handles()                       
-    for i = 1, #vehtb do
-     NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehtb[i])
-     ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehtb[i], tarplypos.x, tarplypos.y, tarplypos.z + 5, ENTITY.GET_ENTITY_HEADING(tarply), 10)
-     TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 18, 999)
-     TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 16, 999)
-     log.info(vehtb[i])   
-    end
+        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+            gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+            return
+        end
+        local ship = {-1043459709, -276744698, 1861786828, -2100640717,}
+        OBJECT.CREATE_OBJECT(0x9CF21E0F, pos.x, pos.y, pos.z, true, true, false)
+        for crash, value in pairs (ship) do 
+            local c = {} 
+            for i = 1, 10, 1 do 
+                if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                    gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+                    return
+                end        
+                local pos2010 = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+                local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+                if calcDistance(selfpos, pos2010) <= 300 then 
+                    gui.show_message("攻击已停止", "请先远离目标")
+                    return
+                end
+                c[crash] = CreateVehicle(value, pos2010, 0)
+                ENTITY.SET_ENTITY_AS_MISSION_ENTITY(c[crash], true, false) 
+                ENTITY.FREEZE_ENTITY_POSITION(c[crash])
+                ENTITY.SET_ENTITY_VISIBLE(c[crash],false)
+            end 
+        end
+        --[[    
+        local tarply = PLAYER.GET_PLAYER_PED(network.get_selected_player())
+        local tarplypos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        vehtb = entities.get_all_vehicles_as_handles()      
+                  
+        for i = 1, #vehtb do
+            if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+                return
+            end    
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehtb[i])
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehtb[i], tarplypos.x, tarplypos.y, tarplypos.z + 5, ENTITY.GET_ENTITY_HEADING(tarply), 10)
+            TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 18, 999)
+            TASK.TASK_VEHICLE_TEMP_ACTION(tarply, vehtb[i], 16, 999)
+            log.info(vehtb[i]) 
+        end
+        ]]  
     end)
     script.run_in_fiber(function (vtcrash3)
-        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
-        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())
+        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+            gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+            return
+        end
         local mdl = joaat("mp_m_freemode_01")
         local veh_mdl = joaat("taxi")
         request_model(veh_mdl)
         request_model(mdl)
             for i = 1, 10 do
-                local veh = CreateVehicle(veh_mdl, pos, 0)
-                local jesus = CreatePed(2, mdl, pos, 0)
+                local pos114 = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+                local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(network.get_selected_player())
+                if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                    gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+                    return
+                end        
+                local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+                if calcDistance(selfpos, pos114) <= 300 then 
+                    gui.show_message("攻击已停止", "请先远离目标")
+                    return
+                end
+                local veh = CreateVehicle(veh_mdl, pos114, 0)
+                local jesus = CreatePed(2, mdl, pos114, 0)
                 ENTITY.SET_ENTITY_VISIBLE(veh, false)
                 ENTITY.SET_ENTITY_VISIBLE(jesus, false)
                 PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
@@ -2219,22 +2264,40 @@ gui.add_tab(""):add_button("模型崩溃", function()
     end)
     script.run_in_fiber(function (vtcrash2)
         for i = 1, 10, 1 do 
-        local anim_dict = "anim@mp_player_intupperstinker"
+            if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+                return
+            end    
+            local anim_dict = "anim@mp_player_intupperstinker"
             STREAMING.REQUEST_ANIM_DICT(anim_dict)
             while not STREAMING.HAS_ANIM_DICT_LOADED(anim_dict) do
                 vtcrash2:yield()
             end
-        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
-        local ped = PED.CREATE_RANDOM_PED(pos.x, pos.y, pos.z+10)
+        local pos115 = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        if calcDistance(selfpos, pos115) <= 300 then 
+            gui.show_message("攻击已停止", "请先远离目标")
+            return
+        end
+        local ped = PED.CREATE_RANDOM_PED(pos115.x, pos115.y, pos115.z+10)
         ENTITY.SET_ENTITY_VISIBLE(ped, false)
         ENTITY.FREEZE_ENTITY_POSITION(ped, true)
         PED.SET_PED_COMBAT_ATTRIBUTES(ped, 46, true)
         PED.SET_PED_COMBAT_RANGE(ped, 4)
         PED.SET_PED_COMBAT_ABILITY(ped, 3)
         for i = 1, 10 do
-            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,network.get_selected_player())) 
-            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(ped, pos.x, pos.y, pos.z+5, true, true, true)
-            TASK.TASK_SWEEP_AIM_POSITION(ped, anim_dict, "G", "T", "VIP", -1, 0.0, 0.0, 0.0, 0.0, 0.0)
+            if PLAYER.GET_PLAYER_PED(network.get_selected_player()) == PLAYER.PLAYER_PED_ID() then --避免目标离开战局后作用于自己
+                gui.show_message("攻击已停止", "检测到目标已离开或目标是自己")
+                return
+            end    
+            local pos116 = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            if calcDistance(selfpos, pos116) <= 300 then 
+                gui.show_message("攻击已停止", "请先远离目标")
+                return
+            end
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(ped, pos116.x, pos116.y, pos116.z+5, true, true, true)
+            TASK.TASK_SWEEP_AIM_POSITION(ped, anim_dict, "Y", "M", "T", -1, 0.0, 0.0, 0.0, 0.0, 0.0)
             vtcrash2:sleep(1000)
             TASK.CLEAR_PED_TASKS_IMMEDIATELY(ped)
         end
@@ -2297,7 +2360,9 @@ gentab:add_text("全局选项")
 
 gentab:add_button("全局爆炸", function()
     for i = 0, 32 do
+        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) ~= PLAYER.PLAYER_PED_ID() then --避免作用于自己
             FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
+        end
     end
 end)
 
@@ -2514,7 +2579,7 @@ gui.get_tab(""):add_sameline()
 gui.get_tab(""):add_button("生成N", function()
     script.run_in_fiber(function (cusobj2r)
         local targetplyped = PLAYER.GET_PLAYER_PED(network.get_selected_player())
-        local remotePos = ENTITY.GET_ENTITY_COORDS(targetplyped, false)
+        local remotePos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         objHashr = joaat(iputobjnamer:get_value())
         while not STREAMING.HAS_MODEL_LOADED(objHashr) do	
             STREAMING.REQUEST_MODEL(objHashr)
@@ -2741,6 +2806,59 @@ script.register_looped("schlua-recoveryservice", function()
 
 end)
 
+script.register_looped("schlua-ml2", function() 
+    
+    if  autorespl:is_enabled() then--自动补原材料
+        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
+        local mpx = "MP0_"--用于判断当前是角色1还是角色2
+        if playerid == 1 then --用于判断当前是角色1还是角色2
+            mpx = "MP1_" --用于判断当前是角色1还是角色2
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY0") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+0,1) --假钞
+            log.info("假钞原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY1") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+1,1) --kky
+            log.info("可卡因原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY2") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+2,1) --bd
+            log.info("冰毒原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY3") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+3,1) --dm
+            log.info("大麻原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY4") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+4,1) --id
+            log.info("证件原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY5") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+5,1) --bk
+            log.info("地堡原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+        if stats.get_int(mpx.."MATTOTALFORFACTORY6") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
+            globals.set_int(1648657+1+6,1) --acid
+            log.info("致幻剂原材料不足,将自动补满")
+            MCprintspl()
+            autoresply = 1
+        end
+    end
+end)
+
 script.register_looped("schlua-dataservice", function() 
 
     if  check1:is_enabled() then --移除交易错误警告
@@ -2827,48 +2945,6 @@ script.register_looped("schlua-dataservice", function()
         end
         if globals.get_int(262145 + 21714) ~= 5000 then
             globals.set_int(262145 + 21714, 5000) -- 818645907
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY0") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+0,1) --假钞
-            log.info("假钞原材料不足,将自动补满")
-            --MCprintspl()
-            autoresply = 1
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY1") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+1,1) --kky
-            log.info("可卡因原材料不足,将自动补满")
-            --MCprintspl()
-            autoresply = 1
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY2") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+2,1) --bd
-            log.info("冰毒原材料不足,将自动补满")
-            --MCprintspl()
-            autoresply = 1
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY3") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+3,1) --dm
-            log.info("大麻原材料不足,将自动补满")
-            --MCprintspl()
-            autoresply = 1
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY4") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+4,1) --id
-            log.info("证件原材料不足,将自动补满")
-            --MCprintspl()
-            autoresply = 1
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY5") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+5,1) --bk
-            log.info("地堡原材料不足,将自动补满")
-            --MCprintspl()
-            autoresply = 1
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY6") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+6,1) --acid
-            log.info("致幻剂原材料不足,将自动补满")
-            --MCprintspl()
-            autoresply = 1
         end
         loopa19 =1
     else

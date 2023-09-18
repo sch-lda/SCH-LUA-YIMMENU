@@ -1,4 +1,4 @@
--- v1.80 -- 
+-- v1.81 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.80"
+local luaversion = "v1.81"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -2546,6 +2546,12 @@ gentab:add_button("ResumeProcess", function()
     MISC.SET_GAME_PAUSED(false)
 end)
 
+local emmode = gentab:add_checkbox("紧急模式-被大量刷模型时同时按下ASD三个按键防渲染器崩溃") --只是一个开关，代码往后面找
+emmode:set_enabled(1)
+
+local emmode2 = gentab:add_checkbox("紧急模式2-按Ctrl+A+S快速逃离此战局") --只是一个开关，代码往后面找
+emmode2:set_enabled(1)
+
 gentab:add_text("obj生成(Name)") 
 gentab:add_sameline()
 local iputobjname = gentab:add_input_string("objname")
@@ -2711,8 +2717,67 @@ local loopa25 = 0  --控制防爆头
 local loopa26 = 0  --控制雷达假死
 local loopa27 = 0  --PTFX1
 local loopa28 = 0  --线上模式暂停
+local loopa29 = 0  --紧急模式
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
+local selfposen
+script.register_looped("schlua-emodedeamon", function() 
+    if  emmode2:is_enabled() then
+        if PAD.IS_CONTROL_PRESSED(0, 33) and PAD.IS_CONTROL_PRESSED(0, 34) and PAD.IS_CONTROL_PRESSED(0, 36) then  
+            command.call("joinsession", { 1 })
+            log.info("走为上策,已创建新战局")
+            gui.show_message("走为上策", "已创建新战局")
+        end
+    end
+
+    if  emmode:is_enabled() then
+        if loopa29 == 0 and PAD.IS_CONTROL_PRESSED(0, 33) and PAD.IS_CONTROL_PRESSED(0, 34) and PAD.IS_CONTROL_PRESSED(0, 35) then  
+            log.info("紧急模式已开启,与所有玩家取消同步,同时按下WAD关闭")
+            gui.show_message("紧急模式已开启", "与所有玩家取消同步,同时按下WAD关闭")
+            NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
+            selfposen = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), -832, 177, 3000)
+            ENTITY.FREEZE_ENTITY_POSITION(PLAYER.PLAYER_PED_ID(), true)
+            STREAMING.SET_FOCUS_POS_AND_VEL(-400, 5989, 3000, 0.0, 0.0, 0.0)
+            anticcam = CAM.CREATE_CAM("DEFAULT_SCRIPTED_CAMERA", false)
+			CAM.SET_CAM_ACTIVE(anticcam, true)
+			CAM.RENDER_SCRIPT_CAMS(true, true, 500, true, true, false)
+            loopa29 = 1
+        end
+        if loopa29 ==1 then
+            rotation = CAM.GET_GAMEPLAY_CAM_ROT(2)
+            CAM.SET_CAM_ROT(anticcam, rotation.x, rotation.y, rotation.z, 2)
+            CAM.SET_CAM_COORD(anticcam, -400, 5989, 3000)
+            STREAMING.SET_FOCUS_POS_AND_VEL(-400, 5989, 3000, 0.0, 0.0, 0.0)
+        end
+        if loopa29 == 1 and PAD.IS_CONTROL_PRESSED(0, 32) and PAD.IS_CONTROL_PRESSED(0, 34) and PAD.IS_CONTROL_PRESSED(0, 35) then  
+            log.info("紧急模式已关闭,恢复同步并移动至原位")
+            gui.show_message("紧急模式已关闭", "恢复同步并移动至原位")
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), selfposen.x, selfposen.y, selfposen.z)
+            NETWORK.NETWORK_END_TUTORIAL_SESSION()
+            ENTITY.FREEZE_ENTITY_POSITION(PLAYER.PLAYER_PED_ID(), false)
+            STREAMING.CLEAR_FOCUS() 
+            CAM.SET_CAM_ACTIVE(anticcam, false)
+			CAM.RENDER_SCRIPT_CAMS(false, true, 500, true, true, 0)
+			CAM.DESTROY_CAM(anticcam, false)
+			STREAMING.CLEAR_FOCUS()    
+            loopa29 = 0
+        end
+    else 
+        if loopa29 == 1 then
+            log.info("紧急模式已关闭,恢复同步并移动至原位")
+            gui.show_message("紧急模式已关闭", "恢复同步并移动至原位")
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), selfposen.x, selfposen.y, selfposen.z)
+            NETWORK.NETWORK_END_TUTORIAL_SESSION()
+            ENTITY.FREEZE_ENTITY_POSITION(PLAYER.PLAYER_PED_ID(), false)
+            STREAMING.CLEAR_FOCUS() 
+            CAM.SET_CAM_ACTIVE(anticcam, false)
+			CAM.RENDER_SCRIPT_CAMS(false, true, 500, true, true, 0)
+			CAM.DESTROY_CAM(anticcam, false)
+            loopa29 = 0
+        end
+    end
+end)
 
 script.register_looped("schlua-taxiservice", function() 
     if  taxisvs:is_enabled() then

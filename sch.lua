@@ -1,4 +1,4 @@
--- v1.81 -- 
+-- v1.82 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.81"
+local luaversion = "v1.82"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -631,6 +631,10 @@ local check520 = gentab:add_checkbox("头顶520") --这只是一个复选框,代
 gentab:add_sameline()
 
 local check6 = gentab:add_checkbox("游泳模式") --这只是一个复选框,代码往最后的循环脚本部分找
+
+gentab:add_sameline()
+
+local partwater = gentab:add_checkbox("分开水体") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
@@ -1274,6 +1278,10 @@ gentab:add_sameline()
 
 gentab:add_button("游戏厅计划面板(先进游戏厅)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  2711.773, -369.458, -54.781)
+end)
+
+gentab:add_button("随机位置", function()
+    ENTITY.SET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), math.random(-1794,2940), math.random(-3026,6298), -199.9,1,0,0,1)
 end)
 
 gentab:add_separator()
@@ -2546,15 +2554,17 @@ gentab:add_button("ResumeProcess", function()
     MISC.SET_GAME_PAUSED(false)
 end)
 
-local emmode = gentab:add_checkbox("紧急模式-被大量刷模型时同时按下ASD三个按键防渲染器崩溃") --只是一个开关，代码往后面找
-emmode:set_enabled(1)
+local emmode = gentab:add_checkbox("紧急模式-被大量刷模型导致游戏卡顿明显时同时按下Ctrl+S+D快速逃离现场并暂停网络同步(不需离开战局)-必要时配合循环清除实体功能使用") --只是一个开关，代码往后面找
+emmode:set_enabled(1) --开启上方创建的复选框，删除此行代码后紧急模式1不会默认监听快捷键
 
-local emmode2 = gentab:add_checkbox("紧急模式2-按Ctrl+A+S快速逃离此战局") --只是一个开关，代码往后面找
-emmode2:set_enabled(1)
+local emmode2 = gentab:add_checkbox("紧急模式2-按Ctrl+A+S快速逃离到新战局") --只是一个开关，代码往后面找
+emmode2:set_enabled(1) --开启上方创建的复选框，删除此行代码后紧急模式2不会默认监听快捷键
 
 gentab:add_sameline()
 
 local allclear = gentab:add_checkbox("循环清除实体") --只是一个开关，代码往后面找
+
+local emmode3 = gentab:add_checkbox("紧急模式3-持续清除任何实体+阻止PTFX火柱水柱+阻止滤镜和镜头抖动+清理物体表面痕迹") --只是一个开关，代码往后面找
 
 gentab:add_text("obj生成(Name)") 
 gentab:add_sameline()
@@ -2721,21 +2731,44 @@ local loopa25 = 0  --控制防爆头
 local loopa26 = 0  --控制雷达假死
 local loopa27 = 0  --PTFX1
 local loopa28 = 0  --线上模式暂停
-local loopa29 = 0  --紧急模式
+local loopa29 = 0  --紧急模式1
+local loopa30 = 0  --紧急模式3
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 local selfposen
-script.register_looped("schlua-emodedeamon", function() 
+script.register_looped("schlua-emodedeamon", function() --紧急模式1、2
     if  emmode2:is_enabled() then
         if PAD.IS_CONTROL_PRESSED(0, 33) and PAD.IS_CONTROL_PRESSED(0, 34) and PAD.IS_CONTROL_PRESSED(0, 36) then  
+        --PAD.IS_CONTROL_PRESSED(0, 33)表示按下键码为33的键时接收一个信号，上面一行表示同时按 33、34、36 时激活这个功能
+        --https://docs.fivem.net/docs/game-references/controls/ 如需自定义，到这个网站查询控制33这样的数字对应的是键盘或手柄上的什么物理按键，替换掉对应的数字即可
             command.call("joinsession", { 1 })
             log.info("走为上策,已创建新战局")
             gui.show_message("走为上策", "已创建新战局")
         end
     end
 
+    if  emmode3:is_enabled() then
+        if loopa30 == 0 then 
+            allclear:set_enabled(1)
+            DECALrm:set_enabled(1)
+            efxrm:set_enabled(1)
+            ptfxrm:set_enabled(1)
+            log.info("紧急模式3已开启")
+            loopa30 = 1
+        end
+    else 
+        if loopa30 == 1 then 
+            allclear:set_enabled(nil)
+            DECALrm:set_enabled(nil)
+            efxrm:set_enabled(nil)
+            ptfxrm:set_enabled(nil)
+            log.info("紧急模式3已关闭")
+            loopa30 = 0
+        end
+    end
+
     if  emmode:is_enabled() then
-        if loopa29 == 0 and PAD.IS_CONTROL_PRESSED(0, 33) and PAD.IS_CONTROL_PRESSED(0, 34) and PAD.IS_CONTROL_PRESSED(0, 35) then  
+        if loopa29 == 0 and PAD.IS_CONTROL_PRESSED(0, 33) and PAD.IS_CONTROL_PRESSED(0, 36) and PAD.IS_CONTROL_PRESSED(0, 35) then  
             log.info("紧急模式已开启,与所有玩家取消同步,同时按下WAD关闭")
             gui.show_message("紧急模式已开启", "与所有玩家取消同步,同时按下WAD关闭")
             NETWORK.NETWORK_START_SOLO_TUTORIAL_SESSION()
@@ -3790,6 +3823,23 @@ script.register_looped("schlua-miscservice", function()
 
     if  check6:is_enabled() then --随处游泳
         PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 65, 81) --锁定玩家状态为游泳
+    end
+
+    if  partwater:is_enabled() then --分开水体
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        WATER.SET_DEEP_OCEAN_SCALER(0.0)
+
+        WATER.MODIFY_WATER(selfpos.x, selfpos.y, -500000.0, 0.2)
+        WATER.MODIFY_WATER(selfpos.x+2, selfpos.y, -500000.0, 0.2)
+        WATER.MODIFY_WATER(selfpos.x, selfpos.y+2, -500000.0, 0.2)
+        WATER.MODIFY_WATER(selfpos.x-2, selfpos.y, -500000.0, 0.2)
+        WATER.MODIFY_WATER(selfpos.x, selfpos.y-2, -500000.0, 0.2)
+
+        WATER.MODIFY_WATER(selfpos.x+math.random(4,10), selfpos.y, -500000.0, 0.2)
+        WATER.MODIFY_WATER(selfpos.x, selfpos.y+math.random(4,10), -500000.0, 0.2)
+        WATER.MODIFY_WATER(selfpos.x-math.random(4,10), selfpos.y, -500000.0, 0.2)
+        WATER.MODIFY_WATER(selfpos.x, selfpos.y-math.random(4,10), -500000.0, 0.2)
+
     end
 
     if vehboost:is_enabled() then --载具加速

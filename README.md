@@ -60,10 +60,10 @@ RScript (ZH_CN) https://github.com/TCRoid/YimMenu-Lua-RScript \
 Alestarov_Menu (EN) https://github.com/Alestarov/YimMenu-lua-script-Alestarov_Menu \
 YIMMENU官方Lua仓库 (EN) YIMMENU Official Lua Repo https://github.com/YimMenu-Lua
 ## 截图 screenshots
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/a2e3b673-7c6c-4b4b-b1d9-77f68b14a21a)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/1ebe2117-b44a-48af-9a70-a402097a7739)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/e7c99a7f-bb30-45d7-8d98-29dce1810a1d)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/c5d9c2fd-3938-4e48-9233-50edc1b8105d)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/8419fa34-8012-49e1-9df4-eb5fc396e97f)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/153cc20f-5643-48b9-b360-7002aaef572c)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/747177bf-3caa-4ffe-9850-1bd345ad9a70)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/6fa7d55c-15c3-4fcb-9068-3826536210e6)
 
 
 

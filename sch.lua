@@ -1,4 +1,4 @@
--- v1.83 -- 
+-- v1.84 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-local luaversion = "v1.83"
+local luaversion = "v1.84"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -42,8 +42,10 @@ else
     local_()
 end
 
+local is_money = 0
+local is_GK = 0
+local is_collection1 = 0
 local verchka1 = 0
-
 local autoresply = 0
 
 local gentab = gui.add_tab("sch-lua-Alpha-"..luaversion)
@@ -195,12 +197,12 @@ end
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- TEST
---[[
+
 gentab:add_button("测试6", function()
-veh = get_closest_veh(PLAYER.PLAYER_PED_ID())
-ENTITY.APPLY_FORCE_TO_ENTITY(veh, 1, math.random(0, 30), math.random(0, 30), math.random(-3, 10), 0.0, 0.0, 0.0, 0, true, false, true, false, true)
+    local selfpos1005 = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(selfpos1005.x, selfpos1005.y, selfpos1005.z + 1, selfpos1005.x, selfpos1005.y, selfpos1005.z, 1000, true, 2526821735, PLAYER.GET_PLAYER_PED(), false, true, 1.0)
 end)
-]]
+
 --------------------------------------------------------------------------------------- TEST
 
 --------------------------------------------------------------------------------------- Lua管理器页面
@@ -211,37 +213,46 @@ gentab:add_text("任务功能")
 
 gentab:add_button("佩里科终章一键完成", function()
     script.run_in_fiber(function (pericoinstcpl)
+        network.force_script_host("fm_mission_controller_2020") --抢脚本主机
+        network.force_script_host("fm_mission_controller") --抢脚本主机
+        pericoinstcpl:yield()
         local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
         local FMMChost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0)
         local time = os.time()
         while PLAYER.PLAYER_ID() ~= FMMC2020host and PLAYER.PLAYER_ID() ~= FMMChost do   --如果判断不是脚本主机则自动抢脚本主机
-            if os.time() - time >= 10 then
-                log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
-                log.info("已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)")
-                gui.show_error("失败,未成为脚本主机","您可能不在支持一键完成的任务中")
+            if os.time() - time >= 5 then
                 break
             end
             network.force_script_host("fm_mission_controller_2020") --抢脚本主机
             network.force_script_host("fm_mission_controller") --抢脚本主机
+            local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
+            local FMMChost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0)    
             log.info("正在抢任务脚本主机以便一键完成...")
             pericoinstcpl:yield()
         end
-        locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
-        locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
-        locals.set_int("fm_mission_controller", 19710, 12)
-        locals.set_int("fm_mission_controller", 28332, 99999)
-        locals.set_int("fm_mission_controller", 31656, 99999)
+        if FMMC2020host == PLAYER.PLAYER_ID() or FMMChost == PLAYER.PLAYER_ID() then
+            gui.show_message("已成为脚本主机","尝试自动完成...")
+            locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
+            locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
+            locals.set_int("fm_mission_controller", 19710, 12)
+            locals.set_int("fm_mission_controller", 28332, 99999)
+            locals.set_int("fm_mission_controller", 31656, 99999)
+        else
+            log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
+            log.info("已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)")
+            gui.show_error("失败,未成为脚本主机","您可能不在支持一键完成的任务中")
+        end
     end)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("佩里科终章一键完成(强制)", function()
-        locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
-        locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
-        locals.set_int("fm_mission_controller", 19710, 12)
-        locals.set_int("fm_mission_controller", 28332, 99999)
-        locals.set_int("fm_mission_controller", 31656, 99999)
+    locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
+    locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
+    locals.set_int("fm_mission_controller", 19710, 12)
+    locals.set_int("fm_mission_controller", 28332, 99999)
+    locals.set_int("fm_mission_controller", 31656, 99999)
 end)
 
 gentab:add_sameline()
@@ -702,23 +713,23 @@ gentab:add_sameline()
 
 local npcvehbr = gentab:add_checkbox("NPC载具倒行") --只是一个开关，代码往后面找
 
-gentab:add_text("载具批量控制") 
+gentab:add_text("载具控制") 
 
 gentab:add_sameline()
 
-local vehengdmg = gentab:add_checkbox("载具熄火") --只是一个开关，代码往后面找
+local vehengdmg = gentab:add_checkbox("熄火") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehfixr = gentab:add_checkbox("载具修复") --只是一个开关，代码往后面找
+local vehfixr = gentab:add_checkbox("修复") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehstopr = gentab:add_checkbox("载具停止") --只是一个开关，代码往后面找
+local vehstopr = gentab:add_checkbox("停止") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
-local vehjmpr = gentab:add_checkbox("载具跳跃") --只是一个开关，代码往后面找
+local vehjmpr = gentab:add_checkbox("跳跃") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -726,7 +737,7 @@ local vehdoorlk4p = gentab:add_checkbox("对所有玩家锁门") --只是一个�
 
 gentab:add_sameline()
 
-local vehbr = gentab:add_checkbox("混乱模式") --只是一个开关，代码往后面找
+local vehbr = gentab:add_checkbox("混乱") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -734,13 +745,13 @@ local vehsp1 = gentab:add_checkbox("旋转") --只是一个开关，代码往后
 
 gentab:add_sameline()
 
-local vehrm = gentab:add_checkbox("批量删除") --只是一个开关，代码往后面找
+local vehrm = gentab:add_checkbox("删除v") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
 local vehalarm = gentab:add_checkbox("鸣笛") --只是一个开关，代码往后面找
 
-gentab:add_text("NPC批量控制") 
+gentab:add_text("NPC控制") 
 
 gentab:add_sameline()
 
@@ -752,7 +763,7 @@ local react1any = gentab:add_checkbox("摔倒a") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-local react2any = gentab:add_checkbox("击杀a") --只是一个开关，代码往后面找
+local react2any = gentab:add_checkbox("死亡a") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -764,7 +775,7 @@ local react4any = gentab:add_checkbox("起飞a") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-gentab:add_button("收为保镖", function()
+gentab:add_button("保镖", function()
     local pedtable = entities.get_all_peds_as_handles()
     for _, peds in pairs(pedtable) do
         local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -811,9 +822,13 @@ local rmdied = gentab:add_checkbox("移除尸体") --只是一个开关，代码
 
 gentab:add_sameline()
 
-local rmpedwp = gentab:add_checkbox("移除武器a") --只是一个开关，代码往后面找
+local rmpedwp = gentab:add_checkbox("缴械a") --只是一个开关，代码往后面找
 
-gentab:add_text("敌对NPC批量控制") 
+gentab:add_sameline()
+
+local stnpcany = gentab:add_checkbox("电击a") --只是一个开关，代码往后面找
+
+gentab:add_text("敌对NPC控制") 
 
 gentab:add_sameline()
 
@@ -825,7 +840,7 @@ local react1anyac = gentab:add_checkbox("摔倒a1") --只是一个开关，代�
 
 gentab:add_sameline()
 
-local react2anyac = gentab:add_checkbox("击杀a1") --只是一个开关，代码往后面找
+local react2anyac = gentab:add_checkbox("死亡a1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -837,7 +852,7 @@ local react4anyac = gentab:add_checkbox("起飞a1") --只是一个开关，代�
 
 gentab:add_sameline()
 
-local react5anyac = gentab:add_checkbox("收为保镖a1") --只是一个开关，代码往后面找
+local react5anyac = gentab:add_checkbox("保镖a1") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -845,9 +860,13 @@ local react6anyac = gentab:add_checkbox("光柱标记a1") --只是一个开关�
 
 gentab:add_sameline()
 
-local rmpedwp2 = gentab:add_checkbox("移除武器a1") --只是一个开关，代码往后面找
+local rmpedwp2 = gentab:add_checkbox("缴械a1") --只是一个开关，代码往后面找
 
-gentab:add_text("被NPC瞄准自动反击") 
+gentab:add_sameline()
+
+local stnpcany2 = gentab:add_checkbox("电击b") --只是一个开关，代码往后面找
+
+gentab:add_text("NPC瞄准我惩罚") 
 
 gentab:add_sameline()
 
@@ -859,7 +878,7 @@ local aimreact1 = gentab:add_checkbox("摔倒b") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-local aimreact2 = gentab:add_checkbox("击杀b") --只是一个开关，代码往后面找
+local aimreact2 = gentab:add_checkbox("死亡b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -871,7 +890,7 @@ local aimreact4 = gentab:add_checkbox("起飞b") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-local aimreact5 = gentab:add_checkbox("收为保镖b") --只是一个开关，代码往后面找
+local aimreact5 = gentab:add_checkbox("保镖b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -883,9 +902,13 @@ local aimreact7 = gentab:add_checkbox("光柱标记b") --只是一个开关，�
 
 gentab:add_sameline()
 
-local rmpedwp3 = gentab:add_checkbox("移除武器b") --只是一个开关，代码往后面找
+local rmpedwp3 = gentab:add_checkbox("缴械b") --只是一个开关，代码往后面找
 
-gentab:add_text("NPC瞄准任何人自动反击") 
+gentab:add_sameline()
+
+local stnpcany3 = gentab:add_checkbox("电击c") --只是一个开关，代码往后面找
+
+gentab:add_text("NPC瞄准惩罚") 
 
 gentab:add_sameline()
 
@@ -897,7 +920,7 @@ local aimreact1any = gentab:add_checkbox("摔倒c") --只是一个开关，代�
 
 gentab:add_sameline()
 
-local aimreact2any = gentab:add_checkbox("击杀c") --只是一个开关，代码往后面找
+local aimreact2any = gentab:add_checkbox("死亡c") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -909,7 +932,7 @@ local aimreact4any = gentab:add_checkbox("起飞c") --只是一个开关，代�
 
 gentab:add_sameline()
 
-local aimreact5any = gentab:add_checkbox("收为保镖c") --只是一个开关，代码往后面找
+local aimreact5any = gentab:add_checkbox("保镖c") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -917,11 +940,15 @@ local aimreact6any = gentab:add_checkbox("移除c") --只是一个开关，代�
 
 gentab:add_sameline()
 
-local rmpedwp4 = gentab:add_checkbox("移除武器c") --只是一个开关，代码往后面找
+local rmpedwp4 = gentab:add_checkbox("缴械c") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local stnpcany4 = gentab:add_checkbox("电击d") --只是一个开关，代码往后面找
 
 local delallcam = gentab:add_checkbox("移除所有摄像头") --只是一个开关，代码往后面找
 
-CamList = {   --从heist control抄的
+CamList = {   --从heist control抄的,游戏中的各种摄像头
     joaat("prop_cctv_cam_01a"),
     joaat("prop_cctv_cam_01b"),
     joaat("prop_cctv_cam_02a"),
@@ -949,6 +976,61 @@ gentab:add_button("移除佩里科重甲兵", function()
         end
     end
 end)
+
+gentab:add_sameline()
+
+gentab:add_button("实名随机射杀一半NPC", function()
+    local pedtable = entities.get_all_peds_as_handles()
+    for _, peds in pairs(pedtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+        if peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and PED.IS_PED_DEAD_OR_DYING(peds,1) ~= 1 and math.random(0,1) >= 0.5 then 
+            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1000, true, 2526821735, PLAYER.GET_PLAYER_PED(), false, true, 1.0)  --2526821735是特制卡宾步枪MK2的Hash值,相关数据可在 https://github.com/DurtyFree/gta-v-data-dumps/blob/master/WeaponList.ini 查询
+        end
+    end
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("实名随机射杀一半敌对NPC", function()
+    local pedtable = entities.get_all_peds_as_handles()
+    for _, peds in pairs(pedtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+        if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 and math.random(0,1) >= 0.5 then 
+            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1000, true, 2526821735, PLAYER.GET_PLAYER_PED(), false, true, 1.0)
+        end
+    end
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("实名射杀NPC", function()
+    local pedtable = entities.get_all_peds_as_handles()
+    for _, peds in pairs(pedtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+        if peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and PED.IS_PED_DEAD_OR_DYING(peds,1) ~= 1 then 
+            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1000, true, 2526821735, PLAYER.GET_PLAYER_PED(), false, true, 1.0)
+        end
+    end
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("实名射杀敌对NPC", function()
+    local pedtable = entities.get_all_peds_as_handles()
+    for _, peds in pairs(pedtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+        if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
+            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1000, true, 2526821735, PLAYER.GET_PLAYER_PED(), false, true, 1.0) --2526821735是特制卡宾步枪MK2的Hash值,相关数据可在 https://github.com/DurtyFree/gta-v-data-dumps/blob/master/WeaponList.ini 查询
+        end
+    end
+end)
+
+gentab:add_text("射杀 和 死亡 可以保留NPC掉落物例如密码线索和佩里科门禁卡, 移除 则无法获得任何掉落物.") 
+gentab:add_text("实名射杀 将计入玩家存档的数据统计并获得击杀经验值,NPC控制中的 死亡 将视为NPC自然死亡, 移除 也是匿名的. 射杀 是使用特制卡宾枪MK2仿真射击") 
 
 gentab:add_separator()
 
@@ -1877,14 +1959,16 @@ gui.get_tab(""):add_button("竞技管笼子", function()
         while not STREAMING.HAS_MODEL_LOADED(2081936690) do		
             dubcage:sleep(100)
         end
-        local cage_object = OBJECT.CREATE_OBJECT(2081936690, pos.x, pos.y, pos.z-5, true, true, false)
+        local cage_object = OBJECT.CREATE_OBJECT(2081936690, pos.x, pos.y, pos.z+20, true, true, false)
         local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object)
         rot.y = 90
         ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x,rot.y,rot.z,1,true)
+        --[[
         local cage_object2 = OBJECT.CREATE_OBJECT(2081936690, pos.x-5, pos.y+5, pos.z-5, true, true, false)
         local rot  = ENTITY.GET_ENTITY_ROTATION(cage_object2)
         rot.x = 90 
         ENTITY.SET_ENTITY_ROTATION(cage_object2, rot.x,rot.y,rot.z,2,true)
+        ]]
     end)
 end)
 
@@ -2087,7 +2171,11 @@ local checknodmgexp = gui.get_tab(""):add_checkbox("无伤爆炸")
 
 gui.get_tab(""):add_sameline()
 
-local checkcollection1 = gui.get_tab(""):add_checkbox("循环刷纸牌")
+local checkcollection1 = gui.get_tab(""):add_checkbox("循环刷纸牌") --来自fhen123_06870
+
+gui.get_tab(""):add_sameline()
+
+local checkCollectible = gui.get_tab(""):add_checkbox("循环刷手办")
 
 local check2 = gui.get_tab(""):add_checkbox("掉帧攻击(尽可能远离目标)")
 
@@ -2102,6 +2190,10 @@ local checkspped = gui.get_tab(""):add_checkbox("循环刷PED")
 gui.add_tab(""):add_sameline()
 
 local checkxsdpednet = gui.add_tab(""):add_checkbox("NPC掉落2000元循环")
+
+gui.add_tab(""):add_sameline()
+
+local checkmoney = gui.get_tab(""):add_checkbox("循环刷钱袋(仅自己可见)") --来自fhen123_06870
 
 gui.add_tab(""):add_button("碎片崩溃", function()
     script.run_in_fiber(function (fragcrash)
@@ -2558,8 +2650,19 @@ gentab:add_button("ResumeProcess", function()
     MISC.SET_GAME_PAUSED(false)
 end)
 
+gentab:add_sameline()
+
+gentab:add_button("forescripthost", function()
+    network.force_script_host("fm_mission_controller_2020") --抢脚本主机
+    network.force_script_host("fm_mission_controller") --抢脚本主机
+end)
+
+gentab:add_sameline()
+
+local keepschost = gentab:add_checkbox("keepforescripthost") --只是一个开关，代码往后面找
+
 local emmode = gentab:add_checkbox("紧急模式-被大量刷模型导致游戏卡顿明显时同时按下Ctrl+S+D快速逃离现场并暂停网络同步(不需离开战局)-必要时配合循环清除实体功能使用") --只是一个开关，代码往后面找
-emmode:set_enabled(1) --开启上方创建的复选框，删除此行代码后紧急模式1不会默认监听快捷键
+--emmode:set_enabled(1) --开启上方创建的复选框，删除此行代码后紧急模式1不会默认监听快捷键
 
 local emmode2 = gentab:add_checkbox("紧急模式2-按Ctrl+A+S快速逃离到新战局") --只是一个开关，代码往后面找
 emmode2:set_enabled(1) --开启上方创建的复选框，删除此行代码后紧急模式2不会默认监听快捷键
@@ -2709,38 +2812,38 @@ end)
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 --存放一些变量，阻止无限循环，间接实现 checkbox 的 on_enable() 和 on_disable()
 
-local loopa1 = 0  --控制PED脚步声有无
-local loopa2 = 0  --控制头顶666
-local loopa3 = 0  --控制PED所有声音有无
-local loopa4 = 0  --控制声纳开关
-local loopa5 = 0  --控制喷火
-local loopa6 = 0  --控制火焰翅膀
-local loopa7 = 0  --控制警察调度
-local loopa8 = 0  --控制NPC零伤害
-local loopa9 = 0  --控制取消同步
-local loopa10 = 0  --控制恶灵骑士
-local loopa11 = 0  --控制PED热量
-local loopa12 = 0  --控制是否允许攻击队友
-local loopa13 = 0  --控制观看
-local loopa14 = 0  --控制远程载具无敌
-local loopa15 = 0  --控制远程载具无碰撞
-local loopa16 = 0  --控制世界灯光开关
-local loopa17 = 0  --控制头顶520
-local loopa18 = 0  --控制载具锁门
-local loopa19 = 0  --控制摩托帮地堡致幻剂生产速度
-local loopa20 = 0  --控制夜总会生产速度
-local loopa21 = 0  --控制夜总会生产速度
-local loopa22 = 0  --控制夜总会生产速度
-local loopa23 = 0  --控制夜总会生产速度
-local loopa24 = 0  --控制锁定小地图角度
-local loopa25 = 0  --控制防爆头
-local loopa26 = 0  --控制雷达假死
-local loopa27 = 0  --PTFX1
-local loopa28 = 0  --线上模式暂停
-local loopa29 = 0  --紧急模式1
-local loopa30 = 0  --紧急模式3
-local loopa31 = 0  --仅渲染高清
-local loopa32 = 0  --附近载具鸣笛
+loopa1 = 0  --控制PED脚步声有无
+loopa2 = 0  --控制头顶666
+loopa3 = 0  --控制PED所有声音有无
+loopa4 = 0  --控制声纳开关
+loopa5 = 0  --控制喷火
+loopa6 = 0  --控制火焰翅膀
+loopa7 = 0  --控制警察调度
+loopa8 = 0  --控制NPC零伤害
+loopa9 = 0  --控制取消同步
+loopa10 = 0  --控制恶灵骑士
+loopa11 = 0  --控制PED热量
+loopa12 = 0  --控制是否允许攻击队友
+loopa13 = 0  --控制观看
+loopa14 = 0  --控制远程载具无敌
+loopa15 = 0  --控制远程载具无碰撞
+loopa16 = 0  --控制世界灯光开关
+loopa17 = 0  --控制头顶520
+loopa18 = 0  --控制载具锁门
+loopa19 = 0  --控制摩托帮地堡致幻剂生产速度
+loopa20 = 0  --控制夜总会生产速度
+loopa21 = 0  --控制夜总会生产速度
+loopa22 = 0  --控制夜总会生产速度
+loopa23 = 0  --控制夜总会生产速度
+loopa24 = 0  --控制锁定小地图角度
+loopa25 = 0  --控制防爆头
+loopa26 = 0  --控制雷达假死
+loopa27 = 0  --PTFX1
+loopa28 = 0  --线上模式暂停
+loopa29 = 0  --紧急模式1
+loopa30 = 0  --紧急模式3
+loopa31 = 0  --仅渲染高清
+loopa32 = 0  --附近载具鸣笛
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 local selfposen
@@ -2958,15 +3061,37 @@ script.register_looped("schlua-recoveryservice", function()
     end
 
     if  checkcollection1:is_enabled() then --循环刷纸牌给玩家
-
         local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
         coords.z = coords.z + 2.0
- 
-        create_object(joaat("vw_prop_vw_lux_card_01a"),coords)
-
+        if is_collection1 == 0 then
+            is_collection1 = 1 
+            coordsObj =  create_object(joaat("vw_prop_vw_lux_card_01a"),coords)
+        end
         OBJECT.CREATE_AMBIENT_PICKUP(-1009939663, coords.x, coords.y, coords.z, 0, 1, joaat("vw_prop_vw_lux_card_01a"), false, true)
     end
 
+    if  checkCollectible:is_enabled() then --循环给手办玩家
+        local  coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
+        coords.z = coords.z + 2.0
+        if is_GK == 0 then
+            is_GK = 1 
+            create_object(joaat("vw_prop_vw_colle_prbubble"), coords)
+        end
+        OBJECT.CREATE_AMBIENT_PICKUP(-1009939663, coords.x, coords.y, coords.z, 0, 1, joaat("vw_prop_vw_colle_prbubble"), false, true)
+    end
+
+    if  checkmoney:is_enabled() then --循环给钱袋玩家
+        local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false) --获取目标玩家坐标
+        coords.z = coords .z + 2.0
+        if is_money == 0 then
+            is_money = 1 
+            create_object(0x9CA6F755, coords)
+        end
+        money = joaat("PICKUP_MONEY_SECURITY_CASE")
+        money_bag = 0x9CA6F755
+        OBJECT.CREATE_AMBIENT_PICKUP(money, coords.x, coords.y, coords.z, 0, 2500,money_bag, false, true)
+    end
+    
 end)
 
 script.register_looped("schlua-ml2", function() 
@@ -3837,6 +3962,16 @@ script.register_looped("schlua-miscservice", function()
         STREAMING.SET_RENDER_HD_ONLY(true)
     end
 
+    if  keepschost:is_enabled() then
+        local FMMC2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
+        local FMMChost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0)
+        if PLAYER.PLAYER_ID() ~= FMMC2020host and PLAYER.PLAYER_ID() ~= FMMChost then   --如果判断不是脚本主机则自动抢脚本主机
+            network.force_script_host("fm_mission_controller_2020") --抢脚本主机
+            network.force_script_host("fm_mission_controller") --抢脚本主机
+            script_util:yield()
+        end
+    end
+
     if  partwater:is_enabled() then --分开水体
         local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         WATER.SET_DEEP_OCEAN_SCALER(0.0)
@@ -4364,13 +4499,24 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
-    if  rmpedwp3:is_enabled() then --控制NPC瞄准反应7 -移除武器
+    if  rmpedwp3:is_enabled() then --控制NPC瞄准反应7 -缴械
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
+            end
+        end
+    end
+
+    if  stnpcany3:is_enabled() then --控制NPC瞄准反应7 -电击枪
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and PED.IS_PED_A_PLAYER(peds) ~= 1 and PED.IS_PED_DEAD_OR_DYING(peds,1) ~= 1 then 
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1, true, joaat("weapon_stungun"), PLAYER.GET_PLAYER_PED(), false, true, 1.0)
             end
         end
     end
@@ -4391,7 +4537,7 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
     
-    if  aimreact5:is_enabled() then --控制NPC瞄准惩罚5 -收为保镖
+    if  aimreact5:is_enabled() then --控制NPC瞄准惩罚5 -保镖
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -4487,13 +4633,24 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
-    if  rmpedwp4:is_enabled() then --控制NPC瞄准任何人惩罚6 -移除武器
+    if  rmpedwp4:is_enabled() then --控制NPC瞄准任何人惩罚6 -缴械
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
+            end
+        end
+    end
+
+    if  stnpcany4:is_enabled() then --控制NPC瞄准任何人惩罚6 -电击枪
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and PED.IS_PED_DEAD_OR_DYING(peds,1) ~= 1 then 
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1, true, joaat("weapon_stungun"), PLAYER.GET_PLAYER_PED(), false, true, 1.0)
             end
         end
     end
@@ -4514,7 +4671,7 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
-    if  aimreact5any:is_enabled() then --控制NPC瞄准任何人惩罚4 -收为保镖
+    if  aimreact5any:is_enabled() then --控制NPC瞄准任何人惩罚4 -保镖
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -4669,13 +4826,24 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
-    if  rmpedwp:is_enabled() then --控制NPC-移除武器
+    if  rmpedwp:is_enabled() then --控制NPC-缴械
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID()  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
+            end
+        end
+    end
+
+    if  stnpcany:is_enabled() then --控制NPC-射击-电击枪
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID()  and PED.IS_PED_A_PLAYER(peds) ~= 1 and PED.IS_PED_DEAD_OR_DYING(peds,1) ~= 1 then 
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1, true, joaat("weapon_stungun"), PLAYER.GET_PLAYER_PED(), false, true, 1.0)
             end
         end
     end
@@ -4709,7 +4877,7 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
-    if  react5anyac:is_enabled() then --控制敌对NPC 收为保镖
+    if  react5anyac:is_enabled() then --控制敌对NPC 保镖
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
@@ -4759,13 +4927,24 @@ script.register_looped("schlua-ectrlservice", function()
         end
     end
 
-    if  rmpedwp2:is_enabled() then --控制敌对NPC-移除武器
+    if  rmpedwp2:is_enabled() then --控制敌对NPC-缴械
         local pedtable = entities.get_all_peds_as_handles()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1  then 
                 WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
+            end
+        end
+    end
+
+    if  stnpcany2:is_enabled() then --控制敌对NPC-射击-电击枪
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and PED.IS_PED_DEAD_OR_DYING(peds,1) ~= 1 then 
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 1, true, joaat("weapon_stungun"), PLAYER.GET_PLAYER_PED(), false, true, 1.0)
             end
         end
     end
@@ -4915,20 +5094,27 @@ end)
 
 script.register_looped("schlua-drawservice", function() 
     if  DrawHost:is_enabled() then
-        screen_draw_text(string.format("战局主机:".. PLAYER.GET_PLAYER_NAME(NETWORK.NETWORK_GET_HOST_PLAYER_INDEX())),0.180,0.8, 0.4 , 0.4)
-        if SCRIPT.HAS_SCRIPT_LOADED("freemode") then
-        freemodehost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
-        screen_draw_text(string.format("战局脚本主机:".. PLAYER.GET_PLAYER_NAME(freemodehost)),  0.180, 0.828, 0.4 , 0.4)
+        if NETWORK.NETWORK_GET_HOST_PLAYER_INDEX() ~= -1 then
+            screen_draw_text(string.format("战局主机:".. PLAYER.GET_PLAYER_NAME(NETWORK.NETWORK_GET_HOST_PLAYER_INDEX())),0.180,0.8, 0.4 , 0.4)
         end
-
+        if SCRIPT.HAS_SCRIPT_LOADED("freemode") then
+            freemodehost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("freemode",-1,0)
+            if freemodehost ~= -1 then
+                screen_draw_text(string.format("战局脚本主机:".. PLAYER.GET_PLAYER_NAME(freemodehost)),  0.180, 0.828, 0.4 , 0.4)
+            end
+        end
         if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") or SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller_2020") then
             if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
                 fmmchost = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller",0,0)
-                screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmchost)), 0.180, 0.910, 0.4 , 0.4)
+                if fmmchost ~= -1 then
+                    screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmchost)), 0.180, 0.940, 0.4 , 0.4)
+                end
             end
             if SCRIPT.HAS_SCRIPT_LOADED("fm_mission_controller") then 
                 fmmc2020host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("fm_mission_controller_2020",0,0)
-                screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmc2020host)), 0.180, 0.910, 0.4 , 0.4)
+                if fmmc2020host ~= -1 then
+                    screen_draw_text(string.format("任务脚本主机:".. PLAYER.GET_PLAYER_NAME(fmmc2020host)), 0.180, 0.910, 0.4 , 0.4)
+                end
             end
         end
     end

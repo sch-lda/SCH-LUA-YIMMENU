@@ -1,5 +1,5 @@
 # SCH-LUA-YIMMENU
-[English Version v1.79 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
+[English Version v1.83 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
 [English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
 **警告:总收入/总支出 任意一项超过20亿者，禁止使用移除收支差功能，否则相关数据会变成负值** \
 **Warning: If either total income or total expenses exceeds 2 billion, the "Remove Income-Expense Gap" function is prohibited from use, as it will result in negative values for the relevant data.** \

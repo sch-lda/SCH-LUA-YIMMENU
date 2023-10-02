@@ -950,10 +950,6 @@ local aimreact6 = gentab:add_checkbox("移除b") --只是一个开关，代码�
 
 gentab:add_sameline()
 
-local aimreact7 = gentab:add_checkbox("光柱标记b") --只是一个开关，代码往后面找
-
-gentab:add_sameline()
-
 local rmpedwp3 = gentab:add_checkbox("缴械b") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
@@ -4634,17 +4630,6 @@ script.register_looped("schlua-ectrlservice", function()
             if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 request_control(peds)
                 delete_entity(peds)            
-            end
-        end
-    end
-
-    if  aimreact7:is_enabled() then --控制NPC瞄准反应7 -光柱标记
-        local pedtable = entities.get_all_peds_as_handles()
-        for _, peds in pairs(pedtable) do
-            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
-                GRAPHICS.DRAW_BOX(ped_pos.x-0.1,ped_pos.y-0.1,ped_pos.z+0.8,ped_pos.x+0.1,ped_pos.y+0.1,ped_pos.z+20,255,255,255,255)
             end
         end
     end

@@ -878,7 +878,7 @@ gentab:add_sameline()
 
 local drawbox = gentab:add_checkbox("光柱标记a") --只是一个开关，代码往后面找
 
-gentab:add_text("(BETA测试)NPC控制自动排除友方白名单(名单尚未完善,见下方 为友方NPC回血)") 
+gentab:add_text("(BETA测试)NPC控制自动排除友方白名单(名单尚未完善,见下方 为友方NPC回血),光柱标记仍作用于全局") 
 
 gentab:add_text("敌对NPC控制") 
 

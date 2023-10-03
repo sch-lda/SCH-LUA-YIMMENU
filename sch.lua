@@ -1,4 +1,4 @@
--- v1.88 -- 
+-- v1.89 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-luaversion = "v1.88"
+luaversion = "v1.89"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -138,12 +138,12 @@ function CreateVehicle(Hash, Pos, Heading, Invincible)
     script.run_in_fiber(function (ctveh)
         STREAMING.REQUEST_MODEL(Hash)
         while not STREAMING.HAS_MODEL_LOADED(Hash) do ctveh:yield() end
-        local SpawnedVehicle = VEHICLE.CREATE_VEHICLE(Hash, Pos.x,Pos.y,Pos.z, Heading , true, true, true)
+        CreateVehicle_rlt = VEHICLE.CREATE_VEHICLE(Hash, Pos.x,Pos.y,Pos.z, Heading , true, true, true)
         STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
         if Invincible then
             ENTITY.SET_ENTITY_INVINCIBLE(SpawnedVehicle, true)
         end
-        return SpawnedVehicle
+        return CreateVehicle_rlt
     end)
 end
 
@@ -235,7 +235,7 @@ joaat("A_C_Chop_02"),
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 
-gentab:add_text("要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
+gentab:add_text("最低分辨率要求:1920X1080.要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
 
 gentab:add_text("任务功能") 
 
@@ -1199,7 +1199,148 @@ gentab:add_button("传送蓝色光点NPC到自己", function()
     end
 end)
 
+gentab:add_sameline()
+
 gentab:add_text("已录入关键NPC:见源代码第199行") 
+
+gentab:add_text("实体生成") 
+
+gentab:add_button("生成保镖直升机", function()
+    local heli_mod = joaat("valkyrie") --女武神 直升机
+    local drv_mod = joaat("s_m_y_blackops_01")
+    request_model(heli_mod)
+    request_model(drv_mod)
+    local selfpedPos_sp_heli = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+    selfpedPos_sp_heli.z = selfpedPos_sp_heli.z + 50
+    local heli_sp = VEHICLE.CREATE_VEHICLE(heli_mod, selfpedPos_sp_heli.x,selfpedPos_sp_heli.y,selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z , true, true, true)
+    vehNetId = NETWORK.VEH_TO_NET(heli_sp)
+    if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(NETWORK.NET_TO_PED(vehNetId)) then
+    NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(vehNetId, true)
+    end
+    NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(vehNetId, PLAYER.PLAYER_ID(), true)
+    VEHICLE.SET_VEHICLE_ENGINE_ON(heli_sp, true, true, true)
+    VEHICLE.SET_VEHICLE_SEARCHLIGHT(heli_sp, true, true)
+    local heli_blip = HUD.ADD_BLIP_FOR_ENTITY(heli_sp)
+    HUD.SET_BLIP_AS_FRIENDLY(heli_blip, true)
+    HUD.SET_BLIP_AS_SHORT_RANGE(heli_blip,true)
+    ENTITY.SET_ENTITY_INVINCIBLE(heli_sp, true)
+    ENTITY.SET_ENTITY_MAX_HEALTH(heli_sp, 10000)
+    ENTITY.SET_ENTITY_HEALTH(heli_sp, 10000)
+    local heli_guard = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
+    PED.SET_PED_INTO_VEHICLE(heli_guard, heli_sp, -1)
+    PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(heli_guard, true)
+    TASK.TASK_VEHICLE_FOLLOW(heli_guard, heli_sp, PLAYER.PLAYER_PED_ID(), 80, 1, 10, 10)
+    PED.SET_PED_KEEP_TASK(heli_guard, true)
+    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard, true)
+    PED.SET_PED_MAX_HEALTH(heli_guard, 1000)
+    ENTITY.SET_ENTITY_HEALTH(heli_guard, 1000)
+
+    PED.SET_PED_AS_GROUP_MEMBER(heli_guard, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard, true)
+    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard, 0, 1)
+    PED.SET_PED_COMBAT_ABILITY(heli_guard, 2)
+    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 512, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 1024, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 2048, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 16384, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 131072, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 262144, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard, 5, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard, 13, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard, 394, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard, 400, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard, 134, true)
+    WEAPON.GIVE_WEAPON_TO_PED(heli_guard, joaat("weapon_combating_mk2"), 9999, false, false)
+    PED.SET_PED_ACCURACY(heli_guard,100)
+    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+
+    local heli_guard2 = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
+    PED.SET_PED_INTO_VEHICLE(heli_guard2, heli_sp, 1)
+    PED.SET_PED_KEEP_TASK(heli_guard2, true)
+    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard2, true)
+    PED.SET_PED_MAX_HEALTH(heli_guard2, 1000)
+    ENTITY.SET_ENTITY_HEALTH(heli_guard2, 1000)
+
+    PED.SET_PED_AS_GROUP_MEMBER(heli_guard2, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard2, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard2, true)
+    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard2, 0, 1)
+    PED.SET_PED_COMBAT_ABILITY(heli_guard2, 2)
+    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard2, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 512, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 1024, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 2048, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 16384, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 131072, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 262144, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard2, 5, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard2, 13, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard2, 394, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard2, 400, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard2, 134, true)
+    WEAPON.GIVE_WEAPON_TO_PED(heli_guard2, joaat("weapon_combating_mk2"), 9999, false, false)
+    PED.SET_PED_ACCURACY(heli_guard2,100)
+    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+
+    local heli_guard3 = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
+    PED.SET_PED_INTO_VEHICLE(heli_guard3, heli_sp, 2)
+    PED.SET_PED_KEEP_TASK(heli_guard3, true)
+    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard3, true)
+    PED.SET_PED_MAX_HEALTH(heli_guard3, 1000)
+    ENTITY.SET_ENTITY_HEALTH(heli_guard3, 1000)
+
+    PED.SET_PED_AS_GROUP_MEMBER(heli_guard3, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard3, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard3, true)
+    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard3, 0, 1)
+    PED.SET_PED_COMBAT_ABILITY(heli_guard3, 2)
+    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard3, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 512, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 1024, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 2048, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 16384, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 131072, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 262144, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard3, 5, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard3, 13, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard3, 394, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard3, 400, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard3, 134, true)
+    WEAPON.GIVE_WEAPON_TO_PED(heli_guard3, joaat("weapon_combating_mk2"), 9999, false, false)
+    PED.SET_PED_ACCURACY(heli_guard3,100)
+    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+
+    local heli_guard4 = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
+    PED.SET_PED_INTO_VEHICLE(heli_guard4, heli_sp, 0)
+    PED.SET_PED_KEEP_TASK(heli_guard4, true)
+    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard4, true)
+    PED.SET_PED_MAX_HEALTH(heli_guard4, 1000)
+    ENTITY.SET_ENTITY_HEALTH(heli_guard4, 1000)
+
+    PED.SET_PED_AS_GROUP_MEMBER(heli_guard4, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard4, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard4, true)
+    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard4, 0, 1)
+    PED.SET_PED_COMBAT_ABILITY(heli_guard4, 2)
+    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard4, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 512, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 1024, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 2048, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 16384, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 131072, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 262144, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard4, 5, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard4, 13, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard4, 394, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard4, 400, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guard4, 134, true)
+    WEAPON.GIVE_WEAPON_TO_PED(heli_guard4, joaat("weapon_combating_mk2"), 9999, false, false)
+    PED.SET_PED_ACCURACY(heli_guard4,100)
+    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+
+end)
 
 gentab:add_separator()
 

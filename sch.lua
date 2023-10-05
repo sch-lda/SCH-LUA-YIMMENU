@@ -1,4 +1,4 @@
--- v1.91 -- 
+-- v1.92 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-luaversion = "v1.91"
+luaversion = "v1.92"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -185,6 +185,9 @@ function request_control(entity) --请求控制实体
 end
 
 function npc2bodyguard(peds_func) --将NPC设置为自己的保镖
+    WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_MICROSMG"), 9999, false, true)
+    WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_CARBINERIFLE_MK2"), 9999, false, true)
+
     PED.SET_PED_AS_GROUP_MEMBER(peds_func, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
     PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds_func, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
     PED.SET_PED_NEVER_LEAVES_GROUP(peds_func, true)
@@ -203,10 +206,11 @@ function npc2bodyguard(peds_func) --将NPC设置为自己的保镖
     PED.SET_PED_CONFIG_FLAG(peds_func, 400, true)
     PED.SET_PED_CONFIG_FLAG(peds_func, 134, true)
     PED.SET_PED_SHOOT_RATE(ped, 1000.0)
-    WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("weapon_combating_mk2"), 9999, false, false)
     PED.SET_PED_ACCURACY(peds_func,100)
     TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(peds_func, 100, 67108864)
     ENTITY.SET_ENTITY_HEALTH(peds_func,1000,true)
+    HUD.SET_PED_HAS_AI_BLIP_WITH_COLOUR(peds_func, true, 3)
+    HUD.SET_PED_AI_BLIP_SPRITE(peds_func, 270)
 end
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
@@ -214,7 +218,6 @@ end
 --------------------------------------------------------------------------------------- TEST
 --[[
 gentab:add_button("test01", function()
-
 end)
 ]]
 --------------------------------------------------------------------------------------- TEST
@@ -678,6 +681,10 @@ local fwglb = gentab:add_checkbox("范围烟花") --这只是一个复选框,代
 
 gentab:add_sameline()
 
+local stnfl = gentab:add_checkbox("范围陨石雨") --这只是一个复选框,代码往最后的循环脚本部分找
+
+gentab:add_sameline()
+
 local objectsix1 --注册为全局变量以便后续移除666
 local objectsix2--注册为全局变量以便后续移除666
 local objectsix3--注册为全局变量以便后续移除666
@@ -850,13 +857,10 @@ gentab:add_button("保镖", function()
         local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
         if calcDistance(selfpos, ped_pos) <= 200 and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) == false and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and foundfrd == false then 
-            TASK.CLEAR_PED_TASKS(peds)
-            npc2bodyguard(peds)
+            TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
             pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
             HUD.REMOVE_BLIP(pedblip)
-            newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
-            HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
-            HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
+            npc2bodyguard(peds)
         end
     end
 end)
@@ -1213,10 +1217,18 @@ local heli_sp_table = {}
 local heli_guard_table = {}
 
 gentab:add_button("生成保镖直升机", function()
+    script.run_in_fiber(function (heli_guard_f)
+
     local heli_mod = joaat("valkyrie") --女武神 直升机
     local drv_mod = joaat("s_m_y_blackops_01")
-    request_model(heli_mod)
-    request_model(drv_mod)
+    while not STREAMING.HAS_MODEL_LOADED(heli_mod) do	
+        STREAMING.REQUEST_MODEL(heli_mod)
+        heli_guard_f:yield()
+    end    
+    while not STREAMING.HAS_MODEL_LOADED(drv_mod) do	
+        STREAMING.REQUEST_MODEL(drv_mod)
+        heli_guard_f:yield()
+    end    
     local selfpedPos_sp_heli = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
     selfpedPos_sp_heli.z = selfpedPos_sp_heli.z + math.random(40, 50)
     selfpedPos_sp_heli.x = selfpedPos_sp_heli.x + math.random(-7, 7)
@@ -1232,9 +1244,6 @@ gentab:add_button("生成保镖直升机", function()
     VEHICLE.SET_VEHICLE_ENGINE_ON(heli_sp, true, true, true)
     VEHICLE.SET_HELI_BLADES_SPEED(heli_sp, 1.0)
     VEHICLE.SET_VEHICLE_SEARCHLIGHT(heli_sp, true, true)
-    local heli_blip = HUD.ADD_BLIP_FOR_ENTITY(heli_sp)
-    HUD.SET_BLIP_AS_FRIENDLY(heli_blip, true)
-    HUD.SET_BLIP_AS_SHORT_RANGE(heli_blip,false)
     ENTITY.SET_ENTITY_INVINCIBLE(heli_sp, true)
     ENTITY.SET_ENTITY_MAX_HEALTH(heli_sp, 10000)
     ENTITY.SET_ENTITY_HEALTH(heli_sp, 10000)
@@ -1259,6 +1268,7 @@ gentab:add_button("生成保镖直升机", function()
     TASK.TASK_VEHICLE_FOLLOW(heli_guards[1], heli_sp, PLAYER.PLAYER_PED_ID(), 80, 1, 10, 10)
     PED.SET_PED_KEEP_TASK(heli_guards[1], true)
 end)
+end)
 
 gentab:add_sameline()
 
@@ -1268,6 +1278,48 @@ gentab:add_button("移除保镖直升机", function()
     end
     for _, hst_elm in pairs(heli_sp_table) do
         delete_entity(hst_elm)
+    end
+end)
+
+gentab:add_sameline()
+
+t_guard_table = {}
+
+gentab:add_button("生成保镖编队", function()
+    script.run_in_fiber(function (t_guard_f)
+
+    local guardteam_mod = joaat("CSB_Avon")
+    while not STREAMING.HAS_MODEL_LOADED(guardteam_mod) do	
+        STREAMING.REQUEST_MODEL(guardteam_mod)
+        t_guard_f:yield()
+    end    
+    if gtnum:get_value() == nil or gtnum:get_value() < 1 then
+        gtnum:set_value(5)
+    end
+    for i = 1, gtnum:get_value() do
+        local selfpedPos_sp_heli = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+        selfpedPos_sp_heli.z = selfpedPos_sp_heli.z + math.random(0, 1)
+        selfpedPos_sp_heli.x = selfpedPos_sp_heli.x + math.random(-5, 5)
+        selfpedPos_sp_heli.y = selfpedPos_sp_heli.y + math.random(-5, 5)
+    
+        local t_guard = PED.CREATE_PED(29, guardteam_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
+        PED.SET_PED_KEEP_TASK(t_guard, true)
+        ENTITY.SET_ENTITY_INVINCIBLE(t_guard, true)
+        PED.SET_PED_MAX_HEALTH(t_guard, 1000)
+        ENTITY.SET_ENTITY_HEALTH(t_guard, 1000)
+        npc2bodyguard(t_guard)
+        table.insert(t_guard_table, t_guard)
+    end
+    PED.SET_GROUP_FORMATION(PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()),1)
+
+    end)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("移除保镖编队", function()
+    for _, tgt_ele in pairs(t_guard_table) do
+        delete_entity(tgt_ele)
     end
 end)
 
@@ -2844,6 +2896,11 @@ gentab:add_text("观看镜头FOV")
 gentab:add_sameline()
 spcamfov = gentab:add_input_float("视野(°)")
 spcamfov:set_value(80.0)
+
+gentab:add_text("保镖编队人数") 
+gentab:add_sameline()
+gtnum = gentab:add_input_int("人数")
+gtnum:set_value(5)
 
 gentab:add_separator()
 gentab:add_text("调试") 
@@ -4873,12 +4930,9 @@ script.register_looped("schlua-ectrlservice", function()
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
                 request_control(peds)
-                npc2bodyguard(peds)                
                 pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
                 HUD.REMOVE_BLIP(pedblip)
-                newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
-                HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
-                HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
+                npc2bodyguard(peds)                
             end
         end
     end
@@ -4998,13 +5052,10 @@ script.register_looped("schlua-ectrlservice", function()
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
                 request_control(peds)
-                TASK.CLEAR_PED_TASKS(peds)
-                npc2bodyguard(peds)
                 pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
                 HUD.REMOVE_BLIP(pedblip)
-                newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
-                HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
-                HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
+                TASK.CLEAR_PED_TASKS(peds)
+                npc2bodyguard(peds)
             end
         end
     end
@@ -5275,12 +5326,9 @@ script.register_looped("schlua-ectrlservice", function()
             if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
                 request_control(peds)
                 TASK.CLEAR_PED_TASKS(peds)
-                npc2bodyguard(peds)                
                 pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
                 HUD.REMOVE_BLIP(pedblip)
-                newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
-                HUD.SET_BLIP_AS_FRIENDLY(newblip, true)
-                HUD.SET_BLIP_AS_SHORT_RANGE(newblip,true)
+                npc2bodyguard(peds)                
             end
         end
     end
@@ -5353,7 +5401,7 @@ script.register_looped("schlua-ectrlservice", function()
                 PED.SET_PED_CONFIG_FLAG(peds, 394, true)
                 PED.SET_PED_CONFIG_FLAG(peds, 400, true)
                 PED.SET_PED_CONFIG_FLAG(peds, 134, true)
-                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
+                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("WEAPON_CARBINERIFLE_MK2"), 9999, false, true)
                 PED.SET_PED_ACCURACY(peds,100)
                 TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(peds, 100, 67108864)
                 ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
@@ -5402,12 +5450,21 @@ script.register_looped("schlua-ptfxservice", function()
 
     if  fwglb:is_enabled() then --天空范围烟花
         local tarm = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.52, 0.0)
-
         STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_indep_fireworks")
         while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_indep_fireworks") do script_util:yield() end
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_indep_fireworks")
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_indep_firework_trailburst", tarm.x + math.random(-100, 100), tarm.y + math.random(-100, 100), tarm.z + math.random(10, 30), 180, 0, 0, 1.0, true, true, true)
+        script_util:sleep(100)
+    end
 
+    if  stnfl:is_enabled() then --天空范围陨石雨
+        STREAMING.REQUEST_MODEL(3751297495)
+        local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        coords.z = coords.z + math.random(10, 100)
+        coords.x = coords.x + math.random(-1000, 1000)
+        coords.y = coords.y + math.random(-1000, 1000)
+        local asteroid = OBJECT.CREATE_OBJECT(3751297495, coords.x, coords.y, coords.z, true, false, false)
+        ENTITY.SET_ENTITY_DYNAMIC(asteroid, true)    
         script_util:sleep(100)
     end
 

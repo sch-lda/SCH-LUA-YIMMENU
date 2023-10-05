@@ -1,4 +1,4 @@
--- v1.90 -- 
+-- v1.91 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-luaversion = "v1.90"
+luaversion = "v1.91"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -184,15 +184,53 @@ function request_control(entity) --请求控制实体
 	return NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(entity)
 end
 
+function npc2bodyguard(peds_func) --将NPC设置为自己的保镖
+    PED.SET_PED_AS_GROUP_MEMBER(peds_func, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds_func, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
+    PED.SET_PED_NEVER_LEAVES_GROUP(peds_func, true)
+    PED.SET_CAN_ATTACK_FRIENDLY(peds_func, 0, 1)
+    PED.SET_PED_COMBAT_ABILITY(peds_func, 2)
+    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds_func, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
+    PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 512, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 1024, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 2048, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 16384, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 131072, true)
+    PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 262144, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 5, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 13, true)
+    PED.SET_PED_CONFIG_FLAG(peds_func, 394, true)
+    PED.SET_PED_CONFIG_FLAG(peds_func, 400, true)
+    PED.SET_PED_CONFIG_FLAG(peds_func, 134, true)
+    PED.SET_PED_SHOOT_RATE(ped, 1000.0)
+    WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("weapon_combating_mk2"), 9999, false, false)
+    PED.SET_PED_ACCURACY(peds_func,100)
+    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(peds_func, 100, 67108864)
+    ENTITY.SET_ENTITY_HEALTH(peds_func,1000,true)
+end
+
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- TEST
---[[
-gentab:add_button("清理警察", function()
-    local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
-    MISC.CLEAR_AREA_OF_COPS(selfpos.x,selfpos.y,selfpos.z,1000,0)
+
+gentab:add_button("test01", function()
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.PLAYER_PED_ID())
+    PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 394, true)
+    PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 400, true)
+    PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 134, true)
+    PED.SET_PED_SHOOT_RATE(PLAYER.PLAYER_PED_ID(), 1000.0)
+    PED.SET_CAN_ATTACK_FRIENDLY(PLAYER.PLAYER_PED_ID(), 0, 1)
+    PED.SET_PED_COMBAT_ABILITY(PLAYER.PLAYER_PED_ID(), 2)
+
+PED.SET_PED_ACCURACY(PLAYER.PLAYER_PED_ID(),100)
+PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(PLAYER.PLAYER_PED_ID(), true)
+
+TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+PED.SET_PED_KEEP_TASK(PLAYER.PLAYER_PED_ID(), true)
+
+
 end)
-]]
+
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单
@@ -827,27 +865,7 @@ gentab:add_button("保镖", function()
         local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
         if calcDistance(selfpos, ped_pos) <= 200 and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) == false and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and foundfrd == false then 
             TASK.CLEAR_PED_TASKS(peds)
-            PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-            PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-            PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
-            PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
-            PED.SET_PED_COMBAT_ABILITY(peds, 2)
-            PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-            PED.SET_PED_FLEE_ATTRIBUTES(peds, 512, true)
-            PED.SET_PED_FLEE_ATTRIBUTES(peds, 1024, true)
-            PED.SET_PED_FLEE_ATTRIBUTES(peds, 2048, true)
-            PED.SET_PED_FLEE_ATTRIBUTES(peds, 16384, true)
-            PED.SET_PED_FLEE_ATTRIBUTES(peds, 131072, true)
-            PED.SET_PED_FLEE_ATTRIBUTES(peds, 262144, true)
-            PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
-            PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
-            PED.SET_PED_CONFIG_FLAG(peds, 394, true)
-            PED.SET_PED_CONFIG_FLAG(peds, 400, true)
-            PED.SET_PED_CONFIG_FLAG(peds, 134, true)
-            WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
-            PED.SET_PED_ACCURACY(peds,100)
-            TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
-            ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+            npc2bodyguard(peds)
             pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
             HUD.REMOVE_BLIP(pedblip)
             newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
@@ -1205,20 +1223,28 @@ gentab:add_text("已录入关键NPC:见源代码第199行")
 
 gentab:add_text("实体生成") 
 
+local heli_sp_table = {}
+local heli_guard_table = {}
+
 gentab:add_button("生成保镖直升机", function()
     local heli_mod = joaat("valkyrie") --女武神 直升机
     local drv_mod = joaat("s_m_y_blackops_01")
     request_model(heli_mod)
     request_model(drv_mod)
     local selfpedPos_sp_heli = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
-    selfpedPos_sp_heli.z = selfpedPos_sp_heli.z + 50
+    selfpedPos_sp_heli.z = selfpedPos_sp_heli.z + math.random(40, 50)
+    selfpedPos_sp_heli.x = selfpedPos_sp_heli.x + math.random(-7, 7)
+    selfpedPos_sp_heli.y = selfpedPos_sp_heli.y + math.random(-7, 7)
+
     local heli_sp = VEHICLE.CREATE_VEHICLE(heli_mod, selfpedPos_sp_heli.x,selfpedPos_sp_heli.y,selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z , true, true, true)
+    table.insert(heli_sp_table, heli_sp)
     vehNetId = NETWORK.VEH_TO_NET(heli_sp)
     if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(NETWORK.NET_TO_PED(vehNetId)) then
     NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(vehNetId, true)
     end
     NETWORK.SET_NETWORK_ID_ALWAYS_EXISTS_FOR_PLAYER(vehNetId, PLAYER.PLAYER_ID(), true)
     VEHICLE.SET_VEHICLE_ENGINE_ON(heli_sp, true, true, true)
+    VEHICLE.SET_HELI_BLADES_SPEED(heli_sp, 1.0)
     VEHICLE.SET_VEHICLE_SEARCHLIGHT(heli_sp, true, true)
     local heli_blip = HUD.ADD_BLIP_FOR_ENTITY(heli_sp)
     HUD.SET_BLIP_AS_FRIENDLY(heli_blip, true)
@@ -1226,127 +1252,37 @@ gentab:add_button("生成保镖直升机", function()
     ENTITY.SET_ENTITY_INVINCIBLE(heli_sp, true)
     ENTITY.SET_ENTITY_MAX_HEALTH(heli_sp, 10000)
     ENTITY.SET_ENTITY_HEALTH(heli_sp, 10000)
-    local heli_guard = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
-    PED.SET_PED_INTO_VEHICLE(heli_guard, heli_sp, -1)
-    PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(heli_guard, true)
-    TASK.TASK_VEHICLE_FOLLOW(heli_guard, heli_sp, PLAYER.PLAYER_PED_ID(), 80, 1, 10, 10)
-    PED.SET_PED_KEEP_TASK(heli_guard, true)
-    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard, true)
-    PED.SET_PED_MAX_HEALTH(heli_guard, 1000)
-    ENTITY.SET_ENTITY_HEALTH(heli_guard, 1000)
 
-    PED.SET_PED_AS_GROUP_MEMBER(heli_guard, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard, true)
-    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard, 0, 1)
-    PED.SET_PED_COMBAT_ABILITY(heli_guard, 2)
-    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 512, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 1024, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 2048, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 16384, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 131072, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard, 262144, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard, 5, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard, 13, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard, 394, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard, 400, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard, 134, true)
-    WEAPON.GIVE_WEAPON_TO_PED(heli_guard, joaat("weapon_combating_mk2"), 9999, false, false)
-    PED.SET_PED_ACCURACY(heli_guard,100)
-    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(heli_guard, 100, 67108864)
+    local heli_guards = {}
+    for i = 1, 4 do
+        local heli_guard = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
+        PED.SET_PED_KEEP_TASK(heli_guard, true)
+        ENTITY.SET_ENTITY_INVINCIBLE(heli_guard, true)
+        PED.SET_PED_MAX_HEALTH(heli_guard, 1000)
+        ENTITY.SET_ENTITY_HEALTH(heli_guard, 1000)
+        npc2bodyguard(heli_guard)
+        table.insert(heli_guard_table, heli_guard)
+        heli_guards[i] = heli_guard
+    end
 
-    local heli_guard2 = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
-    PED.SET_PED_INTO_VEHICLE(heli_guard2, heli_sp, 1)
-    PED.SET_PED_KEEP_TASK(heli_guard2, true)
-    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard2, true)
-    PED.SET_PED_MAX_HEALTH(heli_guard2, 1000)
-    ENTITY.SET_ENTITY_HEALTH(heli_guard2, 1000)
+    PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(heli_guards[1], true)
+    PED.SET_PED_INTO_VEHICLE(heli_guards[4], heli_sp, 0)
+    PED.SET_PED_INTO_VEHICLE(heli_guards[3], heli_sp, 2)
+    PED.SET_PED_INTO_VEHICLE(heli_guards[2], heli_sp, 1)
+    PED.SET_PED_INTO_VEHICLE(heli_guards[1], heli_sp, -1)
+    TASK.TASK_VEHICLE_FOLLOW(heli_guards[1], heli_sp, PLAYER.PLAYER_PED_ID(), 80, 1, 10, 10)
+    PED.SET_PED_KEEP_TASK(heli_guards[1], true)
+end)
 
-    PED.SET_PED_AS_GROUP_MEMBER(heli_guard2, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard2, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard2, true)
-    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard2, 0, 1)
-    PED.SET_PED_COMBAT_ABILITY(heli_guard2, 2)
-    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard2, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 512, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 1024, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 2048, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 16384, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 131072, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard2, 262144, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard2, 5, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard2, 13, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard2, 394, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard2, 400, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard2, 134, true)
-    WEAPON.GIVE_WEAPON_TO_PED(heli_guard2, joaat("weapon_combating_mk2"), 9999, false, false)
-    PED.SET_PED_ACCURACY(heli_guard2,100)
-    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(heli_guard2, 100, 67108864)
+gentab:add_sameline()
 
-    local heli_guard3 = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
-    PED.SET_PED_INTO_VEHICLE(heli_guard3, heli_sp, 2)
-    PED.SET_PED_KEEP_TASK(heli_guard3, true)
-    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard3, true)
-    PED.SET_PED_MAX_HEALTH(heli_guard3, 1000)
-    ENTITY.SET_ENTITY_HEALTH(heli_guard3, 1000)
-
-    PED.SET_PED_AS_GROUP_MEMBER(heli_guard3, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard3, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard3, true)
-    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard3, 0, 1)
-    PED.SET_PED_COMBAT_ABILITY(heli_guard3, 2)
-    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard3, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 512, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 1024, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 2048, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 16384, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 131072, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard3, 262144, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard3, 5, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard3, 13, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard3, 394, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard3, 400, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard3, 134, true)
-    WEAPON.GIVE_WEAPON_TO_PED(heli_guard3, joaat("weapon_combating_mk2"), 9999, false, false)
-    PED.SET_PED_ACCURACY(heli_guard3,100)
-    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(heli_guard3, 100, 67108864)
-
-    local heli_guard4 = PED.CREATE_PED(29, drv_mod, selfpedPos_sp_heli.x, selfpedPos_sp_heli.y, selfpedPos_sp_heli.z, CAM.GET_GAMEPLAY_CAM_ROT(0).z, true, true)
-    PED.SET_PED_INTO_VEHICLE(heli_guard4, heli_sp, 0)
-    PED.SET_PED_KEEP_TASK(heli_guard4, true)
-    ENTITY.SET_ENTITY_INVINCIBLE(heli_guard4, true)
-    PED.SET_PED_MAX_HEALTH(heli_guard4, 1000)
-    ENTITY.SET_ENTITY_HEALTH(heli_guard4, 1000)
-
-    PED.SET_PED_AS_GROUP_MEMBER(heli_guard4, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_RELATIONSHIP_GROUP_HASH(heli_guard4, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-    PED.SET_PED_NEVER_LEAVES_GROUP(heli_guard4, true)
-    PED.SET_CAN_ATTACK_FRIENDLY(heli_guard4, 0, 1)
-    PED.SET_PED_COMBAT_ABILITY(heli_guard4, 2)
-    PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(heli_guard4, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 512, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 1024, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 2048, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 16384, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 131072, true)
-    PED.SET_PED_FLEE_ATTRIBUTES(heli_guard4, 262144, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard4, 5, true)
-    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guard4, 13, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard4, 394, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard4, 400, true)
-    PED.SET_PED_CONFIG_FLAG(heli_guard4, 134, true)
-    WEAPON.GIVE_WEAPON_TO_PED(heli_guard4, joaat("weapon_combating_mk2"), 9999, false, false)
-    PED.SET_PED_ACCURACY(heli_guard4,100)
-    TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(heli_guard4, 100, 67108864)
-
-    PED.SET_PED_INTO_VEHICLE(heli_guard4, heli_sp, 0)
-    PED.SET_PED_INTO_VEHICLE(heli_guard3, heli_sp, 2)
-    PED.SET_PED_INTO_VEHICLE(heli_guard2, heli_sp, 1)
-    PED.SET_PED_INTO_VEHICLE(heli_guard, heli_sp, -1)
-    --TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.PLAYER_PED_ID())
-    TASK.TASK_VEHICLE_FOLLOW(heli_guard, heli_sp, PLAYER.PLAYER_PED_ID(), 80, 1, 10, 10)
-    PED.SET_PED_KEEP_TASK(heli_guard, true)
+gentab:add_button("移除保镖直升机", function()
+    for _, hgt_ele in pairs(heli_guard_table) do
+        delete_entity(hgt_ele)
+    end
+    for _, hst_elm in pairs(heli_sp_table) do
+        delete_entity(hst_elm)
+    end
 end)
 
 gentab:add_separator()
@@ -3037,7 +2973,7 @@ end)
 local emmode = gentab:add_checkbox("紧急模式-被大量刷模型导致游戏卡顿明显时同时按下Ctrl+S+D快速逃离现场并暂停网络同步(不需离开战局)-必要时配合循环清除实体功能使用") --只是一个开关，代码往后面找
 --emmode:set_enabled(1) --开启上方创建的复选框，删除此行代码后紧急模式1不会默认监听快捷键
 
-local emmode2 = gentab:add_checkbox("紧急模式2-按Ctrl+A+S快速逃离到新战局") --只是一个开关，代码往后面找
+local emmode2 = gentab:add_checkbox("紧急模式2-按Ctrl+A+D快速逃离到新战局") --只是一个开关，代码往后面找
 emmode2:set_enabled(1) --开启上方创建的复选框，删除此行代码后紧急模式2不会默认监听快捷键
 
 gentab:add_sameline()
@@ -3221,12 +3157,12 @@ loopa31 = 0  --仅渲染高清
 local selfposen
 script.register_looped("schlua-emodedeamon", function() --紧急模式1、2
     if  emmode2:is_enabled() then
-        if PAD.IS_CONTROL_PRESSED(0, 33) and PAD.IS_CONTROL_PRESSED(0, 34) and PAD.IS_CONTROL_PRESSED(0, 36) then  
-        --PAD.IS_CONTROL_PRESSED(0, 33)表示按下键码为33的键时接收一个信号，上面一行表示同时按 33、34、36 时激活这个功能
-        --https://docs.fivem.net/docs/game-references/controls/ 如需自定义，到这个网站查询控制33这样的数字对应的是键盘或手柄上的什么物理按键，替换掉对应的数字即可
+        if PAD.IS_CONTROL_PRESSED(0, 35) and PAD.IS_CONTROL_PRESSED(0, 34) and PAD.IS_CONTROL_PRESSED(0, 36) then  
+        --PAD.IS_CONTROL_PRESSED(0, 35)表示按下键码为33的键时接收一个信号，上面一行表示同时按 35、34、36 时激活这个功能
+        --https://docs.fivem.net/docs/game-references/controls/ 如需自定义，到这个网站查询控制35这样的数字对应的是键盘或手柄上的什么物理按键，替换掉对应的数字即可
             command.call("joinsession", { 1 })
-            log.info("走为上策,已创建新战局")
-            gui.show_message("走为上策", "已创建新战局")
+            log.info("sch lua紧急模式2,已创建新战局")
+            gui.show_message("sch lua紧急模式2","已创建新战局")
         end
     end
 
@@ -4951,28 +4887,7 @@ script.register_looped("schlua-ectrlservice", function()
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             if PED.IS_PED_FACING_PED(peds, PLAYER.PLAYER_PED_ID(), 2) and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(peds, PLAYER.PLAYER_PED_ID(), 17) and calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
                 request_control(peds)
-                TASK.CLEAR_PED_TASKS(peds)
-                PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
-                PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
-                PED.SET_PED_COMBAT_ABILITY(peds, 2)
-                PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 512, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 1024, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 2048, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 16384, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 131072, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 262144, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 394, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 400, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 134, true)
-                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
-                PED.SET_PED_ACCURACY(peds,100)
-                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
-                ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+                npc2bodyguard(peds)                
                 pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
                 HUD.REMOVE_BLIP(pedblip)
                 newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
@@ -5098,27 +5013,7 @@ script.register_looped("schlua-ectrlservice", function()
             if calcDistance(selfpos, ped_pos) <= npcaimprange:get_value()  and PED.GET_PED_CONFIG_FLAG(peds, 78, true) and peds ~= PLAYER.PLAYER_PED_ID() and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
                 request_control(peds)
                 TASK.CLEAR_PED_TASKS(peds)
-                PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
-                PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
-                PED.SET_PED_COMBAT_ABILITY(peds, 2)
-                PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 512, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 1024, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 2048, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 16384, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 131072, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 262144, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 394, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 400, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 134, true)
-                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
-                PED.SET_PED_ACCURACY(peds,100)
-                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
-                ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+                npc2bodyguard(peds)
                 pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
                 HUD.REMOVE_BLIP(pedblip)
                 newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
@@ -5394,27 +5289,7 @@ script.register_looped("schlua-ectrlservice", function()
             if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
                 request_control(peds)
                 TASK.CLEAR_PED_TASKS(peds)
-                PED.SET_PED_AS_GROUP_MEMBER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
-                PED.SET_PED_NEVER_LEAVES_GROUP(peds, true)
-                PED.SET_CAN_ATTACK_FRIENDLY(peds, 0, 1)
-                PED.SET_PED_COMBAT_ABILITY(peds, 2)
-                PED.SET_PED_CAN_TELEPORT_TO_GROUP_LEADER(peds, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()), true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 512, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 1024, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 2048, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 16384, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 131072, true)
-                PED.SET_PED_FLEE_ATTRIBUTES(peds, 262144, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 5, true)
-                PED.SET_PED_COMBAT_ATTRIBUTES(peds, 13, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 394, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 400, true)
-                PED.SET_PED_CONFIG_FLAG(peds, 134, true)
-                WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
-                PED.SET_PED_ACCURACY(peds,100)
-                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
-                ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
+                npc2bodyguard(peds)                
                 pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
                 HUD.REMOVE_BLIP(pedblip)
                 newblip = HUD.ADD_BLIP_FOR_ENTITY(peds)
@@ -5494,7 +5369,7 @@ script.register_looped("schlua-ectrlservice", function()
                 PED.SET_PED_CONFIG_FLAG(peds, 134, true)
                 WEAPON.GIVE_WEAPON_TO_PED(peds, joaat("weapon_combating_mk2"), 9999, false, false)
                 PED.SET_PED_ACCURACY(peds,100)
-                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
+                TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(peds, 100, 67108864)
                 ENTITY.SET_ENTITY_HEALTH(peds,1000,true)
                 PED.RESURRECT_PED(peds)
             end

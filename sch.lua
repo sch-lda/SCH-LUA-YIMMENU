@@ -212,25 +212,11 @@ end
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- TEST
-
+--[[
 gentab:add_button("test01", function()
-    TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.PLAYER_PED_ID())
-    PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 394, true)
-    PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 400, true)
-    PED.SET_PED_CONFIG_FLAG(PLAYER.PLAYER_PED_ID(), 134, true)
-    PED.SET_PED_SHOOT_RATE(PLAYER.PLAYER_PED_ID(), 1000.0)
-    PED.SET_CAN_ATTACK_FRIENDLY(PLAYER.PLAYER_PED_ID(), 0, 1)
-    PED.SET_PED_COMBAT_ABILITY(PLAYER.PLAYER_PED_ID(), 2)
-
-PED.SET_PED_ACCURACY(PLAYER.PLAYER_PED_ID(),100)
-PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(PLAYER.PLAYER_PED_ID(), true)
-
-TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(PLAYER.PLAYER_PED_ID(), 100, 67108864)
-PED.SET_PED_KEEP_TASK(PLAYER.PLAYER_PED_ID(), true)
-
 
 end)
-
+]]
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单

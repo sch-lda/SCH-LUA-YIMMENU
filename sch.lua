@@ -1,4 +1,4 @@
--- v1.92 -- 
+-- v2.01 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-luaversion = "v1.92"
+luaversion = "v2.01"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -49,6 +49,34 @@ verchka1 = 0
 autoresply = 0
 
 gentab = gui.add_tab("sch-lua-Alpha-"..luaversion)
+local LuaTablesTab = gentab:add_tab("++表")
+
+local EntityTab = LuaTablesTab:add_tab("+游戏实体表")
+
+local PlayerTableTab = EntityTab:add_tab("-玩家表")
+PlayerTableTab:add_button("写出玩家表", function()
+    writeplayertable()
+end)
+PlayerTableTab:add_text("玩家表是为玩家瞄准反应服务的")
+local NPCTableTab = EntityTab:add_tab("-NPC表")
+NPCTableTab:add_button("写出NPC表", function()
+    writepedtable()
+end)
+local VehicleTableTab = EntityTab:add_tab("-载具表")
+VehicleTableTab:add_button("写出载具表", function()
+    writevehtable()
+end)
+
+local LuaownedTab = LuaTablesTab:add_tab("+lua内部表")
+local HeliTableTab = LuaownedTab:add_tab("-保镖直升机表")
+local NPCguardTableTab = LuaownedTab:add_tab("-保镖NPC表")
+
+HeliTableTab:add_button("写出保镖直升机表", function()
+    writebodyguardhelitable()
+end)
+NPCguardTableTab:add_button("写出保镖NPC表", function()
+    writebodyguardtable()
+end)
 
 function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
     local dx = pos.x - tarpos.x
@@ -184,10 +212,11 @@ function request_control(entity) --请求控制实体
 	return NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(entity)
 end
 
+allbodyguardtable = {} --保镖NPC表
+
 function npc2bodyguard(peds_func) --将NPC设置为自己的保镖
     WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_MICROSMG"), 9999, false, true)
     WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_CARBINERIFLE_MK2"), 9999, false, true)
-
     PED.SET_PED_AS_GROUP_MEMBER(peds_func, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
     PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds_func, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
     PED.SET_PED_NEVER_LEAVES_GROUP(peds_func, true)
@@ -211,6 +240,228 @@ function npc2bodyguard(peds_func) --将NPC设置为自己的保镖
     ENTITY.SET_ENTITY_HEALTH(peds_func,1000,true)
     HUD.SET_PED_HAS_AI_BLIP_WITH_COLOUR(peds_func, true, 3)
     HUD.SET_PED_AI_BLIP_SPRITE(peds_func, 270)
+    table.insert(allbodyguardtable,peds_func)            
+end
+
+function writebodyguardtable()
+    NPCguardTableTab:clear()
+    NPCguardTableTab:add_button("刷新保镖NPC表", function()
+        writebodyguardtable()
+    end)
+    NPCguardTableTab:add_sameline()
+    NPCguardTableTab:add_button("清空保镖NPC表", function()
+        allbodyguardtable = {}
+    end)
+    local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+
+    local npcguard_list_index = 1
+    for _, guard_ped_id in pairs(allbodyguardtable) do
+        NPCguardTableTab:add_text(guard_ped_id)
+        NPCguardTableTab:add_sameline()
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(guard_ped_id)
+        local npcdist = calcDistance(selfpos,ped_pos)
+        formattednpcDistance = string.format("%.1f", npcdist)
+        local npc_t_health = ENTITY.GET_ENTITY_HEALTH(guard_ped_id)
+        NPCguardTableTab:add_text(guard_ped_id.." 距离: "..formattednpcDistance.." 血量: "..npc_t_health)
+        NPCguardTableTab:add_sameline()
+        NPCguardTableTab:add_button("传送到"..npcguard_list_index, function()
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), ENTITY.GET_ENTITY_COORDS(guard_ped_id).x, ENTITY.GET_ENTITY_COORDS(guard_ped_id).y, ENTITY.GET_ENTITY_COORDS(guard_ped_id).z)
+        end)
+        NPCguardTableTab:add_sameline()
+        NPCguardTableTab:add_button("删除"..npcguard_list_index, function()
+            request_control(guard_ped_id)
+            delete_entity(guard_ped_id)        
+        end)
+        NPCguardTableTab:add_sameline()
+        NPCguardTableTab:add_button("治疗"..npcguard_list_index, function()
+            request_control(guard_ped_id)
+            ENTITY.SET_ENTITY_HEALTH(guard_ped_id,1000,true)
+        end)
+        NPCguardTableTab:add_sameline()
+        NPCguardTableTab:add_button("带来"..npcguard_list_index, function()
+            request_control(guard_ped_id)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(guard_ped_id, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()).x, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()).y, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()).z, false, false, false)
+        end)
+        npcguard_list_index = npcguard_list_index + 1
+    end
+end
+
+function writebodyguardhelitable()
+    HeliTableTab:clear()
+    HeliTableTab:add_button("刷新保镖直升机表", function()
+        writebodyguardhelitable()
+    end)
+    HeliTableTab:add_sameline()
+    HeliTableTab:add_button("清空保镖直升机表", function()
+        heli_sp_table = {}
+    end)
+    local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+    local npcguardheli_list_index = 1
+    for _, guard_veh_hd in pairs(heli_sp_table) do
+        HeliTableTab:add_text(guard_veh_hd)
+        HeliTableTab:add_sameline()
+        local heli_pos = ENTITY.GET_ENTITY_COORDS(guard_veh_hd)
+        local npcdist = calcDistance(selfpos,heli_pos)
+        formattednpcDistance = string.format("%.1f", npcdist)
+        HeliTableTab:add_text(guard_veh_hd.." 距离: "..formattednpcDistance)
+        HeliTableTab:add_sameline()
+        HeliTableTab:add_button("进入"..npcguardheli_list_index, function()
+            if not VEHICLE.IS_VEHICLE_SEAT_FREE(guarddrvped, -1, 0) then
+                guarddrvped = VEHICLE.GET_PED_IN_VEHICLE_SEAT(guard_veh_hd, -1, 0)
+                TASK.CLEAR_PED_TASKS_IMMEDIATELY(guarddrvped)    
+            end
+            PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), guard_veh_hd, -1)
+        end)
+        HeliTableTab:add_sameline()
+        HeliTableTab:add_button("删除"..npcguardheli_list_index, function()
+            request_control(guard_veh_hd)
+            delete_entity(guard_veh_hd)        
+        end)
+        HeliTableTab:add_sameline()
+        HeliTableTab:add_button("带来"..npcguardheli_list_index, function()
+            request_control(guard_veh_hd)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(guard_veh_hd, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()).x, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()).y, ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()).z + 20, false, false, false)
+        end)
+        npcguardheli_list_index = npcguardheli_list_index + 1
+    end
+end
+
+function createplayertable()  --获取当前玩家表，由于yimmenu没有像stand那样的API，只能自己模仿一个，这是玩家瞄准自动反击的基础
+    player_Index_table = {}
+    for i = 0, 32 do
+        if PLAYER.GET_PLAYER_PED(i) ~= 0 then
+            table.insert(player_Index_table,i)            
+        end
+    end
+end
+
+function writeplayertable() 
+    PlayerTableTab:clear()
+    PlayerTableTab:add_button("刷新玩家表", function()
+        writeplayertable()
+    end)
+    PlayerTableTab:add_text("玩家表是为玩家瞄准反应服务的")
+
+    createplayertable()
+    for _, sg_player_id in pairs(player_Index_table) do
+        PlayerTableTab:add_text(sg_player_id.." "..PLAYER.GET_PLAYER_NAME(sg_player_id))
+        PlayerTableTab:add_sameline()
+        PlayerTableTab:add_button("Place holder"..sg_player_id, function()
+        end)
+    end
+end
+
+function createpedtable()
+    ped_handle_table = {}
+    local pedtable = entities.get_all_peds_as_handles()
+    for _, peds in pairs(pedtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+        if calcDistance(selfpos, ped_pos) <= 200 and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) == false and ENTITY.GET_ENTITY_HEALTH(peds) > 0 then 
+            table.insert(ped_handle_table,peds)            
+        end
+    end
+end
+
+function writepedtable()
+    NPCTableTab:clear()
+    NPCTableTab:add_button("刷新NPC表", function()
+        writepedtable()
+    end)
+    createpedtable()
+    local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+    local ped_list_index = 1
+    for _, ped_id in pairs(ped_handle_table) do
+        local ped_pos = ENTITY.GET_ENTITY_COORDS(ped_id)
+        local npcdist = calcDistance(selfpos,ped_pos)
+        formattednpcDistance = string.format("%.1f", npcdist)
+        local npcblipsprite = HUD.GET_BLIP_SPRITE(HUD.GET_BLIP_FROM_ENTITY(ped_id))
+        local npcblipcolor = HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(ped_id))
+        local npc_t_health = ENTITY.GET_ENTITY_HEALTH(ped_id)
+        NPCTableTab:add_text(ped_id.." 距离: "..formattednpcDistance.." Blip: "..npcblipsprite.." Color: "..npcblipcolor.." 血量: "..npc_t_health)
+        NPCTableTab:add_sameline()
+        NPCTableTab:add_button("传送到"..ped_list_index, function()
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), ENTITY.GET_ENTITY_COORDS(ped_id).x, ENTITY.GET_ENTITY_COORDS(ped_id).y, ENTITY.GET_ENTITY_COORDS(ped_id).z)
+        end)
+        NPCTableTab:add_sameline()
+        NPCTableTab:add_button("删除"..ped_list_index, function()
+            request_control(ped_id)
+            delete_entity(ped_id)        
+        end)
+        NPCTableTab:add_sameline()
+        NPCTableTab:add_button("治疗"..ped_list_index, function()
+            request_control(ped_id)
+            ENTITY.SET_ENTITY_HEALTH(ped_id,1000,true)
+        end)
+        ped_list_index = ped_list_index + 1
+    end
+end
+
+function createvehtable()
+    veh_handle_table = {}
+    local vehtable = entities.get_all_vehicles_as_handles()
+    for _, vehs in pairs(vehtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local veh_pos = ENTITY.GET_ENTITY_COORDS(vehs)
+        if calcDistance(selfpos, veh_pos) <= npcctrlr:get_value() then 
+            table.insert(veh_handle_table,vehs)            
+        end
+    end
+end
+
+function writevehtable()
+    VehicleTableTab:clear()
+    VehicleTableTab:add_button("刷新载具表", function()
+        writevehtable()
+    end)
+    createvehtable()
+    local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+    local Veh_list_index = 1
+    for _, t_veh_hd in pairs(veh_handle_table) do
+        local veh_pos = ENTITY.GET_ENTITY_COORDS(t_veh_hd)
+        local vehdist = calcDistance(selfpos,veh_pos)
+        formattedvehDistance = string.format("%.1f", vehdist)
+        local vehblipsprite = HUD.GET_BLIP_SPRITE(HUD.GET_BLIP_FROM_ENTITY(t_veh_hd))
+        local vehblipcolor = HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(t_veh_hd))
+        local veh_t_health = ENTITY.GET_ENTITY_HEALTH(t_veh_hd)
+        local veh_mod_name = VEHICLE.GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(ENTITY.GET_ENTITY_MODEL(t_veh_hd))
+        local veh_disp_name = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION(veh_mod_name)
+        VehicleTableTab:add_text("Handle:"..t_veh_hd.." 模型:"..veh_mod_name.." 名称:"..veh_disp_name.." 距离:"..formattedvehDistance.." Blip:"..vehblipsprite.." Color:"..vehblipcolor.." 血量:"..veh_t_health)
+        VehicleTableTab:add_sameline()
+        VehicleTableTab:add_button("删除"..Veh_list_index, function()
+            request_control(t_veh_hd)
+            delete_entity(t_veh_hd)        
+        end)
+        VehicleTableTab:add_sameline()
+        VehicleTableTab:add_button("进入"..Veh_list_index, function()
+            request_control(t_veh_hd)
+            PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), t_veh_hd, -1)
+        end)
+        VehicleTableTab:add_sameline()
+        VehicleTableTab:add_button("破坏引擎"..Veh_list_index, function()
+            request_control(t_veh_hd)
+            VEHICLE.SET_VEHICLE_ENGINE_HEALTH(t_veh_hd, -4000)
+        end)
+        VehicleTableTab:add_sameline()
+        VehicleTableTab:add_button("抛出"..Veh_list_index, function()
+            request_control(t_veh_hd)
+            ENTITY.APPLY_FORCE_TO_ENTITY(t_veh_hd, 1, math.random(0, 3), math.random(0, 3), math.random(-10, 10), 0.0, 0.0, 0.0, 0, true, false, true, false, true)
+        end)
+        Veh_list_index = Veh_list_index + 1
+    end
+end
+
+plyaimkarma = {}
+
+function Is_Player_Aimming_Me()
+    for _, playerPid in pairs(player_Index_table) do
+        if PLAYER.IS_PLAYER_TARGETTING_ENTITY(playerPid, PLAYER.PLAYER_PED_ID()) or PLAYER.IS_PLAYER_FREE_AIMING_AT_ENTITY(playerPid, PLAYER.PLAYER_PED_ID()) then
+            plyaimkarma = {karmaped = PLAYER.GET_PLAYER_PED(playerPid), karmaplyindex = playerPid}
+            return true
+        end
+    end
+    plyaimkarma = nil
+    return false
 end
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
@@ -218,8 +469,10 @@ end
 --------------------------------------------------------------------------------------- TEST
 --[[
 gentab:add_button("test01", function()
+command.call("multikick", {4})
 end)
 ]]
+
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单
@@ -262,7 +515,7 @@ joaat("A_C_Chop_02"),
 
 --------------------------------------------------------------------------------------- Lua管理器页面
 
-gentab:add_text("最低分辨率要求:1920X1080.要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部") 
+gentab:add_text("最低分辨率要求:1920X1080.要使用玩家功能,请在yim玩家列表选中一个玩家并翻到玩家页面底部.玩家瞄准反击从子菜单 表-游戏实体表 进入") 
 
 gentab:add_text("任务功能") 
 
@@ -1213,8 +1466,8 @@ gentab:add_text("已录入关键NPC:见源代码第199行")
 
 gentab:add_text("实体生成") 
 
-local heli_sp_table = {}
-local heli_guard_table = {}
+heli_sp_table = {}
+heli_guard_table = {}
 
 gentab:add_button("生成保镖直升机", function()
     script.run_in_fiber(function (heli_guard_f)
@@ -1279,6 +1532,7 @@ gentab:add_button("移除保镖直升机", function()
     for _, hst_elm in pairs(heli_sp_table) do
         delete_entity(hst_elm)
     end
+    heli_sp_table = {}
 end)
 
 gentab:add_sameline()
@@ -3161,6 +3415,37 @@ gui.get_tab(""):add_button("生成ptfx", function()
     end)
 end)
 
+--------------------------------------------------------------------------------------- 实体表
+EntityTab:add_text("实体表功能将按照设定的实体控制范围获取相应的实体写入lua table,并呈现在GUI中,便于开发者测试实体控制功能")
+
+EntityTab:add_button("写出玩家表", function()
+    writeplayertable()
+end)
+
+EntityTab:add_sameline()
+
+EntityTab:add_button("写出NPC表", function()
+    writepedtable()
+end)
+
+EntityTab:add_sameline()
+
+EntityTab:add_button("写出载具表", function()
+    writevehtable()
+end)
+
+EntityTab:add_sameline()
+
+tableautorf = EntityTab:add_checkbox("获取玩家表并自动刷新(玩家瞄准反击的运行基础)")
+EntityTab:add_text("玩家瞄准反应")
+plyaimkarma1 = EntityTab:add_checkbox("射击f") --这只是一个复选框,代码往最后的循环脚本部分找
+EntityTab:add_sameline()
+plyaimkarma2 = EntityTab:add_checkbox("爆炸f") --这只是一个复选框,代码往最后的循环脚本部分找
+EntityTab:add_sameline()
+plyaimkarma3 = EntityTab:add_checkbox("电击f") --这只是一个复选框,代码往最后的循环脚本部分找
+EntityTab:add_sameline()
+plyaimkarma4 = EntityTab:add_checkbox("踢出f") --这只是一个复选框,代码往最后的循环脚本部分找
+
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 --存放一些变量，阻止无限循环，间接实现 checkbox 的 on_enable() 和 on_disable()
 
@@ -3197,6 +3482,61 @@ loopa30 = 0  --紧急模式3
 loopa31 = 0  --仅渲染高清
 
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
+script.register_looped("schlua-luatableautorefresh", function() 
+    if  tableautorf:is_enabled() then
+        writeplayertable()
+    end
+end)
+
+script.register_looped("schlua-aimkarmaservice", function() 
+    if  plyaimkarma1:is_enabled() then  --玩家瞄准自动反击-射击
+        if not tableautorf:is_enabled() then
+            tableautorf:set_enabled(1)
+            gui.show_error("未开启自动刷新玩家表","已自动开启")
+        else
+            if Is_Player_Aimming_Me() and plyaimkarma ~= nil then
+                local pos = ENTITY.GET_ENTITY_COORDS(plyaimkarma.karmaped)
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z, pos.x, pos.y, pos.z + 0.1, 100, true, 100416529, PLAYER.PLAYER_PED_ID(), true, false, 100.0)
+            end    
+        end
+    end
+
+    if  plyaimkarma2:is_enabled() then--玩家瞄准自动反击-爆炸
+        if not tableautorf:is_enabled() then
+            tableautorf:set_enabled(1)
+            gui.show_error("未开启自动刷新玩家表","已自动开启")
+        else
+            if Is_Player_Aimming_Me() and plyaimkarma ~= nil then
+                local pos = ENTITY.GET_ENTITY_COORDS(plyaimkarma.karmaped)
+                FIRE.ADD_EXPLOSION(pos.x, pos.y, pos.z, 1, 1, true, true, 1, false)
+            end    
+        end
+    end
+    
+    if  plyaimkarma3:is_enabled() then--玩家瞄准自动反击-电击
+        if not tableautorf:is_enabled() then
+            tableautorf:set_enabled(1)
+            gui.show_error("未开启自动刷新玩家表","已自动开启")
+        else
+            if Is_Player_Aimming_Me() and plyaimkarma ~= nil then
+                local pos = ENTITY.GET_ENTITY_COORDS(plyaimkarma.karmaped)
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 10, true, joaat("weapon_stungun"), false, false, true, 1.0)
+            end    
+        end
+    end
+        
+    if  plyaimkarma4:is_enabled() then--玩家瞄准自动反击-踢出
+        if not tableautorf:is_enabled() then
+            tableautorf:set_enabled(1)
+            gui.show_error("未开启自动刷新玩家表","已自动开启")
+        else
+            if Is_Player_Aimming_Me() and plyaimkarma ~= nil then
+                command.call("multikick", {plyaimkarma.karmaplyindex})
+            end    
+        end
+    end
+end)
+
 local selfposen
 script.register_looped("schlua-emodedeamon", function() --紧急模式1、2
     if  emmode2:is_enabled() then

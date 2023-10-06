@@ -28,7 +28,9 @@ This Github Repo is experimental and only kept as a backup archive. There is no 
 烟花 Firework \
 飞天扫帚 Flying Broom \
 恶灵骑士 No clue how to translate \
-火焰翅膀 Fire Wing 
+火焰翅膀 Fire Wing \
+被yim本体移除的分开水体 Part water (Removed by yimmenu) \
+陨石雨 Meteor rain
 ### 4.实体控制 Entity Control
 载具力场 Vehicle force field \
 NPC批量控制 NPC control \
@@ -47,8 +49,11 @@ MPC瞄准惩罚(摔倒/杀死/中断/上天/燃烧...) NPC aiming reaction(ragdo
 ### 8.调试 Debug 
 自定义物体和粒子效果生成 Create object、PTFX with name\
 取消同步(龟壳) Block sync with others\
-清理附近粒子效果和物体表面痕迹 Clear PTFX in range
-### 9.玩家选项 PlayerMenu
+清理附近粒子效果和物体表面痕迹 Clear PTFX in range \
+### 9.子菜单(表) Submenu(table)
+列出实体表、lua产生的表(调试) print entity table in GUI (Debug)\
+玩家瞄准反击 Player aiming karma
+### 10.玩家选项 PlayerMenu
 带有粒子效果的传送到玩家 TP to player with PTFX \
 载具无敌 Vehicle Godmode \
 修理载具 Repair Vehicle \
@@ -60,10 +65,13 @@ RScript (ZH_CN) https://github.com/TCRoid/YimMenu-Lua-RScript \
 Alestarov_Menu (EN) https://github.com/Alestarov/YimMenu-lua-script-Alestarov_Menu \
 YIMMENU官方Lua仓库 (EN) YIMMENU Official Lua Repo https://github.com/YimMenu-Lua
 ## 截图 screenshots
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/8419fa34-8012-49e1-9df4-eb5fc396e97f)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/153cc20f-5643-48b9-b360-7002aaef572c)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/747177bf-3caa-4ffe-9850-1bd345ad9a70)
-![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/6fa7d55c-15c3-4fcb-9068-3826536210e6)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/13799c8b-1b06-4cde-83fd-21cb29711eea)
+![image-1](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/8d7af05e-fa28-416a-b843-b390a1fb915a)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/60234ea1-4c30-4e52-9dfb-a1a2ed99a888)
+![image-1](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/72737e09-d97a-479d-af5f-9958d8366837)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/0f3b950a-ede9-4f79-8a3b-0c798cbeaa3d)
+![image-1](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/9ef5737b-411f-47fb-a79d-c865ae80807a)
+![image](https://github.com/sch-lda/SCH-LUA-YIMMENU/assets/54973190/378f44cf-4a57-4a89-88ea-4687c79766d3)
 
 
 

@@ -1,4 +1,4 @@
--- v2.01 -- 
+-- v2.02 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -34,7 +34,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 ]]
 
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-luaversion = "v2.01"
+luaversion = "v2.02"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -3017,16 +3017,6 @@ local plydist = gui.get_tab(""):add_input_float("距离(m)")
 
 gentab:add_separator()
 gentab:add_text("全局选项") 
-
-gentab:add_button("全局爆炸", function()
-    for i = 0, 32 do
-        if PLAYER.GET_PLAYER_PED(network.get_selected_player()) ~= PLAYER.PLAYER_PED_ID() then --避免作用于自己
-            FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(i), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(i)).z, 82, 1, true, false, 100)
-        end
-    end
-end)
-
-gentab:add_sameline()
 
 gentab:add_button("赠送暴君MK2", function()
     script.run_in_fiber(function (giftmk2)

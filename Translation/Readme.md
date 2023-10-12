@@ -1,4 +1,4 @@
-To simplify the translation process, I have developed a program called strrepl.exe that can replace Chinese strings in Lua with any target language. The source code for this program can be found at https://github.com/sch-lda/rubbish0/tree/main/strout/strrepl. You will need to place zh.txt, en.txt, and sch.lua in the root directory of drive D, and then run strrepl.exe to generate ensch.lua. 
+To simplify the translation process, I have developed a program called strrepl.exe that can replace Chinese strings in Lua with any target language. The source code for this program can be found at https://github.com/sch-lda/rubbish0/tree/main/strout/strrepl. You will need to place zh.txt, en.txt, and sch.lua in the same folder with strrepl.exe, and then run strrepl.exe to generate ensch.lua. 
 
 zh.txt contains almost all the Chinese strings used in Lua, while en.txt stores their corresponding English translations. These two files must have the same number of lines, with each line representing a pair of corresponding strings. I have already exported zh.txt and en.txt using another batch processing program from both the Chinese and Drsexo's English versions. 
 

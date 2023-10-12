@@ -614,3 +614,14 @@ squeeze down
 Distance (m)
 Field of View (°)
 Multiple
+Session Host:
+Session Script Host:
+Mission Script Host:
+Mission Script Host:
+SCH Lua Warning
+SCH Lua supports the current game version
+SCH Lua does not support your game version
+You can still use features like entity control that are not affected by the version
+Affected features will be automatically disabled to protect your account's security
+The likelihood of crashes may increase
+Game version compatibility check has been passed.

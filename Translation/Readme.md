@@ -2,4 +2,4 @@ To simplify the translation process, I have developed a program called strrepl.e
 
 zh.txt contains almost all the Chinese strings used in Lua, while en.txt stores their corresponding English translations. These two files must have the same number of lines, with each line representing a pair of corresponding strings. I have already exported zh.txt and en.txt using another batch processing program from both the Chinese and Drsexo's English versions. 
 
-The purpose of this program is to easily localize my Lua code even when significant changes are made. Your task will be to maintain zh.txt and en.txt accordingly. 
+The purpose of this program is to easily localize my Lua code even when significant changes are made. I will maintain zh.txt, and translators in other languages can focus only on the changes in zh.txt without needing to pay attention to changes in the Lua code. These external language files will enable translators to easily use translation tools or even generate translations in their own languages with ChatGPT.

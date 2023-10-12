@@ -1,4 +1,4 @@
--- v2.02 -- 
+-- v2.03 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -33,8 +33,7 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
     5.FiveM Native Reference  https://docs.fivem.net/docs/
 ]]
 
---------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
-luaversion = "v2.02"
+luaversion = "v2.03"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -45,7 +44,9 @@ end
 is_money = 0
 is_GK = 0
 is_collection1 = 0
-verchka1 = 0
+verchka1 = 0 
+verchkok = 2 --版本检查状态 0:不支持 1:支持 2:未检查
+suppver = "1.67" --支持的游戏版本
 autoresply = 0
 
 gentab = gui.add_tab("sch-lua-Alpha-"..luaversion)
@@ -77,6 +78,75 @@ end)
 NPCguardTableTab:add_button("写出保镖NPC表", function()
     writebodyguardtable()
 end)
+
+--------------------------------------------------------------------------------------- Imgui Test
+--[[
+testwindow = gui.add_imgui(function()
+    if ImGui.Begin("IMGUITEST") then
+        if ImGui.Button("paused") then
+            script.run_in_fiber(function(newimgui)
+                MISC.SET_GAME_PAUSED(true)
+            end)
+        end
+        if ImGui.Button("resume") then
+            script.run_in_fiber(function(newimgui2)
+                MISC.SET_GAME_PAUSED(false)
+            end)
+        end
+        ImGui.End()
+    end
+end)
+]]
+--------------------------------------------------------------------------------------- Imgui Test
+--------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
+
+function globals_set_int(intglobal, intval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
+    if verchkok == 2 then
+        log.info("正在检查sch-lua是否支持当前游戏版本")
+        if NETWORK.GET_ONLINE_VERSION() == suppver then
+            verchka1 = 100
+            verchkok = 1
+            log.info("通过检测")
+        end
+    end
+    if verchkok == 1 then
+        globals.set_int(intglobal, intval)
+    else
+        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+    end
+end
+
+function globals_set_float(floatglobal, floatval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
+    if verchkok == 2 then
+        log.info("正在检查sch-lua是否支持当前游戏版本")
+        if NETWORK.GET_ONLINE_VERSION() == suppver then
+            verchka1 = 100
+            verchkok = 1
+            log.info("通过检测")
+        end
+    end
+    if verchkok == 1 then
+        globals.set_float(floatglobal, floatval)
+    else
+        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+    end
+end
+
+function locals_set_int(scriptname, intlocal, intlocalval) --当游戏版本不受支持时拒绝修改locals避免损坏线上存档
+    if verchkok == 2 then
+        log.info("正在检查sch-lua是否支持当前游戏版本")
+        if NETWORK.GET_ONLINE_VERSION() == suppver then
+            verchka1 = 100
+            verchkok = 1
+            log.info("通过检测")
+        end
+    end
+    if verchkok == 1 then
+        locals.set_int(scriptname, intlocal, intlocalval)
+    else
+        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+    end
+end
 
 function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
     local dx = pos.x - tarpos.x
@@ -111,12 +181,16 @@ function upgrade_vehicle(vehicle)
     end
 end
 
-function run_script(name) --启动脚本线程
+function run_script(scriptName) --启动脚本线程
     script.run_in_fiber(function (runscript)
-        SCRIPT.REQUEST_SCRIPT(name)  
-        repeat runscript:yield() until SCRIPT.HAS_SCRIPT_LOADED(name)
-        SYSTEM.START_NEW_SCRIPT(name, 5000)
-        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(name)
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(MISC.GET_HASH_KEY(scriptName)) >= 1 then
+        gui.show_error("警告","请勿重复启动脚本线程")
+        else
+        SCRIPT.REQUEST_SCRIPT(scriptName)  
+        repeat runscript:yield() until SCRIPT.HAS_SCRIPT_LOADED(scriptName)
+        SYSTEM.START_NEW_SCRIPT(scriptName, 5000)
+        SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(scriptName)
+        end
     end)
 end
 
@@ -469,7 +543,7 @@ end
 --------------------------------------------------------------------------------------- TEST
 --[[
 gentab:add_button("test01", function()
-command.call("multikick", {4})
+
 end)
 ]]
 
@@ -540,11 +614,11 @@ gentab:add_button("佩里科终章一键完成", function()
         end
         if FMMC2020host == PLAYER.PLAYER_ID() or FMMChost == PLAYER.PLAYER_ID() then
             gui.show_message("已成为脚本主机","尝试自动完成...")
-            locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
-            locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
-            locals.set_int("fm_mission_controller", 19710, 12)
-            locals.set_int("fm_mission_controller", 28332, 99999)
-            locals.set_int("fm_mission_controller", 31656, 99999)
+            locals_set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
+            locals_set_int("fm_mission_controller_2020",46829,50) --关键代码
+            locals_set_int("fm_mission_controller", 19710, 12)
+            locals_set_int("fm_mission_controller", 28332, 99999)
+            locals_set_int("fm_mission_controller", 31656, 99999)
         else
             log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
             log.info("已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)")
@@ -556,11 +630,11 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("佩里科终章一键完成(强制)", function()
-    locals.set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
-    locals.set_int("fm_mission_controller_2020",46829,50) --关键代码
-    locals.set_int("fm_mission_controller", 19710, 12)
-    locals.set_int("fm_mission_controller", 28332, 99999)
-    locals.set_int("fm_mission_controller", 31656, 99999)
+    locals_set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
+    locals_set_int("fm_mission_controller_2020",46829,50) --关键代码
+    locals_set_int("fm_mission_controller", 19710, 12)
+    locals_set_int("fm_mission_controller", 28332, 99999)
+    locals_set_int("fm_mission_controller", 31656, 99999)
 end)
 
 gentab:add_sameline()
@@ -589,7 +663,7 @@ gentab:add_button("配置佩岛前置(猎豹雕像)", function()
     STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 65279, true)
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 16777215, true)
-    locals.set_int("heist_island_planning", 1526, 2) --刷新面板
+    locals_set_int("heist_island_planning", 1526, 2) --刷新面板
 end)
 
 gentab:add_sameline()
@@ -618,7 +692,7 @@ gentab:add_button("配置佩岛前置(粉钻)", function()
     STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 65279, true)
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 16777215, true)
-    locals.set_int("heist_island_planning", 1526, 2)
+    locals_set_int("heist_island_planning", 1526, 2)
 end)
 
 gentab:add_sameline()
@@ -647,7 +721,7 @@ gentab:add_button("重置佩岛", function()
     STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 0, true)
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 0, true)
     STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 0, true)
-    locals.set_int("heist_island_planning", 1526, 2)
+    locals_set_int("heist_island_planning", 1526, 2)
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
 
@@ -731,11 +805,11 @@ gentab:add_button("转换CEO/首领", function()
     --playerOrganizationTypeRaw: {('Global_1895156[PLAYER::PLAYER_ID() /*609*/].f_10.f_429', '1')}  GLOBAL  
     --playerOrganizationType: {('1895156', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then --1895156+playerIndex*609+10+429+1 = 0 为CEO =1为摩托帮首领
-        globals.set_int(1895156+playerIndex*609+10+429+1,1)
+        globals_set_int(1895156+playerIndex*609+10+429+1,1)
         gui.show_message("提示","已转换为摩托帮首领")
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            globals.set_int(1895156+playerIndex*609+10+429+1,0)
+            globals_set_int(1895156+playerIndex*609+10+429+1,0)
             gui.show_message("提示","已转换为CEO")
         else
             gui.show_message("您不是老大","您既不是CEO也不是首领")
@@ -751,7 +825,7 @@ gentab:add_button("显示事务所电脑", function()
         run_script("appfixersecurity")
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            globals.set_int(1895156+playerIndex*609+10+429+1,0)
+            globals_set_int(1895156+playerIndex*609+10+429+1,0)
             gui.show_message("提示","已转换为CEO")
             run_script("appfixersecurity")
             else
@@ -1582,14 +1656,14 @@ gentab:add_separator()
 gentab:add_text("产业功能-中高风险") 
 
 gentab:add_button("CEO仓库出货一键完成", function()
-    locals.set_int("gb_contraband_sell","542","99999")
+    locals_set_int("gb_contraband_sell","542","99999")
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("摩托帮出货一键完成", function()
     if locals.get_int("gb_biker_contraband_sell",716) >= 1 then
-        locals.set_int("gb_biker_contraband_sell","821","15")
+        locals_set_int("gb_biker_contraband_sell","821","15")
     else
         gui.show_error("该任务类型不支持一键完成","一共就一辆卡车也要一键??")
         log.info("该任务类型不支持一键完成,否则不会有任何收入.一共就一辆送货载具也要使用一键完成??")
@@ -1599,16 +1673,16 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("致幻剂出货一键完成", function()
-    locals.set_int("fm_content_acid_lab_sell",6596,9)
-    locals.set_int("fm_content_acid_lab_sell",6597,10)
-    locals.set_int("fm_content_acid_lab_sell",6530,2)
+    locals_set_int("fm_content_acid_lab_sell",6596,9)
+    locals_set_int("fm_content_acid_lab_sell",6597,10)
+    locals_set_int("fm_content_acid_lab_sell",6530,2)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("地堡出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
-    locals.set_int("gb_gunrunning","1980","0")
+    locals_set_int("gb_gunrunning","1980","0")
     --  gb_gunrunning.c iLocal_1206.f_774
     --	for (i = 0; i < func_833(func_3786(), func_60(), iLocal_1206.f_774, iLocal_1206.f_809); i = i + 1)
     --  REMOVE_PARTICLE_FX_FROM_ENTITY
@@ -1620,7 +1694,7 @@ gentab:add_sameline()
 gentab:add_button("机库(空运)出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     local integer = locals.get_int("gb_smuggler", "3007")
-    locals.set_int("gb_smuggler","2964",integer)
+    locals_set_int("gb_smuggler","2964",integer)
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
 
@@ -1649,19 +1723,19 @@ gentab:add_sameline()
 local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(危)")
 
 gentab:add_button("摩托帮产业满原材料", function()
-    globals.set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
-    globals.set_int(1648657+1+2,1) --冰毒
-    globals.set_int(1648657+1+3,1) --大麻
-    globals.set_int(1648657+1+4,1) --证件
-    globals.set_int(1648657+1+0,1) --假钞
-    globals.set_int(1648657+1+6,1) --致幻剂
+    globals_set_int(1648657+1+1,1) --可卡因 --freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
+    globals_set_int(1648657+1+2,1) --冰毒
+    globals_set_int(1648657+1+3,1) --大麻
+    globals_set_int(1648657+1+4,1) --证件
+    globals_set_int(1648657+1+0,1) --假钞
+    globals_set_int(1648657+1+6,1) --致幻剂
     gui.show_message("自动补货","全部完成")
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("地堡满原材料", function()
-    globals.set_int(1648657+1+5,1) --bunker
+    globals_set_int(1648657+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
 end)
 
@@ -1723,8 +1797,8 @@ gentab:add_button("夜总会保险箱30万循环10次", function()
         while a2 < 10 do --循环次数
             a2 = a2 + 1
             gui.show_message("已执行次数", a2)
-            globals.set_int(262145 + 24227,300000) -- 	if (func_22904(MP_STAT_CLUB_SAFE_CASH_VALUE, -1) != Global_262145.f_24227)
-            globals.set_int(262145 + 24223,300000) -- 	func_6(iParam0, iParam1, joaat("NIGHTCLUBINCOMEUPTOPOP100"), &(Global_262145.f_24223), true);
+            globals_set_int(262145 + 24227,300000) -- 	if (func_22904(MP_STAT_CLUB_SAFE_CASH_VALUE, -1) != Global_262145.f_24227)
+            globals_set_int(262145 + 24223,300000) -- 	func_6(iParam0, iParam1, joaat("NIGHTCLUBINCOMEUPTOPOP100"), &(Global_262145.f_24223), true);
             STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 10000, true)
             STATS.STAT_SET_INT(joaat(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
             STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 100000, true)
@@ -1775,7 +1849,7 @@ gentab:add_button("虎鲸计划面板", function()
             local SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
             local SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
             while not HUD.DOES_BLIP_EXIST(SubBlip) and not HUD.DOES_BLIP_EXIST(SubControlBlip) do     
-                globals.set_int(2794162 + 960, 1) --呼叫虎鲸 --freemode.c 			func_12047("HELP_SUBMA_P" /*Go to the Planning Screen on board your new Kosatka ~a~~s~ to begin The Cayo Perico Heist as a VIP, CEO or MC President. You can also request the Kosatka nearby via the Services section of the Interaction Menu.*/, "H_BLIP_SUB2" /*~BLIP_SUB2~*/, func_3011(PLAYER::PLAYER_ID()), -1, false, true);
+                globals_set_int(2794162 + 960, 1) --呼叫虎鲸 --freemode.c 			func_12047("HELP_SUBMA_P" /*Go to the Planning Screen on board your new Kosatka ~a~~s~ to begin The Cayo Perico Heist as a VIP, CEO or MC President. You can also request the Kosatka nearby via the Services section of the Interaction Menu.*/, "H_BLIP_SUB2" /*~BLIP_SUB2~*/, func_3011(PLAYER::PLAYER_ID()), -1, false, true);
                 SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
                 SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)    
                 callkos:yield()
@@ -1950,90 +2024,90 @@ gentab:add_sameline()
 
 gentab:add_button("恢复1.66下架载具", function()
     for x = 14908, 14916 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 17482, 17500 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 17654, 17675 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 19311, 19335 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 20392, 20395 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 21274, 21279 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 22073, 22092 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 23041, 23068 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 24262, 24375 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 25969, 25975 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 25980, 26000 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 26956, 26957 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 28820, 28840 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
-    globals.set_int(262145 + 28863, 1)
-    globals.set_int(262145 + 28866, 1)
+    globals_set_int(262145 + 28863, 1)
+    globals_set_int(262145 + 28866, 1)
 
     for x = 29534, 29541 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 29883, 29889 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 30348, 30364 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 31216, 31232 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 32099, 32113 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 33341, 33359 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 
     for x = 34212, 34227 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
     
     for x = 35167, 35443 do
-        globals.set_int(262145 + x, 1)
+        globals_set_int(262145 + x, 1)
     end
 end)
 
@@ -2051,20 +2125,20 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("移除安保合约/电话暗杀冷却", function()
-    globals.set_int(262145 + 31908, 0)   --tuneables_processing.c   	func_6(iParam0, iParam1, joaat("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME") /* collision: FIXER_SECURITY_CONTRACT_COOLDOWN_TIME */, &(Global_262145.f_31908), true);
-    globals.set_int(262145 + 31989, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, 1872071131, &(Global_262145.f_31989), true);
+    globals_set_int(262145 + 31908, 0)   --tuneables_processing.c   	func_6(iParam0, iParam1, joaat("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME") /* collision: FIXER_SECURITY_CONTRACT_COOLDOWN_TIME */, &(Global_262145.f_31908), true);
+    globals_set_int(262145 + 31989, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, 1872071131, &(Global_262145.f_31989), true);
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("移除CEO载具冷却", function()
-    globals.set_int(262145 + 13005, 0)   --tuneables_processing.c 	func_6(iParam0, iParam1, joaat("GB_CALL_VEHICLE_COOLDOWN") /* collision: GB_CALL_VEHICLE_COOLDOWN */, &(Global_262145.f_13005), true);
+    globals_set_int(262145 + 13005, 0)   --tuneables_processing.c 	func_6(iParam0, iParam1, joaat("GB_CALL_VEHICLE_COOLDOWN") /* collision: GB_CALL_VEHICLE_COOLDOWN */, &(Global_262145.f_13005), true);
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("移除自身悬赏", function()
-    globals.set_int(1+2359296+5150+13,2880000)   
+    globals_set_int(1+2359296+5150+13,2880000)   
 end)
 
 gentab:add_sameline()
@@ -2127,7 +2201,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("强制保存", function()
-    globals.set_int(2694471, 27)
+    globals_set_int(2694471, 27)
 end)
 
 gentab:add_text("视觉")
@@ -2237,8 +2311,8 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("立即穿上重甲", function()
-    globals.set_int(2794162 + 902, 1)
-    globals.set_int(2794162 + 901, 1)
+    globals_set_int(2794162 + 902, 1)
+    globals_set_int(2794162 + 901, 1)
 end)
 
 local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
@@ -3171,9 +3245,10 @@ gentab:add_sameline()
 
 local skippcus = gentab:add_checkbox("持续移除过场动画") --只是一个开关，代码往后面找
 
-gentab:add_button("Diasble Ver Check", function()
+gentab:add_button("禁用兼容性检查", function()
     verchka1 = 100
-    log.warning("将忽略lua与游戏版本不匹配的校验,使用过时的脚本您必须自行承担在线存档损坏的风险")
+    verchkok = 1
+    log.warning("将忽略lua与游戏版本不匹配的校验,使用过时的功能您必须自行承担在线存档损坏的风险")
     gui.show_error("将忽略lua与游戏版本不匹配的校验","您必须承担在线存档损坏的风险")
 end)
 
@@ -3198,7 +3273,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("forcescripthost", function()
+gentab:add_button("手动抢任务脚本主机", function()
     network.force_script_host("fm_mission_controller_2020") --抢脚本主机
     network.force_script_host("fm_mission_controller") --抢脚本主机
 end)
@@ -3270,6 +3345,10 @@ local allclear = gentab:add_checkbox("循环清除实体") --只是一个开关�
 local emmode3 = gentab:add_checkbox("紧急模式3-持续清除任何实体+阻止PTFX火柱水柱+阻止滤镜和镜头抖动+清理物体表面痕迹") --只是一个开关，代码往后面找
 
 local rHDonly = gentab:add_checkbox("仅渲染高清") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local deautocalc = gentab:add_checkbox("禁止计算玩家距离") --只是一个开关，代码往后面找
 
 gentab:add_text("obj生成(Name)") 
 gentab:add_sameline()
@@ -3784,43 +3863,43 @@ script.register_looped("schlua-ml2", function()
             mpx = "MP1_" --用于判断当前是角色1还是角色2
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY0") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+0,1) --假钞
+            globals_set_int(1648657+1+0,1) --假钞
             log.info("假钞原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY1") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+1,1) --kky
+            globals_set_int(1648657+1+1,1) --kky
             log.info("可卡因原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY2") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+2,1) --bd
+            globals_set_int(1648657+1+2,1) --bd
             log.info("冰毒原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY3") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+3,1) --dm
+            globals_set_int(1648657+1+3,1) --dm
             log.info("大麻原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY4") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+4,1) --id
+            globals_set_int(1648657+1+4,1) --id
             log.info("证件原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY5") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+5,1) --bk
+            globals_set_int(1648657+1+5,1) --bk
             log.info("地堡原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int(mpx.."MATTOTALFORFACTORY6") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
-            globals.set_int(1648657+1+6,1) --acid
+            globals_set_int(1648657+1+6,1) --acid
             log.info("致幻剂原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
@@ -3831,15 +3910,15 @@ end)
 script.register_looped("schlua-dataservice", function() 
 
     if  check1:is_enabled() then --移除交易错误警告
-        globals.set_int(4536677,0)   -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
-        globals.set_int(4536679,0)   -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
-        globals.set_int(4536678,0)  -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
+        globals_set_int(4536677,0)   -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
+        globals_set_int(4536679,0)   -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
+        globals_set_int(4536678,0)  -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
     end
 
     if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
         if inputCEOcargo:get_value() <= 111 then --判断一下有没有人一次进天文数字箱货物、或者乱按的
 
-        globals.set_int(1890714+12,inputCEOcargo:get_value()) --核心代码 --freemode.c      func_17512("SRC_CRG_TICKER_1" /*~a~ Staff has sourced: ~n~1 Crate: ~a~*/, func_6676(hParam0), func_17513(Global_1890714.f_15), HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE);
+        globals_set_int(1890714+12,inputCEOcargo:get_value()) --核心代码 --freemode.c      func_17512("SRC_CRG_TICKER_1" /*~a~ Staff has sourced: ~n~1 Crate: ~a~*/, func_6676(hParam0), func_17513(Global_1890714.f_15), HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE);
 
         else
             gui.show_error("超过限额", "进货数超过仓库容量上限")
@@ -3848,19 +3927,19 @@ script.register_looped("schlua-dataservice", function()
     end
 
     if  check4:is_enabled() then--锁定机库仓库进货数
-        globals.set_int(1890730+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
+        globals_set_int(1890730+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
     end
 
     if  cashmtp:is_enabled() and cashmtpin:get_value() >= 0 then--锁定普通联系人差事奖励倍率
         if globals.get_float(262145) ~= cashmtpin:get_value() then
             formattedcashmtpin = string.format("%.3f", cashmtpin:get_value())
             gui.show_message("联系人任务收入倍率",formattedcashmtpin.."倍")
-            globals.set_float(262145,cashmtpin:get_value())
+            globals_set_float(262145,cashmtpin:get_value())
         end
     end
 
     if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘奖品--只影响实际结果，不影响转盘显示
-        locals.set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
+        locals_set_int("casino_lucky_wheel","290","18") --luckyWheelOutcome: {('276', '14')}  LOCAL casino_lucky_wheel reward numbers: https://pastebin.com/HsW6QS31 
         --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
         --你可以自定义代码中的18来获取其他物品。设定为18是展台载具，16衣服，17经验，19现金，4载具折扣，11神秘礼品，15 chips不认识是什么
     end
@@ -3868,14 +3947,14 @@ script.register_looped("schlua-dataservice", function()
     if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 
         if locals.get_int("gb_biker_contraband_sell",716) ~= 0 then
             log.info("已锁定摩托帮产业出货任务类型.目标出货载具生成前不要关闭此开关.注意:此功能与摩托帮一键完成出货冲突")
-            locals.set_int("gb_biker_contraband_sell",716,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
+            locals_set_int("gb_biker_contraband_sell",716,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
         end
     end
 
     if  ccrgsl:is_enabled() then--锁定CEO仓库出货任务 
         if locals.get_int("gb_contraband_sell",548) ~= 12 then
             log.info("已锁定CEO仓库出货任务类型.目标出货载具生成前不要关闭此开关")
-            locals.set_int("gb_contraband_sell",548,12) -- gb_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 14); --iLocal_541.f_7 = randomIntInRange;
+            locals_set_int("gb_contraband_sell",548,12) -- gb_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 14); --iLocal_541.f_7 = randomIntInRange;
         end
     end
 
@@ -3889,44 +3968,44 @@ script.register_looped("schlua-dataservice", function()
             gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
         end
         if globals.get_int(262145 + 17571) ~= 5000 then
-            globals.set_int(262145 + 17571, 5000) -- BIKER_WEED_PRODUCTION_TIME
+            globals_set_int(262145 + 17571, 5000) -- BIKER_WEED_PRODUCTION_TIME
         end
         if globals.get_int(262145 + 17572) ~= 5000 then
-            globals.set_int(262145 + 17572, 5000) 
+            globals_set_int(262145 + 17572, 5000) 
         end
         if globals.get_int(262145 + 17573) ~= 5000 then
-            globals.set_int(262145 + 17573, 5000) 
+            globals_set_int(262145 + 17573, 5000) 
         end
         if globals.get_int(262145 + 17574) ~= 5000 then
-            globals.set_int(262145 + 17574, 5000) 
+            globals_set_int(262145 + 17574, 5000) 
         end
         if globals.get_int(262145 + 17575) ~= 5000 then
-            globals.set_int(262145 + 17575, 5000) 
+            globals_set_int(262145 + 17575, 5000) 
         end
         if globals.get_int(262145 + 17576) ~= 5000 then
-            globals.set_int(262145 + 17576, 5000) 
+            globals_set_int(262145 + 17576, 5000) 
         end
         if globals.get_int(262145 + 21712) ~= 5000 then
-            globals.set_int(262145 + 21712, 5000) -- GR_MANU_PRODUCTION_TIME
+            globals_set_int(262145 + 21712, 5000) -- GR_MANU_PRODUCTION_TIME
         end
         if globals.get_int(262145 + 21713) ~= 5000 then
-            globals.set_int(262145 + 21713, 5000) -- 631477612
+            globals_set_int(262145 + 21713, 5000) -- 631477612
         end
         if globals.get_int(262145 + 21714) ~= 5000 then
-            globals.set_int(262145 + 21714, 5000) -- 818645907
+            globals_set_int(262145 + 21714, 5000) -- 818645907
         end
         loopa19 =1
     else
         if loopa19 == 1 then 
-            globals.set_int(262145 + 17571, 360000) 
-            globals.set_int(262145 + 17572, 1800000) 
-            globals.set_int(262145 + 17573, 3000000) 
-            globals.set_int(262145 + 17574, 300000) 
-            globals.set_int(262145 + 17575, 720000) 
-            globals.set_int(262145 + 17576, 135000) 
-            globals.set_int(262145 + 21712, 600000)
-            globals.set_int(262145 + 21713, 90000)
-            globals.set_int(262145 + 21714, 90000)
+            globals_set_int(262145 + 17571, 360000) 
+            globals_set_int(262145 + 17572, 1800000) 
+            globals_set_int(262145 + 17573, 3000000) 
+            globals_set_int(262145 + 17574, 300000) 
+            globals_set_int(262145 + 17575, 720000) 
+            globals_set_int(262145 + 17576, 135000) 
+            globals_set_int(262145 + 21712, 600000)
+            globals_set_int(262145 + 21713, 90000)
+            globals_set_int(262145 + 21714, 90000)
             loopa19 =0
         end    
     end
@@ -3936,36 +4015,36 @@ script.register_looped("schlua-dataservice", function()
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
         if globals.get_int(262145 + 24548) ~= 5000 then
-            globals.set_int(262145 + 24548, 5000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24548, 5000) -- tuneables_processing.c -147565853
         end
         if globals.get_int(262145 + 24549) ~= 5000 then
-            globals.set_int(262145 + 24549, 5000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24549, 5000) -- tuneables_processing.c -1390027611
         end
         if globals.get_int(262145 + 24550) ~= 5000 then
-            globals.set_int(262145 + 24550, 5000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24550, 5000) -- tuneables_processing.c -1292210552
         end
         if globals.get_int(262145 + 24551) ~= 5000 then
-            globals.set_int(262145 + 24551, 5000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24551, 5000) -- tuneables_processing.c 1007184806
         end
         if globals.get_int(262145 + 24552) ~= 5000 then
-            globals.set_int(262145 + 24552, 5000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24552, 5000) -- tuneables_processing.c 18969287
         end
         if globals.get_int(262145 + 24553) ~= 5000 then
-            globals.set_int(262145 + 24553, 5000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24553, 5000) -- tuneables_processing.c -863328938
         end
         if globals.get_int(262145 + 24554) ~= 5000 then
-            globals.set_int(262145 + 24554, 5000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24554, 5000) -- tuneables_processing.c 1607981264
         end
         loopa20 =1
     else
         if loopa20 == 1 then 
-            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
 --[[ 游戏默认值
     Global_262145.f_24548 = 4800000;
 	Global_262145.f_24549 = 14400000;
@@ -3984,36 +4063,36 @@ script.register_looped("schlua-dataservice", function()
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
         if globals.get_int(262145 + 24548) ~= 3600000 then
-            globals.set_int(262145 + 24548, 3600000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24548, 3600000) -- tuneables_processing.c -147565853
         end
         if globals.get_int(262145 + 24549) ~= 1800000 then
-            globals.set_int(262145 + 24549, 1800000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24549, 1800000) -- tuneables_processing.c -1390027611
         end
         if globals.get_int(262145 + 24550) ~= 600000 then
-            globals.set_int(262145 + 24550, 600000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24550, 600000) -- tuneables_processing.c -1292210552
         end
         if globals.get_int(262145 + 24551) ~= 600000 then
-            globals.set_int(262145 + 24551, 600000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24551, 600000) -- tuneables_processing.c 1007184806
         end
         if globals.get_int(262145 + 24552) ~= 450000 then
-            globals.set_int(262145 + 24552, 450000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24552, 450000) -- tuneables_processing.c 18969287
         end
         if globals.get_int(262145 + 24553) ~= 900000 then
-            globals.set_int(262145 + 24553, 900000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24553, 900000) -- tuneables_processing.c -863328938
         end
         if globals.get_int(262145 + 24554) ~= 2100000 then
-            globals.set_int(262145 + 24554, 2100000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24554, 2100000) -- tuneables_processing.c 1607981264
         end
         loopa21 =1
     else
         if loopa21 == 1 then 
-            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
             loopa21 =0
         end    
     end
@@ -4023,36 +4102,36 @@ script.register_looped("schlua-dataservice", function()
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
         if globals.get_int(262145 + 24548) ~= 1440000 then
-            globals.set_int(262145 + 24548, 1440000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24548, 1440000) -- tuneables_processing.c -147565853
         end
         if globals.get_int(262145 + 24549) ~= 720000 then
-            globals.set_int(262145 + 24549, 720000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24549, 720000) -- tuneables_processing.c -1390027611
         end
         if globals.get_int(262145 + 24550) ~= 240000 then
-            globals.set_int(262145 + 24550, 240000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24550, 240000) -- tuneables_processing.c -1292210552
         end
         if globals.get_int(262145 + 24551) ~= 240000 then
-            globals.set_int(262145 + 24551, 240000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24551, 240000) -- tuneables_processing.c 1007184806
         end
         if globals.get_int(262145 + 24552) ~= 180000 then
-            globals.set_int(262145 + 24552, 180000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24552, 180000) -- tuneables_processing.c 18969287
         end
         if globals.get_int(262145 + 24553) ~= 360000 then
-            globals.set_int(262145 + 24553, 360000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24553, 360000) -- tuneables_processing.c -863328938
         end
         if globals.get_int(262145 + 24554) ~= 840000 then
-            globals.set_int(262145 + 24554, 840000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24554, 840000) -- tuneables_processing.c 1607981264
         end
         loopa22 =1
     else
         if loopa22 == 1 then 
-            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
             loopa22 =0
         end    
     end
@@ -4062,36 +4141,36 @@ script.register_looped("schlua-dataservice", function()
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
         if globals.get_int(262145 + 24548) ~= 720000 then
-            globals.set_int(262145 + 24548, 720000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24548, 720000) -- tuneables_processing.c -147565853
         end
         if globals.get_int(262145 + 24549) ~= 360000 then
-            globals.set_int(262145 + 24549, 360000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24549, 360000) -- tuneables_processing.c -1390027611
         end
         if globals.get_int(262145 + 24550) ~= 120000 then
-            globals.set_int(262145 + 24550, 120000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24550, 120000) -- tuneables_processing.c -1292210552
         end
         if globals.get_int(262145 + 24551) ~= 120000 then
-            globals.set_int(262145 + 24551, 120000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24551, 120000) -- tuneables_processing.c 1007184806
         end
         if globals.get_int(262145 + 24552) ~= 90000 then
-            globals.set_int(262145 + 24552, 90000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24552, 90000) -- tuneables_processing.c 18969287
         end
         if globals.get_int(262145 + 24553) ~= 180000 then
-            globals.set_int(262145 + 24553, 180000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24553, 180000) -- tuneables_processing.c -863328938
         end
         if globals.get_int(262145 + 24554) ~= 420000 then
-            globals.set_int(262145 + 24554, 420000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24554, 420000) -- tuneables_processing.c 1607981264
         end
         loopa23 =1
     else
         if loopa23 == 1 then 
-            globals.set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals.set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals.set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals.set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals.set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals.set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals.set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
+            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
+            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
+            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
+            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
+            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
+            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
             loopa23 =0
         end    
     end
@@ -4100,8 +4179,8 @@ script.register_looped("schlua-dataservice", function()
     
 
     if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
-        globals.set_int(262145 + 30394, 0) --tuneables_processing.c IH_SUBMARINE_MISSILES_COOLDOWN
-        globals.set_int(262145 + 30395, 80000) --tuneables_processing.c IH_SUBMARINE_MISSILES_DISTANCE
+        globals_set_int(262145 + 30394, 0) --tuneables_processing.c IH_SUBMARINE_MISSILES_COOLDOWN
+        globals_set_int(262145 + 30395, 80000) --tuneables_processing.c IH_SUBMARINE_MISSILES_DISTANCE
     end
 
     if checkbypassconv:is_enabled() then  --跳过NPC对话
@@ -4115,7 +4194,7 @@ script.register_looped("schlua-dataservice", function()
             gui.show_error("错误", "金额需要大于500")
             checkzhongjia:set_enabled(nil)
             else
-                globals.set_int(262145 + 20468, iputintzhongjia:get_value())--核心代码 --am_pi_menu.c  func_1277("PIM_TBALLI" /*BALLISTIC EQUIPMENT SERVICES*/);
+                globals_set_int(262145 + 20468, iputintzhongjia:get_value())--核心代码 --am_pi_menu.c  func_1277("PIM_TBALLI" /*BALLISTIC EQUIPMENT SERVICES*/);
             end
     end
 end)
@@ -5896,7 +5975,7 @@ script.register_looped("schlua-drawservice", function()
 end)
 
 script.register_looped("schlua-calcservice", function() 
-    if gui.get_tab(""):is_selected() then
+    if gui.get_tab(""):is_selected() and not deautocalc:is_enabled() then
         local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
         local targpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(network.get_selected_player()), false)
         distance = calcDistance(pos,targpos)
@@ -5906,13 +5985,11 @@ script.register_looped("schlua-calcservice", function()
 end)
 
 event.register_handler(menu_event.PlayerMgrInit, function ()
-
     verchka1 = verchka1 + 1 --触发lua版本检查:检查lua是否适配当前游戏版本
 
     if cashmtpin:get_value() == 0 then -- 读取在线模式当前联系人差事 现金奖励倍率
         cashmtpin:set_value(globals.get_float(262145))
     end
-
 end)
 
 script.register_looped("schlua-verckservice", function() 
@@ -5925,17 +6002,28 @@ script.register_looped("schlua-verckservice", function()
     end
 
     if verchka1 > 0 and verchka1 < 99 then
-        if NETWORK.GET_ONLINE_VERSION() ~= "1.67" then
+        if NETWORK.GET_ONLINE_VERSION() ~= suppver then
             if STREAMING.IS_PLAYER_SWITCH_IN_PROGRESS() then
             else
-                log.warning("sch-lua脚本不支持您的游戏版本,请立即删除,继续使用将损坏您的在线账户!")
-                gui.show_error("sch-lua不支持您的游戏版本","请立即删除以免损坏在线存档")
-                script_util:sleep(1000)
-                verchka1 = verchka1 + 1
+                log.warning("sch-lua脚本不支持您的游戏版本,涉及数据修改的功能将自动停用!")
+                gui.show_error("sch-lua不支持您的游戏版本","涉及数据修改的功能将自动停用")
+                verchka1 = 0
+                verchkok = 0
+                testwindow = gui.add_imgui(function()
+                    shouldDraw = ImGui.Begin("sch lua警告")
+                    ImGui.TextColored(1, 0, 0, 1, "sch lua当前支持的游戏版本是"..suppver)    
+                    ImGui.TextColored(1, 0, 0, 1, "sch lua不支持您的游戏版本")    
+                    ImGui.TextColored(1, 0, 0, 1, "您仍可以使用实体控制等不受版本影响的功能")    
+                    ImGui.TextColored(1, 0, 0, 1, "受影响的功能将被自动禁用以保护您的账户安全")    
+                    ImGui.TextColored(1, 0, 0, 1, "崩溃概率可能升高")    
+                    ImGui.SetWindowSize(500, 300)
+                    ImGui.End()
+                end)
             end
         else
             verchka1 = 100
-            log.info("已通过游戏版本适配检测")
+            verchkok = 1
+            log.info("已通过游戏版本适配检测,您可以使用所有功能")
         end
     end
 end)
@@ -6029,7 +6117,7 @@ if playerid == 1 then
 
 end
     STATS.STAT_SET_INT(joaat(mpx.."LUCKY_WHEEL_NUM_SPIN"), 0, true)
-    globals.set_int(262145+27382,1) -- 9960150 
-    globals.set_int(262145+27383,1) -- -312420223
+    globals_set_int(262145+27382,1) -- 9960150 
+    globals_set_int(262145+27383,1) -- -312420223
 end)
 ]]--

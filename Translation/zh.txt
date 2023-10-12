@@ -611,3 +611,6 @@ NPC掉落2000元循环
 向下挤压
 返回 Grand Theft Auto V。
 您已被永久禁止进入 Grand Theft Auto 在线模式。
+距离(m)
+视野(°)
+倍-联系人

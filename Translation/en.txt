@@ -304,7 +304,7 @@ Cyclic brush mannequin
 Drop frame attack (as far away from the target as possible)
 Particle effect bombing (as far away from the target as possible)
 Cycle brush PED
-NPC drops 2000 yuan cycle
+NPC drops $2000 cycle
 Cycle through the purse (only visible to yourself)
 Fragment crash
 The attack has stopped
@@ -602,7 +602,7 @@ Number of people
 +lua internal list
 -Bodyguard helicopter list
 -Bodyguard NPC list
-NPC drops 2000 yuan cycle
+NPC drops $2000 cycle
 Fragment crash
 Parachute Crash 2
 Model crash
@@ -611,3 +611,6 @@ launch upwards
 squeeze down
  Return to Grand Theft Auto V.
  You have been permanently banned from entering Grand Theft Auto Online Mode.
+Distance (m)
+Field of View (°)
+Multiple

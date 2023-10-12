@@ -31,6 +31,50 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
     4.PlebMaster (快速搜索模型Hash)  https://forge.plebmasters.de
     5.gta-v-data-dumps (查ptfx/声音/模型)  https://github.com/DurtyFree/gta-v-data-dumps
     5.FiveM Native Reference  https://docs.fivem.net/docs/
+
+多语言维护者:
+简体中文:sch https://github.com/sch-lda
+英文:Drsexo https://github.com/Drsexo
+
+    Translation(by GPT):
+
+Language Maintainers:
+Simplified Chinese: sch (https://github.com/sch-lda)
+English: Drsexo (https://github.com/Drsexo)
+
+    I do not restrict and even encourage players to modify and customize Lua scripts according to their own needs and usage habits.
+    Some code sections even have comments explaining what they are for and the relevant globals used in the decompiled script.
+
+    Usage Policy:
+    Allowed:
+        Personal use
+        Modified personal use
+        Secondary distribution after modification
+
+    Prohibited:
+        Commercial use
+        Secondary distribution after modification still using the name "sch"
+
+    No guarantees (I can only guarantee no subjective malice at the time of writing, and I am not responsible for any unforeseen consequences).
+
+    Also, please ensure that you download Lua scripts with the small assistant's download Lua script function or files released by yeahsch (sch) in the small assistant's official Discord. Lua scripts obtained in any other way may be outdated or malicious.
+
+    Github: https://github.com/sch-lda/SCH-LUA-YIMMENU
+
+    External Links:
+    Yimmenu lib By Discord@alice2333 - https://discord.com/channels/388227343862464513/1124473215436214372, providing support for developers
+    YimMenu-HeistLua - https://github.com/wangzixuank/YimMenu-HeistLua, an open-source Yim task script
+
+    Globals and Locals used in Lua are widely borrowed from UnknownCheats forum, Heist Control script, and MusinessBanager script. Although Blue-Flag Lua is somewhat outdated, it also provides some inspiration.
+    Alice, wangzixuan, and nord123 in the small assistant's official Discord provided assistance in Lua writing.
+
+    Websites that may be helpful for Lua writing:
+    1. Yimmenu Lua API - https://github.com/YimMenu/YimMenu/tree/master/docs/lua
+    2. GTA5 Native Reference (Native functions) - https://nativedb.dotindustries.dev/natives
+    3. GTA5 Decompiled Scripts - https://github.com/Primexz/GTAV-Decompiled-Scripts
+    4. PlebMaster (Quick model Hash search) - https://forge.plebmasters.de
+    5. gta-v-data-dumps (Lookup PTFX/sounds/models) - https://github.com/DurtyFree/gta-v-data-dumps
+    6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
 luaversion = "v2.03"

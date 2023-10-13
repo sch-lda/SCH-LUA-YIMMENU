@@ -1,0 +1,627 @@
+ For personal testing and learning only, commercial use is prohibited
+Write the player list
+Write the NPC list
+Write a list of vehicles
+Write a bodyguard helicopter list
+Write the bodyguard NPC list
+正在检查sch-lua是否支持当前游戏版本
+通过检测
+游戏版本不受支持,为了您的线上存档安全,已停止数据修改
+正在检查sch-lua是否支持当前游戏版本
+通过检测
+游戏版本不受支持,为了您的线上存档安全,已停止数据修改
+正在检查sch-lua是否支持当前游戏版本
+通过检测
+游戏版本不受支持,为了您的线上存档安全,已停止数据修改
+警告
+请勿重复启动脚本线程
+假钞 原材料库存: 
+可卡因 原材料库存: 
+冰毒 原材料库存: 
+大麻 原材料库存: 
+假证 原材料库存: 
+地堡 原材料库存: 
+致幻剂 原材料库存: 
+Refresh Bodyguard NPC List
+Empty the bodyguard NPC list
+transfer
+deletion
+healing
+generate
+Refresh Bodyguard Helicopter list
+Empty Bodyguard Helicopter list
+join
+deletion
+generate
+Refresh Player list
+Refresh NPC List
+join
+deletion
+heal
+Refresh vehicle List
+deletion
+join
+Destroy the engine
+throw
+Complete the final chapter of Perico with one click
+正在抢任务脚本主机以便一键完成...
+Has become the script host
+Try to complete automatically...
+失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?
+已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)
+Failed to become a script host
+You may not be in a task that supports one-click completion
+Complete the final chapter of Perico with one click (mandatory)
+Skip cayo perico setup (cheetah statue)
+Skip cayo perico setup (pink diamond)
+Reset cayo perico
+Attention
+The planning panel will be restored to the state just bought the killer whale!
+Skip Casino heist prep (Diamond)
+Skip Casino heist prep (Gold)
+Reset casino plan panel
+Switch CEO/Leader
+Prompt 
+ has been converted to the leader of the motorcycle gang
+Prompt
+has been converted to CEO
+You are not the boss
+You are neither the CEO nor the leader
+Show office computer
+Prompt
+has been converted to CEO
+Don't forget to register as CEO/Leader
+It may also be a script detection error, a known problem, no feedback required
+Show bunker computer
+Don't forget to register as CEO/Leader
+It may also be a script detection error, a known problem, no feedback required
+Show hangar computer
+Don't forget to register as CEO/Leader
+It may also be a script detection error, a known problem, no feedback required
+Show arcade computer
+Don't forget to register as CEO/Leader
+It may also be a script detection error, a known problem, no feedback required
+Show the Terrorbyte Dashboard
+Don't forget to register as CEO/Leader
+It may also be a script detection error, a known problem, no feedback required
+Show Avengers panel
+Don't forget to register as CEO/Leader
+It may also be a script detection error, a known problem, no feedback required
+light fireworks
+broomstick
+range fireworks
+Meteor rain
+Head666
+Overhead 520
+swim mode
+Separate bodies of water
+Fire breath
+Ghost Rider
+flame wings
+Vehicle force field
+NPC force field
+Force field (vehicle + NPC)
+Object force field
+Simple vehicle acceleration controlled by Shift key (test)
+NPC vehicle upside down
+Flameout
+Repair
+Stop
+Jump
+Lock the door for all players
+Chaos
+Rotate
+Delete V
+Flameout 2
+Stop 2
+Delete 2
+interrupt A
+fall A
+Kill a
+burn A
+take off A
+Bodyguard
+Heal A
+Resurrection (unstable)
+remove the body A
+Disarm A
+Electric shock A
+Light beam markera
+interrupt A1
+fall A1
+Kill A1
+burn A1
+take off A1
+Bodyguard A1
+Beam marker A1
+Disarm A1
+Electric shock B
+interrupt B
+Fall B
+Kill B
+burn B
+take off B
+Bodyguard B
+remove B
+Disarm B
+Electric shock C
+interrupt C
+fall C
+kill C
+burn C
+take off C
+Bodyguard C
+remove C
+Disarm C
+Electric shock D
+Remove all cameras
+Removed Perico heavy armor
+Randomly shoot half of the NPCs in real name
+Randomly shoot half of hostile NPCs in real name
+Real-name shooting NPC
+Shoot and kill hostile NPCs in real name
+Clean up the police and the National Security service
+Heal key NPCs
+Make blue dot NPCs on the mini-map invincible
+Remove invincibility of blue dot NPCs
+Teleport blue dot NPCs to yourself
+Generate bodyguard helicopter
+移除保镖直升机
+Generate bodyguard formation
+Remove the bodyguard formation
+One-click completion of CEO warehouse shipments
+One-click completion of motorcycle shipment
+This task type does not support one-click completion
+One-click for a total of one truck
+该任务类型不支持一键完成,否则不会有任何收入.一共就一辆送货载具也要使用一键完成??
+One-click delivery of acid
+One-click completion of bunker shipment
+Autoship 
+ may show that the task failed, but you should get the money!
+Autoship 
+ may show that the task failed, but you should get the money!
+One-click completion of hangar (air freight) shipment
+Autoship 
+ may show that the task failed, but you should get the money!
+Autoship 
+ may show that the task failed, but you should get the money!
+CEO warehouse shipment locks the transport ship
+The motorcycle gang will ship only one truck
+Rapid production of acid in the motorcycle gang industrial bunker (dangerous)
+Nightclub fast purchase (dangerous)
+Purchase at 4 times the speed of the nightclub (dangerous)
+Purchase at 10 times the speed of the nightclub (dangerous)
+Purchase at 20 times the speed of the nightclub (dangerous)
+The motorcycle industry is full of supplies
+Auto-replenishment
+All done
+The bunker is full of supplies
+Auto-replenishment
+All done
+Warehouse automatic replenishment (buggy)
+Max nightclub's popularity
+CEO warehouse staff purchase once
+Hangar staff restock once
+The single purchase quantity of locked warehouse staff is
+Lock hangar staff single purchase quantity is
+Nightclub safe 300,000 cycles 10 times
+Times down
+Warning
+This method is only used for occasional small recovery
+Casino carousel draw (the carousel may appear as something else, but you do get vehicles)
+NPC drops 2000 yuan cycle (high risk)
+Navigation Points (Particle Effects)
+Kosatka Panel
+Facility
+No need to teleport
+You are already in the facility
+Facility Plan Screen
+Make sure you are in the facility
+Please enter the facility before teleporting to the planning screen
+Nightclub
+Nightclub safe (enter the nightclub first)
+Arcade
+Arcade Plan Panel (Advanced Arcade)
+Random location
+Remove balance
+Remove balance difference
+executed successfully
+已移除收支差:
+Your income and expenditure are normal, no need to remove or trigger abnormal value protection
+There is no difference in income and expenditure at all, but it may be abnormal
+Restoration of deleted vehicules in 1.66
+Dax cooldown removed
+Security Contract/Phone Assassination cooldown removed
+Removed CEO vehicle cooldown
+Remove self bounty
+Ka Yun retreats offline
+Skip an NPC dialogue
+Automatically skip NPC dialogue
+stop all local sounds
+Ground speedometer
+Air speedometer
+Force save
+remove all visual effects
+Visual Effects: Taking Drugs
+Blurred
+increase brightness
+heavy fog
+drunk
+Display false warning
+Prevent everyone from using space-based cannons
+Put on heavy armor immediately
+Remove transaction error warning
+Removed Orca missile cooldown and increased range
+Lock the angle of the minimap
+Semi-invincible
+Explosion-proof head
+Radar suspended animation
+Automation of online taxi work (continuous transmission)
+Automation of online taxi work (simulation driving)
+Request heavy armor spend (used to remove black money)
+turn off footsteps
+Turn off your own PED sound
+Lock NPC Zero Damage
+Minimap showing sonar
+global lights out
+display host information
+Allow local pause online
+PED gun (shoot NPC)
+basketball gun
+big ball gun
+Draw + Sight
+stop the police from being dispatched
+No temperature (anti-thermal imaging)
+Allow to attack teammate
+Thunder and lightning A
+SCH LUA PLAYER OPTIONS -!!!!! NO FEEDBACK ACCEPTED!!!!!
+Indirect viewing (not easily detected)
+Light beam marker
+Wire mark
+Gives Vehicle Invulnerability
+The vehicle is completely collision-free
+repair vehicle
+Warning
+The player is not in the vehicle
+Request control failed
+Request control was successful
+remove vehicle
+Warning
+The player is not in the vehicle
+deluxo
+Teleport to player (particle effect)
+small cage
+fence cage
+competitive tube cage
+safe cage
+Vehicle rotation
+electric shock
+bombing
+circulating water column
+No damage explosion
+Cycle swiping cards
+Cyclic brush mannequin
+Drop frame attack (as far away from the target as possible)
+Particle effect bombing (as far away from the target as possible)
+Cycle brush PED
+NPC drops $2000 cycle
+Cycle through the purse (only visible to yourself)
+Fragment crash
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+The target has been detected to have left or the target is himself
+Parachute Crash 2
+The attack has stopped
+The target has been detected to have left or the target is himself
+Model crash
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+Please stay away from the target first
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+Please stay away from the target first
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+Please stay away from the target first
+The attack has stopped
+The target has been detected to have left or the target is himself
+The attack has stopped
+Please stay away from the target first
+sound bombing
+launch upwards
+squeeze down
+distance (m)
+Gift the opressor MK2
+Air defense alert
+apartment invitation
+PED collapse
+Parachute crash
+Please wait patiently until the character lands
+Write Interval
+SUCCESS
+applied
+Error 
+Illegal input, has been reset
+Block sync
+Clean up PTFX flame water column
+Clean up traces on the surface of objects
+Reset filters and lens shake
+Continuously removing cutscene
+Disable version check
+The verification that the lua does not match the game version will be ignored, and you must bear the risk of online archive damage by using outdated scripts
+The verification that the lua does not match the game version will be ignored
+You must bear the risk of online archive damage
+forcescripthost
+Emergency mode-Press Ctrl+S+D at the same time when the game is stuck due to a large number of swiping models, quickly escape the scene and pause the network synchronization (no need to leave the war situation)-if necessary, use it with the cycle to clear the entity function
+Emergency Mode 2 - Press Ctrl+A+D to quickly escape to a new battlefield
+Loop clear entity
+Emergency Mode 3 - Continuously removes any entities + stops PTFX fire columns and water columns + stops filter and lens shake + cleans up traces on the surface of objects
+Render HD only
+Disable player distance calc
+Generate N
+Generate H
+generate ptfx
+Play c
+Stop c
+Set up Contact Person service income ratio
+Generate N
+Generate H
+generate ptfx
+Write the player table
+Write a list of NPCs
+Write a list of vehicle
+Getting the player table and refreshing it automatically (the basis of the operation of the player targeting counterattack)
+Shoot F
+Blow F
+Electroshock F
+Kick out F
+Auto-refresh player table not enabled
+Auto-enabled
+Auto-refresh player table not enabled
+Auto-enabled
+Auto-refresh player table not enabled
+Auto-enabled
+Auto-refresh player table not enabled
+Auto-enabled
+sch lua紧急模式2,已创建新战局
+sch lua emergency mode 2
+New game has been created
+紧急模式3已开启
+紧急模式3已关闭
+紧急模式已开启,与所有玩家取消同步,同时按下WAD关闭
+Emergency mode is turned on 
+ Cancel synchronization with all players, and press WAD to close at the same time
+紧急模式已关闭,恢复同步并移动至原位
+Emergency mode is turned off
+Restore synchronization and move to the original position
+紧急模式已关闭,恢复同步并移动至原位
+Emergency mode is turned off
+Restore synchronization and move to the original position
+发现乘客
+乘客将加速上车
+乘客已上车
+传送到目的地
+毫秒后执行下一轮出租车工作
+发现乘客,正在驾驶前往.按下Shift可立即传送跳过
+乘客已上车
+正在自动驾驶前往目的地,按下shift可立即传送跳过
+自动驾驶未能精准到达目的地,将使用传送补救
+毫秒后执行下一轮出租车工作
+Stopped
+The target cannot be yourself!
+假钞原材料不足,将自动补满
+可卡因原材料不足,将自动补满
+冰毒原材料不足,将自动补满
+大麻原材料不足,将自动补满
+证件原材料不足,将自动补满
+地堡原材料不足,将自动补满
+致幻剂原材料不足,将自动补满
+Exceeding the limit
+The number of purchases exceeds the upper limit of warehouse capacity
+Contact Task Revenue Multiplier
+倍
+已锁定摩托帮产业出货任务类型.目标出货载具生成前不要关闭此开关.注意:此功能与摩托帮一键完成出货冲突
+已锁定CEO仓库出货任务类型.目标出货载具生成前不要关闭此开关
+The next time the production is triggered, it will take effect
+Sometimes the battle change can take effect immediately?
+It will take effect the next time production is triggered
+reassign employees to take effect immediately
+It will take effect the next time production is triggered
+reassign employees to take effect immediately
+It will take effect the next time production is triggered
+reassign employees to take effect immediately
+It will take effect the next time production is triggered
+reassign employees to take effect immediately
+Error
+The amount needs to be greater than 500
+The frame drop attack has stopped
+You are attacking yourself!
+The frame drop attack has stopped
+You are attacking yourself!
+ptfx bombing stopped
+You are attacking yourself!
+Footsteps Control
+Mute
+Footstep control
+with sound
+Sonar
+On
+Sonar
+Off
+Lock the angle of the minimap
+On
+Lock the angle of the minimap
+Off
+世界停止
+世界恢复
+Warning
+The player is not in the vehicle
+Request control failed
+Request control was successful
+Vehicle invincible
+Applied
+Warning
+Player not in vehicle
+Request control failed
+Request control was successful
+Vehicle Invincible
+Revoked
+Warning
+The player is not in the vehicle
+Request control failed
+Request control was successful
+Vehicle No Collision
+Applied
+Warning
+The player is not in the vehicle
+Request control failed
+Request control was successful
+Vehicle has no collision
+removed
+FOV exceeds the limit
+the allowable range is 1-130
+PED sound control 
+ Mute
+PED sound control 
+ with sound
+Prompt 
+NPC damage has been restored
+Overhead 666
+generating
+Heads 666
+Remove
+Overhead 520
+generated
+Head 520
+Remove
+Ghost Rider
+on
+Ghost Rider
+Off
+Warning
+The player is not in the vehicle
+Request control failed
+Request control was successful
+Prompt 
+ the police will be dispatched when wanted
+Unsync
+ will unsync with all players
+cancel sync
+off
+Prompt 
+ unlocked
+sch-lua脚本不支持您的游戏版本,请立即删除,继续使用将损坏您的在线账户!
+sch-luaDoes not support your game version
+Please delete it immediately so as not to damage any online data
+已通过游戏版本适配检测
+Removed casino roulette cooldown
+The player list is for the player's aiming response service
+ distance: 
+ HP: 
+ distance: 
+The player sheet is for the player's aiming response
+ distance: 
+ Blip: 
+ Color: 
+ HP: 
+Handle:
+ model:
+ name:
+ distance:
+ Blip:
+ Color:
+ HP:
+Minimum resolution required: 1920x1080. To use the player function, select a player in the yim player list and scroll to the bottom of the player page. Players aiming to counterattack from the sub-menu Entity Table Access
+task function
+Entertainment function (low stability, full of bugs) (the particle effect will not continue to be generated after reaching the memory limit, please enable and disable the function of cleaning PTFX water column and fire column at the bottom of this page)
+Physical control it is recommended to turn on only one switch at the same time, otherwise it may seriously affect performance and cause some functions to fail
+Vehicle control
+Hostile NPC vehicle control
+NPC control
+(BETA testing) NPC control automatically excludes friendly whitelisting (list not yet complete, see below), lightpost markers still work globally
+Hostile NPC control
+Punish targeting NPC
+Punish targeting NPC
+Shooting and dying can keep NPC drops such as password clues and Perico access cards, but if you remove them, you will not be able to get any drops..
+Real-name shooting will be counted in the player's archived statistics and kill experience points will be obtained. Deaths under NPC control will be regarded as natural deaths of NPC, and removal is also anonymous. Shooting is using a special carbine MK2 simulation shooting
+Key NPC has been entered: see line 199 of the source code
+Entity generation
+Industry function - medium and high risk
+Send
+Miscellaneous
+vision
+PTFX collection
+SCH LUA PLAYER OPTIONS -!!!!! NO FEEDBACK ACCEPTED!!!!!
+global options
+Variable Adjustment - Even if you set the scope to a large value, it is actually still limited by the game
+NPC/vehicle force field range
+NPC/vehicle batch control range
+NPC targeting penalty area of effect
+Taxi automation at random intervals
+Viewing lens height
+Viewing lens FOV
+Number of bodyguards in formation
+debugging
+obj generation (Name)
+obj generation (Hash)
+PTFX generation
+Play cutscenes
+debugging
+obj generation (Name)
+obj generation (Hash)
+PTFX generation
+Entity table function will be set in accordance with the scope of entity control to obtain the corresponding entity to write lua table, and presented in the GUI, so that developers can test the entity control function.
+Player Aiming Reaction
+crates
+box
+cash
+Force field radius (meters)
+Control radius (m)
+Penalty radius (m)
+Min (milliseconds)
+max(ms)
+Height (m)
+Number of people
+++ table
++Game entity list
+-Player table
+-NPC list
+-Vehicle list
++lua internal list
+-Bodyguard helicopter list
+-Bodyguard NPC list
+NPC drops $2000 cycle
+Fragment crash
+Parachute Crash 2
+Model crash
+sound bombing
+launch upwards
+squeeze down
+ Return to Grand Theft Auto V.
+ You have been permanently banned from entering Grand Theft Auto Online Mode.
+Distance (m)
+Field of View (°)
+Multiple
+Session Host:
+Session Script Host:
+Mission Script Host:
+Mission Script Host:
+SCH Lua Warning
+SCH Lua supports the current game version
+SCH Lua does not support your game version
+You can still use features like entity control that are not affected by the version
+Affected features will be automatically disabled to protect your account's security
+The likelihood of crashes may increase
+Game version compatibility check has been passed.

@@ -1,4 +1,4 @@
--- v2.03 -- 
+-- v2.04 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -19,17 +19,18 @@ Github : https://github.com/sch-lda/SCH-LUA-YIMMENU
 
 外部链接
 Yimmenu lib By Discord@alice2333 https://discord.com/channels/388227343862464513/1124473215436214372 能够为开发者提供支持
-YimMenu-HeistLua https://github.com/wangzixuank/YimMenu-HeistLua 一个Yim开源任务脚本
+GTA5线上小助手中文lua仓库 https://github.com/CrazyZhang666/GTA5OnlineTools 
+Yimmenu 官方Lua仓库 (英文) https://github.com/YimMenu-Lua
 
 Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Control脚本和MusinessBanager脚本，Blue-Flag Lua虽然有些过时但也提供了一些灵感
-小助手官方Discord中 Alice、wangzixuan、nord123对Lua的编写提供了帮助
+小助手官方Discord中 Alice, nord123, rostal315 and wangzixuan 和 Github上的 gir489returns, tupoy-ya, xiaoxiao921对Lua的编写提供了帮助
 
 对于lua编写可能有帮助的网站
     1.Yimmenu Lua API  https://github.com/YimMenu/YimMenu/tree/master/docs/lua
     2.GTA5 Native Reference (本机函数)  https://nativedb.dotindustries.dev/natives
     3.GTA5 反编译脚本  https://github.com/Primexz/GTAV-Decompiled-Scripts
     4.PlebMaster (快速搜索模型Hash)  https://forge.plebmasters.de
-    5.gta-v-data-dumps (查ptfx/声音/模型)  https://github.com/DurtyFree/gta-v-data-dumps
+    5.gta-v-data-dumps (查ptfx/声音/模型/动作,提供预览)  https://github.com/DurtyFree/gta-v-data-dumps
     5.FiveM Native Reference  https://docs.fivem.net/docs/
 
 多语言维护者:
@@ -62,22 +63,23 @@ English: Drsexo (https://github.com/Drsexo)
     Github: https://github.com/sch-lda/SCH-LUA-YIMMENU
 
     External Links:
-    Yimmenu lib By Discord@alice2333 - https://discord.com/channels/388227343862464513/1124473215436214372, providing support for developers
-    YimMenu-HeistLua - https://github.com/wangzixuank/YimMenu-HeistLua, an open-source Yim task script
+    Yimmenu lib By Discord@alice2333 (zh_CN) - https://discord.com/channels/388227343862464513/1124473215436214372, providing support for developers
+    GTA5OnlineTools Lua repo (zh_CN) - https://github.com/CrazyZhang666/GTA5OnlineTools
+    Yimmenu official Lua repo (EN) https://github.com/YimMenu-Lua
 
-    Globals and Locals used in Lua are widely borrowed from UnknownCheats forum, Heist Control script, and MusinessBanager script. Although Blue-Flag Lua is somewhat outdated, it also provides some inspiration.
-    Alice, wangzixuan, and nord123 in the small assistant's official Discord provided assistance in Lua writing.
+    Globals and Locals used in Lua are widely copied from UnknownCheats forum, Heist Control script, and MusinessBanager script. Although Blue-Flag' Kiddion Lua is somewhat outdated, it also provides some inspiration.
+    [Alice, nord123, rostal315 and wangzixuan in GTA5OnlineTools (zh_CN) official Discord server] & [gir489returns, tupoy-ya and xiaoxiao921 on Github] provided assistance in Lua writing.
 
     Websites that may be helpful for Lua writing:
     1. Yimmenu Lua API - https://github.com/YimMenu/YimMenu/tree/master/docs/lua
     2. GTA5 Native Reference (Native functions) - https://nativedb.dotindustries.dev/natives
     3. GTA5 Decompiled Scripts - https://github.com/Primexz/GTAV-Decompiled-Scripts
-    4. PlebMaster (Quick model Hash search) - https://forge.plebmasters.de
+    4. PlebMaster (GTA5 data search & preview) - https://forge.plebmasters.de
     5. gta-v-data-dumps (Lookup PTFX/sounds/models) - https://github.com/DurtyFree/gta-v-data-dumps
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v2.03"
+luaversion = "v2.04"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -225,14 +227,14 @@ function upgrade_vehicle(vehicle)
     end
 end
 
-function run_script(scriptName) --启动脚本线程
+function run_script(scriptName, stackSize) --启动脚本线程
     script.run_in_fiber(function (runscript)
         if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(MISC.GET_HASH_KEY(scriptName)) >= 1 then
         gui.show_error("警告","请勿重复启动脚本线程")
         else
-        SCRIPT.REQUEST_SCRIPT(scriptName)  
+        SCRIPT.REQUEST_SCRIPT(scriptName)
         repeat runscript:yield() until SCRIPT.HAS_SCRIPT_LOADED(scriptName)
-        SYSTEM.START_NEW_SCRIPT(scriptName, 5000)
+        SYSTEM.START_NEW_SCRIPT(scriptName, stackSize)
         SCRIPT.SET_SCRIPT_AS_NO_LONGER_NEEDED(scriptName)
         end
     end)
@@ -866,15 +868,15 @@ gentab:add_sameline()
 gentab:add_button("显示事务所电脑", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        run_script("appfixersecurity")
+        run_script("appfixersecurity", 4592)
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
             globals_set_int(1895156+playerIndex*609+10+429+1,0)
             gui.show_message("提示","已转换为CEO")
-            run_script("appfixersecurity")
+            run_script("appfixersecurity", 4592)
             else
             gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
-            run_script("appfixersecurity")
+            run_script("appfixersecurity", 4592)
         end
     end
 end)
@@ -884,13 +886,13 @@ gentab:add_sameline()
 gentab:add_button("显示地堡电脑", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        run_script("appbunkerbusiness")
+        run_script("appbunkerbusiness", 1424)
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            run_script("appbunkerbusiness")
+            run_script("appbunkerbusiness", 1424)
             else
                 gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
-                run_script("appbunkerbusiness")
+                run_script("appbunkerbusiness", 1424)
             end
     end
 end)
@@ -900,13 +902,13 @@ gentab:add_sameline()
 gentab:add_button("显示机库电脑", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        run_script("appsmuggler")
+        run_script("appsmuggler", 4592)
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            run_script("appsmuggler")
+            run_script("appsmuggler", 4592)
             else
                 gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
-                run_script("appsmuggler")
+                run_script("appsmuggler", 4592)
             end
     end
 end)
@@ -916,13 +918,16 @@ gentab:add_sameline()
 gentab:add_button("显示游戏厅产业总控电脑", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        run_script("apparcadebusinesshub")
+        PLAYER.FORCE_CLEANUP_FOR_ALL_THREADS_WITH_THIS_NAME("appArcadeBusinessHub", 1)
+        run_script("apparcadebusinesshub", 1424)
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            run_script("apparcadebusinesshub")
+            PLAYER.FORCE_CLEANUP_FOR_ALL_THREADS_WITH_THIS_NAME("appArcadeBusinessHub", 1)
+            run_script("apparcadebusinesshub", 1424)
         else
                 gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
-                run_script("apparcadebusinesshub")
+                PLAYER.FORCE_CLEANUP_FOR_ALL_THREADS_WITH_THIS_NAME("appArcadeBusinessHub", 1)
+                run_script("apparcadebusinesshub", 1424)
         end
     end
 end)
@@ -932,13 +937,13 @@ gentab:add_sameline()
 gentab:add_button("显示恐霸主控面板", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        run_script("apphackertruck")
+        run_script("apphackertruck", 4592)
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            run_script("apphackertruck")
+            run_script("apphackertruck", 4592)
         else
             gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
-            run_script("apphackertruck")
+            run_script("apphackertruck",4592)
         end
     end
 end)
@@ -948,13 +953,13 @@ gentab:add_sameline()
 gentab:add_button("显示复仇者面板", function()
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     if globals.get_int(1895156+playerIndex*609+10+429+1) == 0 then
-        run_script("appAvengerOperations")
+        run_script("appAvengerOperations", 4592)
     else
         if globals.get_int(1895156+playerIndex*609+10+429+1) == 1 then
-            run_script("appAvengerOperations")
+            run_script("appAvengerOperations", 4592)
         else
             gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
-            run_script("appAvengerOperations")
+            run_script("appAvengerOperations", 4592)
         end
     end
 end)

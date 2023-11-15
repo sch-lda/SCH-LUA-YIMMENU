@@ -1,10 +1,10 @@
 # SCH-LUA-YIMMENU
 [English Version v2.03 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
 [English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
-**警告:总收入/总支出 任意一项超过20亿者，禁止使用移除收支差功能，否则相关数据会变成负值** \
-**Warning: If either total income or total expenses exceeds 2 billion, the "Remove Income-Expense Gap" function is prohibited from use, as it will result in negative values for the relevant data.** \
+由于学业，可能仅在假期更新 :( \
+Due to academic commitments, updates may only be made during holidays. \
 学习使用Lua的一次尝试.试图让免费菜单Yimmenu具备更多P2C菜单的实用功能 \
-An attempt to learn Lua.Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
+An attempt to learn Lua. Attempting to enhance the functionality of the free menu Yimmenu with more practical features from P2C menus. \
 它是实验性的，仅留作备份存档，没有针对用户优化，稳定性和安全性没有保障 \
 This Github Repo is experimental and only kept as a backup archive. There is no guarantee of user optimization, stability, and security.
 ## 用户协议 TOS

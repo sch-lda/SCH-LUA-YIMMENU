@@ -1,4 +1,4 @@
--- v2.04 -- 
+-- v2.05 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v2.04"
+luaversion = "v2.05"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -112,6 +112,10 @@ end)
 local VehicleTableTab = EntityTab:add_tab("-载具表")
 VehicleTableTab:add_button("写出载具表", function()
     writevehtable()
+end)
+local ObjTableTab = EntityTab:add_tab("-物体表")
+ObjTableTab:add_button("写出物体表", function()
+    writeobjtable()
 end)
 
 local LuaownedTab = LuaTablesTab:add_tab("+lua内部表")
@@ -189,6 +193,22 @@ function locals_set_int(scriptname, intlocal, intlocalval) --当游戏版本不�
     end
     if verchkok == 1 then
         locals.set_int(scriptname, intlocal, intlocalval)
+    else
+        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+    end
+end
+
+function packed_stat_set_bool(boolindex, boolval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
+    if verchkok == 2 then
+        log.info("正在检查sch-lua是否支持当前游戏版本")
+        if NETWORK.GET_ONLINE_VERSION() == suppver then
+            verchka1 = 100
+            verchkok = 1
+            log.info("通过检测")
+        end
+    end
+    if verchkok == 1 then
+        stats.set_packed_stat_bool(boolindex, boolval)
     else
         log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
     end
@@ -296,18 +316,13 @@ function CreateVehicle(Hash, Pos, Heading, Invincible)
 end
 
 function MCprintspl()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
-    local mpx = "MP0_"--用于判断当前是角色1还是角色2
-    if playerid == 1 then --用于判断当前是角色1还是角色2
-        mpx = "MP1_" --用于判断当前是角色1还是角色2
-    end
-    log.info("假钞 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY0").."%")
-    log.info("可卡因 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY1").."%")
-    log.info("冰毒 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY2").."%")
-    log.info("大麻 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY3").."%")
-    log.info("假证 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY4").."%")
-    log.info("地堡 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY5").."%")
-    log.info("致幻剂 原材料库存: "..stats.get_int(mpx.."MATTOTALFORFACTORY6").."%")
+    log.info("假钞 原材料库存: "..stats.get_int("MPX_MATTOTALFORFACTORY0").."%")
+    log.info("可卡因 原材料库存: "..stats.get_int("MPX_MATTOTALFORFACTORY1").."%")
+    log.info("冰毒 原材料库存: "..stats.get_int("MPX_MATTOTALFORFACTORY2").."%")
+    log.info("大麻 原材料库存: "..stats.get_int("MPX_MATTOTALFORFACTORY3").."%")
+    log.info("假证 原材料库存: "..stats.get_int("MPX_MATTOTALFORFACTORY4").."%")
+    log.info("地堡 原材料库存: "..stats.get_int("MPX_MATTOTALFORFACTORY5").."%")
+    log.info("致幻剂 原材料库存: "..stats.get_int("MPX_MATTOTALFORFACTORY6").."%")
 end
 
 function delete_entity(ent)  --discord@rostal315
@@ -471,6 +486,49 @@ function writeplayertable()
     end
 end
 
+function createobjtable()
+    obj_handle_table = {}
+    local objtable = entities.get_all_objects_as_handles()
+    for _, objs in pairs(objtable) do
+        local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+        local obj_pos = ENTITY.GET_ENTITY_COORDS(objs)
+        if calcDistance(selfpos, obj_pos) <= 200 then 
+            table.insert(obj_handle_table,objs)            
+        end
+    end
+end
+
+function writeobjtable()
+    ObjTableTab:clear()
+    ObjTableTab:add_button("刷新物体表", function()
+        writeobjtable()
+    end)
+    createobjtable()
+    local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+    local obj_list_index = 1
+    for _, obj_id in pairs(obj_handle_table) do
+        local obj_pos = ENTITY.GET_ENTITY_COORDS(obj_id)
+        local objdist = calcDistance(selfpos,obj_pos)
+        formattedobjdistance = string.format("%.1f", objdist)
+        local objmod = ENTITY.GET_ENTITY_MODEL(obj_id)
+        if objmod == 2202227855 then
+            ObjTableTab:add_text(obj_id.." 模型: "..objmod.." 距离: "..formattedobjdistance.." 特殊物体:ULP_清场_保险丝")
+        else
+            ObjTableTab:add_text(obj_id.." 模型: "..objmod.." 距离: "..formattedobjdistance)
+        end
+        ObjTableTab:add_sameline()
+        ObjTableTab:add_button("传送到"..obj_list_index, function()
+            PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), ENTITY.GET_ENTITY_COORDS(obj_id).x, ENTITY.GET_ENTITY_COORDS(obj_id).y, ENTITY.GET_ENTITY_COORDS(obj_id).z)
+        end)
+        ObjTableTab:add_sameline()
+        ObjTableTab:add_button("删除"..obj_list_index, function()
+            request_control(obj_id)
+            delete_entity(obj_id)        
+        end)
+        obj_list_index = obj_list_index + 1
+    end
+end
+
 function createpedtable()
     ped_handle_table = {}
     local pedtable = entities.get_all_peds_as_handles()
@@ -589,10 +647,9 @@ end
 --------------------------------------------------------------------------------------- TEST
 --[[
 gentab:add_button("test01", function()
-
+    MCprintspl()
 end)
 ]]
-
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单
@@ -686,163 +743,133 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("配置佩岛前置(猎豹雕像)", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
-    local mpx = "MP0_"--用于判断当前是角色1还是角色2
-    if playerid == 1 then --用于判断当前是角色1还是角色2
-        mpx = "MP1_" --用于判断当前是角色1还是角色2
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_TARGET"), 5, true)  --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_GEN"), 131071, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_ENTR"), 63, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_APPROACH"), -1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEAPONS"), 1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEP_DISRP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_ARM_DISRP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_HEL_DISRP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C"), 255, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C_SCOPED"), 255, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_SCOPED"), 127, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT"), 127, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_V"), 585151, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_V"), 438863, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4_PROGRESS"), 124271, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 65279, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 16777215, true)
+    stats.set_int("MPX_H4CNF_TARGET", 5)  --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    stats.set_int("MPX_H4CNF_BS_GEN", 131071)
+    stats.set_int("MPX_H4CNF_BS_ENTR", 63)
+    stats.set_int("MPX_H4CNF_APPROACH", -1)
+    stats.set_int("MPX_H4CNF_WEAPONS", 1)
+    stats.set_int("MPX_H4CNF_WEP_DISRP", 3)
+    stats.set_int("MPX_H4CNF_ARM_DISRP", 3)
+    stats.set_int("MPX_H4CNF_HEL_DISRP", 3)
+    stats.set_int("MPX_H4LOOT_GOLD_C", 255)
+    stats.set_int("MPX_H4LOOT_GOLD_C_SCOPED", 255)
+    stats.set_int("MPX_H4LOOT_PAINT_SCOPED", 127)
+    stats.set_int("MPX_H4LOOT_PAINT", 127)
+    stats.set_int("MPX_H4LOOT_GOLD_V", 585151)
+    stats.set_int("MPX_H4LOOT_PAINT_V", 438863)
+    stats.set_int("MPX_H4_PROGRESS", 124271)
+    stats.set_int("MPX_H4_MISSIONS", 65279)
+    stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
+    stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
     locals_set_int("heist_island_planning", 1526, 2) --刷新面板
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("配置佩岛前置(粉钻)", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_TARGET"), 3, true) --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_GEN"), 131071, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_ENTR"), 63, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_APPROACH"), -1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEAPONS"), 1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEP_DISRP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_ARM_DISRP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_HEL_DISRP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C"), 255, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C_SCOPED"), 255, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_SCOPED"), 127, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT"), 127, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_V"), 585151, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_V"), 438863, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4_PROGRESS"), 124271, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 65279, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 16777215, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 16777215, true)
+    stats.set_int("MPX_H4CNF_TARGET", 3) --https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    stats.set_int("MPX_H4CNF_BS_GEN", 131071)
+    stats.set_int("MPX_H4CNF_BS_ENTR", 63)
+    stats.set_int("MPX_H4CNF_APPROACH", -1)
+    stats.set_int("MPX_H4CNF_WEAPONS", 1)
+    stats.set_int("MPX_H4CNF_WEP_DISRP", 3)
+    stats.set_int("MPX_H4CNF_ARM_DISRP", 3)
+    stats.set_int("MPX_H4CNF_HEL_DISRP", 3)
+    stats.set_int("MPX_H4LOOT_GOLD_C", 255)
+    stats.set_int("MPX_H4LOOT_GOLD_C_SCOPED", 255)
+    stats.set_int("MPX_H4LOOT_PAINT_SCOPED", 127)
+    stats.set_int("MPX_H4LOOT_PAINT", 127)
+    stats.set_int("MPX_H4LOOT_GOLD_V", 585151)
+    stats.set_int("MPX_H4LOOT_PAINT_V", 438863)
+    stats.set_int("MPX_H4_PROGRESS", 124271)
+    stats.set_int("MPX_H4_MISSIONS", 65279)
+    stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
+    stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
     locals_set_int("heist_island_planning", 1526, 2)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("重置佩岛", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_TARGET"), 0, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_GEN"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_BS_ENTR"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_APPROACH"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEAPONS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_WEP_DISRP"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_ARM_DISRP"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4CNF_HEL_DISRP"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_C_SCOPED"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_SCOPED"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_GOLD_V"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_PAINT_V"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4_PROGRESS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4_MISSIONS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I_SCOPED"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H4LOOT_COKE_I"), 0, true)
+    stats.set_int("MPX_H4CNF_TARGET", 0)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    stats.set_int("MPX_H4CNF_BS_GEN", 0)
+    stats.set_int("MPX_H4CNF_BS_ENTR", 0)
+    stats.set_int("MPX_H4CNF_APPROACH", 0)
+    stats.set_int("MPX_H4CNF_WEAPONS", 0)
+    stats.set_int("MPX_H4CNF_WEP_DISRP", 0)
+    stats.set_int("MPX_H4CNF_ARM_DISRP", 0)
+    stats.set_int("MPX_H4CNF_HEL_DISRP", 0)
+    stats.set_int("MPX_H4LOOT_GOLD_C", 0)
+    stats.set_int("MPX_H4LOOT_GOLD_C_SCOPED", 0)
+    stats.set_int("MPX_H4LOOT_PAINT_SCOPED", 0)
+    stats.set_int("MPX_H4LOOT_PAINT", 0)
+    stats.set_int("MPX_H4LOOT_GOLD_V", 0)
+    stats.set_int("MPX_H4LOOT_PAINT_V", 0)
+    stats.set_int("MPX_H4_PROGRESS", 0)
+    stats.set_int("MPX_H4_MISSIONS", 0)
+    stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 0)
+    stats.set_int("MPX_H4LOOT_COKE_I", 0)
     locals_set_int("heist_island_planning", 1526, 2)
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
 
 gentab:add_button("配置赌场前置(钻石)", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(joaat(mpx.."H3_LAST_APPROACH"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_TARGET"), 3, true) --主目标:钻石
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET1"), 159, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_KEYLEVELS"), 2, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWWEAP"), 1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWDRIVER"), 1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWHACKER"), 5, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_VEHS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_WEAPS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET0"),443351, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_MASKS"), 12, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3_COMPLETEDPOSIX"), -1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."CAS_HEIST_FLOW"), -1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_POI"), 1023, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
+    stats.set_int("MPX_H3OPT_APPROACH", 2)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    stats.set_int("MPX_H3_LAST_APPROACH", 3)
+    stats.set_int("MPX_H3OPT_TARGET", 3) --主目标:钻石
+    stats.set_int("MPX_H3OPT_BITSET1", 159)
+    stats.set_int("MPX_H3OPT_KEYLEVELS", 2)
+    stats.set_int("MPX_H3OPT_DISRUPTSHIP", 3)
+    stats.set_int("MPX_H3OPT_CREWWEAP", 1)
+    stats.set_int("MPX_H3OPT_CREWDRIVER", 1)
+    stats.set_int("MPX_H3OPT_CREWHACKER", 5)
+    stats.set_int("MPX_H3OPT_VEHS", 0)
+    stats.set_int("MPX_H3OPT_WEAPS", 0)
+    stats.set_int("MPX_H3OPT_BITSET0", 443351)
+    stats.set_int("MPX_H3OPT_MASKS", 12)
+    stats.set_int("MPX_H3_COMPLETEDPOSIX", -1)
+    stats.set_int("MPX_CAS_HEIST_FLOW", -1)
+    stats.set_int("MPX_H3OPT_POI", 1023)
+    stats.set_int("MPX_H3OPT_ACCESSPOINTS", 2047)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("配置赌场前置(黄金)", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_APPROACH"), 2, true)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
-    STATS.STAT_SET_INT(joaat(mpx.."H3_LAST_APPROACH"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_TARGET"), 1, true) --主目标: 黄金
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET1"), 159, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_KEYLEVELS"), 2, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_DISRUPTSHIP"), 3, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWWEAP"), 1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWDRIVER"), 1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_CREWHACKER"), 5, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_VEHS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_WEAPS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET0"),443351, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_MASKS"), 12, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3_COMPLETEDPOSIX"), -1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."CAS_HEIST_FLOW"), -1, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_POI"), 1023, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_ACCESSPOINTS"), 2047, true)
+    stats.set_int("MPX_H3OPT_APPROACH", 2)--https://beholdmystuff.github.io/perico-stattext-maker/ 生成的stat们
+    stats.set_int("MPX_H3_LAST_APPROACH", 3)
+    stats.set_int("MPX_H3OPT_TARGET", 1) --主目标: 黄金
+    stats.set_int("MPX_H3OPT_BITSET1", 159)
+    stats.set_int("MPX_H3OPT_KEYLEVELS", 2)
+    stats.set_int("MPX_H3OPT_DISRUPTSHIP", 3)
+    stats.set_int("MPX_H3OPT_CREWWEAP", 1)
+    stats.set_int("MPX_H3OPT_CREWDRIVER", 1)
+    stats.set_int("MPX_H3OPT_CREWHACKER", 5)
+    stats.set_int("MPX_H3OPT_VEHS", 0)
+    stats.set_int("MPX_H3OPT_WEAPS", 0)
+    stats.set_int("MPX_H3OPT_BITSET0", 443351)
+    stats.set_int("MPX_H3OPT_MASKS", 12)
+    stats.set_int("MPX_H3_COMPLETEDPOSIX", -1)
+    stats.set_int("MPX_CAS_HEIST_FLOW", -1)
+    stats.set_int("MPX_H3OPT_POI", 1023)
+    stats.set_int("MPX_H3OPT_ACCESSPOINTS", 2047)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("重置赌场计划面板", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_APPROACH"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3_LAST_APPROACH"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_TARGET"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET1"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_KEYLEVELS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_DISRUPTSHIP"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_BITSET0"),0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_MASKS"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3_COMPLETEDPOSIX"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."CAS_HEIST_FLOW"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_POI"), 0, true)
-    STATS.STAT_SET_INT(joaat(mpx.."H3OPT_ACCESSPOINTS"), 0, true)
+    stats.set_int("MPX_H3OPT_APPROACH", 0)
+    stats.set_int("MPX_H3_LAST_APPROACH", 0)
+    stats.set_int("MPX_H3OPT_TARGET", 0)
+    stats.set_int("MPX_H3OPT_BITSET1", 0)
+    stats.set_int("MPX_H3OPT_KEYLEVELS", 0)
+    stats.set_int("MPX_H3OPT_DISRUPTSHIP", 0)
+    stats.set_int("MPX_H3OPT_BITSET0", 0)
+    stats.set_int("MPX_H3OPT_MASKS", 0)
+    stats.set_int("MPX_H3_COMPLETEDPOSIX", 0)
+    stats.set_int("MPX_CAS_HEIST_FLOW", 0)
+    stats.set_int("MPX_H3OPT_POI", 0)
+    stats.set_int("MPX_H3OPT_ACCESSPOINTS", 0)
 end)
 
 
@@ -1048,6 +1075,8 @@ gentab:add_button("飞天扫帚", function()
         ENTITY.SET_ENTITY_VISIBLE(veh, false, false)
         PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), veh, -1)
         ENTITY.ATTACH_ENTITY_TO_ENTITY(obj, veh, 0, 0, 0, 0.3, -80.0, 0, 0, true, false, false, false, 0, true) 
+        myvehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+        upgrade_vehicle(myvehisin)
     end)
 end)
 
@@ -1315,6 +1344,10 @@ gentab:add_sameline()
 
 local stnpcany2 = gentab:add_checkbox("电击b") --只是一个开关，代码往后面找
 
+gentab:add_sameline()
+
+local stnpcany7 = gentab:add_checkbox("爆炸") --只是一个开关，代码往后面找
+
 gentab:add_text("NPC瞄准我惩罚") 
 
 gentab:add_sameline()
@@ -1456,7 +1489,7 @@ gentab:add_button("实名随机射杀一半敌对NPC", function()
     for _, peds in pairs(pedtable) do
         local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-        if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 and math.random(0,1) >= 0.5 and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() then 
+        if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 and math.random(0,1) >= 0.5 and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() then 
             if PED.IS_PED_IN_ANY_VEHICLE(peds) then
                 request_control(peds)
                 TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
@@ -1503,7 +1536,7 @@ gentab:add_button("实名射杀敌对NPC", function()
     for _, peds in pairs(pedtable) do
         local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
         local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-        if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() then 
+        if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() then 
             if PED.IS_PED_IN_ANY_VEHICLE(peds) then
                 request_control(peds)
                 TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
@@ -1755,6 +1788,10 @@ local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
 
 gentab:add_sameline()
 
+local bussp2 = gentab:add_checkbox("摩托帮产业地堡致幻剂高速生产(危)")
+
+gentab:add_sameline()
+
 local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂极速生产(危)")
 
 gentab:add_sameline()
@@ -1795,32 +1832,24 @@ local autorespl = gentab:add_checkbox("产业自动补货(存在bug)")
 gentab:add_sameline()
 
 gentab:add_button("夜总会满人气", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 10000, true)
+    stats.set_int("MPX_CLUB_POPULARITY", 10000)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("CEO仓库员工进货一次", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     --freemode.c void func_17501(int iParam0, BOOL bParam1) // Position - 0x56C7B6
-    STATS.SET_PACKED_STAT_BOOL_CODE(32359,1,playerid)
-    STATS.SET_PACKED_STAT_BOOL_CODE(32360,1,playerid)
-    STATS.SET_PACKED_STAT_BOOL_CODE(32361,1,playerid)
-    STATS.SET_PACKED_STAT_BOOL_CODE(32362,1,playerid)
-    STATS.SET_PACKED_STAT_BOOL_CODE(32363,1,playerid)
+    packed_stat_set_bool(32359,1)
+    packed_stat_set_bool(32360,1)
+    packed_stat_set_bool(32361,1)
+    packed_stat_set_bool(32362,1)
+    packed_stat_set_bool(32363,1)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("机库员工进货一次", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-
-    STATS.SET_PACKED_STAT_BOOL_CODE(36828,1,playerid)
+    packed_stat_set_bool(36828,1)
 end)
 
 local checkCEOcargo = gentab:add_checkbox("锁定仓库员工单次进货数量为")
@@ -1837,20 +1866,15 @@ local iputint3 = gentab:add_input_int("箱")
 
 gentab:add_button("夜总会保险箱30万循环10次", function()
     script.run_in_fiber(function (ncsafeloop)
-        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-        local mpx = "MP0_"
-        if playerid == 1 then 
-            mpx = "MP1_" 
-        end
         a2 =0
         while a2 < 10 do --循环次数
             a2 = a2 + 1
             gui.show_message("已执行次数", a2)
-            globals_set_int(262145 + 24227,300000) -- 	if (func_22904(MP_STAT_CLUB_SAFE_CASH_VALUE, -1) != Global_262145.f_24227)
-            globals_set_int(262145 + 24223,300000) -- 	func_6(iParam0, iParam1, joaat("NIGHTCLUBINCOMEUPTOPOP100"), &(Global_262145.f_24223), true);
-            STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 10000, true)
-            STATS.STAT_SET_INT(joaat(mpx.."CLUB_PAY_TIME_LEFT"), -1, true)
-            STATS.STAT_SET_INT(joaat(mpx.."CLUB_POPULARITY"), 100000, true)
+            tunables.set_int("NIGHTCLUBMAXSAFEVALUE", 300000)
+            tunables.set_int("NIGHTCLUBINCOMEUPTOPOP100", 300000)
+            stats.set_int("MPX_CLUB_POPULARITY", 10000)
+            stats.set_int("MPX_CLUB_PAY_TIME_LEFT", -1)
+            stats.set_int("MPX_CLUB_POPULARITY", 100000)
             gui.show_message("警告", "此方法仅用于偶尔小额恢复")
             ncsafeloop:sleep(10000) --执行间隔，单位ms
         end
@@ -2037,8 +2061,79 @@ gentab:add_button("游戏厅计划面板(先进游戏厅)", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  2711.773, -369.458, -54.781)
 end)
 
+gentab:add_button("赌场", function()
+    local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0)
+    local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
+
+    if intr == 275201 then 
+        gui.show_message("无需传送","您已在设施内")
+    else
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  924, 46, 81)
+    end
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("幸运轮盘", function()
+    local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0)
+    local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
+
+    if intr == 275201 then 
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  1111, 228.75, -49.6)
+        PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 352)
+    else
+        gui.show_message("提示","请先进入赌场")
+
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  924, 46, 81)
+    end
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("贝克女士办公室", function()
+    local PlayerPos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 0.0, 0.0)
+    local intr = INTERIOR.GET_INTERIOR_AT_COORDS(PlayerPos.x, PlayerPos.y, PlayerPos.z)
+
+    if intr == 275201 then 
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  1123.82, 264.45, -51)
+    else
+        gui.show_message("提示","请先进入赌场")
+
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  924, 46, 81)
+    end
+end)
+
+gentab:add_button("洛圣都改车王", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  -337, -137, 38.5)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("附靶场的武装国度", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  20.80, -1107, 29.8)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 335)
+end)
+
+gentab:add_button("佩里科地下金库", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  5006.74, -5756, 15.5)
+    PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 144)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("豪宅大门内", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  4991, -5718, 20)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("海上逃离点", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  4735.74, -6174, 20)
+end)
+
 gentab:add_button("随机位置", function()
-    ENTITY.SET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), math.random(-1794,2940), math.random(-3026,6298), -199.9,1,0,0,1)
+    _,safepos = PATHFIND.GET_NTH_CLOSEST_VEHICLE_NODE_WITH_HEADING(math.random(-1794,2940), math.random(-3026,6298), 20, 1, 0, outheading, lanes, 0, 3.0, 0.0)
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), safepos.x, safepos.y, safepos.z)
 end)
 
 gentab:add_separator()
@@ -2049,15 +2144,10 @@ local SEa = 0
 gentab:add_button("移除收支差", function()
 
     SE = MONEY.NETWORK_GET_VC_BANK_BALANCE() + stats.get_int("MPPLY_TOTAL_SVC") - stats.get_int("MPPLY_TOTAL_EVC")
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
-    local mpx = "MP0_"--用于判断当前是角色1还是角色2
-    if playerid == 1 then --用于判断当前是角色1还是角色2
-        mpx = "MP1_" --用于判断当前是角色1还是角色2
-    end
     log.info(SE)
     if SE >= 20000 and SEa == 0 and stats.get_int("MPPLY_TOTAL_SVC")>0 and stats.get_int("MPPLY_TOTAL_EVC")>0 then
         SE = SE - 10000
-        stats.set_int(mpx.."MONEY_EARN_JOBS",stats.get_int(mpx.."MONEY_EARN_JOBS") + SE )
+        stats.set_int("MPX_MONEY_EARN_JOBS",stats.get_int("MPX_MONEY_EARN_JOBS") + SE )
         stats.set_int("MPPLY_TOTAL_EVC",stats.get_int("MPPLY_TOTAL_EVC") + SE )
         gui.show_message("移除收支差","执行成功")
         log.info("已移除收支差:"..SE)    
@@ -2164,24 +2254,20 @@ gentab:add_sameline()
 
 gentab:add_button("移除达克斯冷却", function()
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    local mpx = "MP0_"
-    if playerid == 1 then 
-        mpx = "MP1_" 
-    end
-    STATS.STAT_SET_INT(joaat(mpx.."XM22JUGGALOWORKCDTIMER"), -1, true)
+    stats.set_int("MPX_XM22JUGGALOWORKCDTIMER", -1)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("移除安保合约/电话暗杀冷却", function()
-    globals_set_int(262145 + 31908, 0)   --tuneables_processing.c   	func_6(iParam0, iParam1, joaat("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME") /* collision: FIXER_SECURITY_CONTRACT_COOLDOWN_TIME */, &(Global_262145.f_31908), true);
-    globals_set_int(262145 + 31989, 0)   --tuneables_processing.c	func_6(iParam0, iParam1, 1872071131, &(Global_262145.f_31989), true);
+    tunables.set_int("FIXER_SECURITY_CONTRACT_COOLDOWN_TIME", 0)
+    tunables.set_int(1872071131, 0)
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("移除CEO载具冷却", function()
-    globals_set_int(262145 + 13005, 0)   --tuneables_processing.c 	func_6(iParam0, iParam1, joaat("GB_CALL_VEHICLE_COOLDOWN") /* collision: GB_CALL_VEHICLE_COOLDOWN */, &(Global_262145.f_13005), true);
+    tunables.set_int("GB_CALL_VEHICLE_COOLDOWN", 0)
 end)
 
 gentab:add_sameline()
@@ -3094,6 +3180,15 @@ gui.add_tab(""):add_sameline()
 
 local audiospam = gui.add_tab(""):add_checkbox("声音轰炸")
 
+gui.add_tab(""):add_sameline()
+
+gui.add_tab(""):add_button("陷害玩家爆炸", function()
+    createplayertable()
+    for _, exptar_player_id in pairs(player_Index_table) do
+        FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(network.get_selected_player()), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(exptar_player_id)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(exptar_player_id)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(exptar_player_id)).z, 82, 1, true, false, 100)
+    end
+end)
+
 gui.add_tab(""):add_button("向上发射", function()
     script.run_in_fiber(function (launchply)
 
@@ -3140,6 +3235,18 @@ local plydist = gui.get_tab(""):add_input_float("距离(m)")
 
 gentab:add_separator()
 gentab:add_text("全局选项") 
+
+gentab:add_button("全局混乱爆炸", function()
+    createplayertable()
+    for _, exptar_player_id in pairs(player_Index_table) do
+        local calctableLength = #player_Index_table
+        local randomelem = math.random(1, calctableLength)
+        local randomexpvictim = player_Index_table[randomelem]
+        FIRE.ADD_OWNED_EXPLOSION(PLAYER.GET_PLAYER_PED(randomexpvictim), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(exptar_player_id)).x, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(exptar_player_id)).y, ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(exptar_player_id)).z, 82, 1, true, false, 100)
+    end
+end)
+
+gentab:add_sameline()
 
 gentab:add_button("赠送暴君MK2", function()
     script.run_in_fiber(function (giftmk2)
@@ -3273,6 +3380,10 @@ gentab:add_separator()
 gentab:add_text("调试") 
 
 local DrawInteriorID = gentab:add_checkbox("Show Interior ID") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+local DrawMyHeading = gentab:add_checkbox("Show Heading") --只是一个开关，代码往后面找
 
 gentab:add_sameline()
 
@@ -3554,6 +3665,12 @@ end)
 
 EntityTab:add_sameline()
 
+EntityTab:add_button("写出物体表", function()
+    writeobjtable()
+end)
+
+EntityTab:add_sameline()
+
 tableautorf = EntityTab:add_checkbox("获取玩家表并自动刷新(玩家瞄准反击的运行基础)")
 EntityTab:add_text("玩家瞄准反应")
 plyaimkarma1 = EntityTab:add_checkbox("射击f") --这只是一个复选框,代码往最后的循环脚本部分找
@@ -3598,7 +3715,7 @@ loopa28 = 0  --线上模式暂停
 loopa29 = 0  --紧急模式1
 loopa30 = 0  --紧急模式3
 loopa31 = 0  --仅渲染高清
-
+loopa32 = 0  --控制摩托帮地堡致幻剂生产速度
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 script.register_looped("schlua-luatableautorefresh", function() 
     if  tableautorf:is_enabled() then
@@ -3906,48 +4023,43 @@ end)
 script.register_looped("schlua-ml2", function() 
     
     if  autorespl:is_enabled() then--自动补原材料
-        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
-        local mpx = "MP0_"--用于判断当前是角色1还是角色2
-        if playerid == 1 then --用于判断当前是角色1还是角色2
-            mpx = "MP1_" --用于判断当前是角色1还是角色2
-        end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY0") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
+        if stats.get_int("MPX_MATTOTALFORFACTORY0") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
             globals_set_int(1648657+1+0,1) --假钞
             log.info("假钞原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY1") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
+        if stats.get_int("MPX_MATTOTALFORFACTORY1") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
             globals_set_int(1648657+1+1,1) --kky
             log.info("可卡因原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY2") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
+        if stats.get_int("MPX_MATTOTALFORFACTORY2") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
             globals_set_int(1648657+1+2,1) --bd
             log.info("冰毒原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY3") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
+        if stats.get_int("MPX_MATTOTALFORFACTORY3") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
             globals_set_int(1648657+1+3,1) --dm
             log.info("大麻原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY4") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
+        if stats.get_int("MPX_MATTOTALFORFACTORY4") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
             globals_set_int(1648657+1+4,1) --id
             log.info("证件原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY5") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
+        if stats.get_int("MPX_MATTOTALFORFACTORY5") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
             globals_set_int(1648657+1+5,1) --bk
             log.info("地堡原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
-        if stats.get_int(mpx.."MATTOTALFORFACTORY6") > 0 and stats.get_int(mpx.."MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
+        if stats.get_int("MPX_MATTOTALFORFACTORY6") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
             globals_set_int(1648657+1+6,1) --acid
             log.info("致幻剂原材料不足,将自动补满")
             MCprintspl()
@@ -3980,10 +4092,10 @@ script.register_looped("schlua-dataservice", function()
     end
 
     if  cashmtp:is_enabled() and cashmtpin:get_value() >= 0 then--锁定普通联系人差事奖励倍率
-        if globals.get_float(262145) ~= cashmtpin:get_value() then
+        if tunables.get_float("CASH_MULTIPLIER") ~= cashmtpin:get_value() then
             formattedcashmtpin = string.format("%.3f", cashmtpin:get_value())
             gui.show_message("联系人任务收入倍率",formattedcashmtpin.."倍")
-            globals_set_float(262145,cashmtpin:get_value())
+            tunables.set_float("CASH_MULTIPLIER",cashmtpin:get_value())
         end
     end
 
@@ -4009,100 +4121,135 @@ script.register_looped("schlua-dataservice", function()
 
     if  bussp:is_enabled() then--锁定地堡摩托帮致幻剂生产速度
         local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
-        local mpx = "MP0_"--用于判断当前是角色1还是角色2
-        if playerid == 1 then --用于判断当前是角色1还是角色2
-            mpx = "MP1_" --用于判断当前是角色1还是角色2
+        if loopa32 == 0 then
+            gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
         end
+        if tunables.get_int("BIKER_WEED_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_METH_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_CRACK_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_FAKEIDS_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_COUNTERCASH_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("BIKER_ACID_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("GR_MANU_PRODUCTION_TIME") ~= 5000 then
+            tunables.set_int("GR_MANU_PRODUCTION_TIME", 5000)
+        end
+        if tunables.get_int("631477612") ~= 5000 then
+            tunables.set_int("631477612", 5000)
+        end
+        if tunables.get_int("818645907") ~= 5000 then
+            tunables.set_int("818645907", 5000)
+        end
+        loopa32 =1
+    else
+        if loopa32 == 1 then 
+            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 360000) 
+            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 1800000) 
+            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 3000000) 
+            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 300000) 
+            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 720000) 
+            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 135000) 
+            tunables.set_int("GR_MANU_PRODUCTION_TIME", 600000)
+            tunables.set_int("631477612", 90000)
+            tunables.set_int("818645907", 90000)
+            loopa32 =0
+        end    
+    end
+
+    if  bussp2:is_enabled() then--锁定地堡摩托帮致幻剂生产速度
+        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
         if loopa19 == 0 then
             gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
         end
-        if globals.get_int(262145 + 17571) ~= 5000 then
-            globals_set_int(262145 + 17571, 5000) -- BIKER_WEED_PRODUCTION_TIME
+        if tunables.get_int("BIKER_WEED_PRODUCTION_TIME") ~= 60000 then
+            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 60000)
         end
-        if globals.get_int(262145 + 17572) ~= 5000 then
-            globals_set_int(262145 + 17572, 5000) 
+        if tunables.get_int("BIKER_METH_PRODUCTION_TIME") ~= 60000 then
+            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 60000)
         end
-        if globals.get_int(262145 + 17573) ~= 5000 then
-            globals_set_int(262145 + 17573, 5000) 
+        if tunables.get_int("BIKER_CRACK_PRODUCTION_TIME") ~= 60000 then
+            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 60000)
         end
-        if globals.get_int(262145 + 17574) ~= 5000 then
-            globals_set_int(262145 + 17574, 5000) 
+        if tunables.get_int("BIKER_FAKEIDS_PRODUCTION_TIME") ~= 60000 then
+            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 60000)
         end
-        if globals.get_int(262145 + 17575) ~= 5000 then
-            globals_set_int(262145 + 17575, 5000) 
+        if tunables.get_int("BIKER_COUNTERCASH_PRODUCTION_TIME") ~= 60000 then
+            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 60000)
         end
-        if globals.get_int(262145 + 17576) ~= 5000 then
-            globals_set_int(262145 + 17576, 5000) 
+        if tunables.get_int("BIKER_ACID_PRODUCTION_TIME") ~= 60000 then
+            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 60000)
         end
-        if globals.get_int(262145 + 21712) ~= 5000 then
-            globals_set_int(262145 + 21712, 5000) -- GR_MANU_PRODUCTION_TIME
+        if tunables.get_int("GR_MANU_PRODUCTION_TIME") ~= 60000 then
+            tunables.set_int("GR_MANU_PRODUCTION_TIME", 60000)
         end
-        if globals.get_int(262145 + 21713) ~= 5000 then
-            globals_set_int(262145 + 21713, 5000) -- 631477612
+        if tunables.get_int("631477612") ~= 60000 then
+            tunables.set_int("631477612", 60000)
         end
-        if globals.get_int(262145 + 21714) ~= 5000 then
-            globals_set_int(262145 + 21714, 5000) -- 818645907
+        if tunables.get_int("818645907") ~= 60000 then
+            tunables.set_int("818645907", 60000)
         end
         loopa19 =1
     else
         if loopa19 == 1 then 
-            globals_set_int(262145 + 17571, 360000) 
-            globals_set_int(262145 + 17572, 1800000) 
-            globals_set_int(262145 + 17573, 3000000) 
-            globals_set_int(262145 + 17574, 300000) 
-            globals_set_int(262145 + 17575, 720000) 
-            globals_set_int(262145 + 17576, 135000) 
-            globals_set_int(262145 + 21712, 600000)
-            globals_set_int(262145 + 21713, 90000)
-            globals_set_int(262145 + 21714, 90000)
+            tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 360000) 
+            tunables.set_int("BIKER_METH_PRODUCTION_TIME", 1800000) 
+            tunables.set_int("BIKER_CRACK_PRODUCTION_TIME", 3000000) 
+            tunables.set_int("BIKER_FAKEIDS_PRODUCTION_TIME", 300000) 
+            tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 720000) 
+            tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 135000) 
+            tunables.set_int("GR_MANU_PRODUCTION_TIME", 600000)
+            tunables.set_int("631477612", 90000)
+            tunables.set_int("818645907", 90000)
             loopa19 =0
         end    
     end
-
+    
     if  ncspup:is_enabled() then--锁定夜总会生产速度
         if loopa20 == 0 then
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
-        if globals.get_int(262145 + 24548) ~= 5000 then
-            globals_set_int(262145 + 24548, 5000) -- tuneables_processing.c -147565853
+        if tunables.get_int(-147565853) ~= 5000 then
+            tunables.set_int(-147565853, 5000)
         end
-        if globals.get_int(262145 + 24549) ~= 5000 then
-            globals_set_int(262145 + 24549, 5000) -- tuneables_processing.c -1390027611
+        if tunables.get_int(-1390027611) ~= 5000 then
+            tunables.set_int(-1390027611, 5000)
         end
-        if globals.get_int(262145 + 24550) ~= 5000 then
-            globals_set_int(262145 + 24550, 5000) -- tuneables_processing.c -1292210552
+        if tunables.get_int(-1292210552) ~= 5000 then
+            tunables.set_int(-1292210552, 5000)
         end
-        if globals.get_int(262145 + 24551) ~= 5000 then
-            globals_set_int(262145 + 24551, 5000) -- tuneables_processing.c 1007184806
+        if tunables.get_int(1007184806) ~= 5000 then
+            tunables.set_int(1007184806, 5000)
         end
-        if globals.get_int(262145 + 24552) ~= 5000 then
-            globals_set_int(262145 + 24552, 5000) -- tuneables_processing.c 18969287
+        if tunables.get_int(18969287) ~= 5000 then
+            tunables.set_int(18969287, 5000)
         end
-        if globals.get_int(262145 + 24553) ~= 5000 then
-            globals_set_int(262145 + 24553, 5000) -- tuneables_processing.c -863328938
+        if tunables.get_int(-863328938) ~= 5000 then
+            tunables.set_int(-863328938, 5000)
         end
-        if globals.get_int(262145 + 24554) ~= 5000 then
-            globals_set_int(262145 + 24554, 5000) -- tuneables_processing.c 1607981264
+        if tunables.get_int(1607981264) ~= 5000 then
+            tunables.set_int(1607981264, 5000)
         end
         loopa20 =1
     else
-        if loopa20 == 1 then 
-            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
---[[ 游戏默认值
-    Global_262145.f_24548 = 4800000;
-	Global_262145.f_24549 = 14400000;
-	Global_262145.f_24550 = 7200000;
-	Global_262145.f_24551 = 2400000;
-	Global_262145.f_24552 = 1800000;
-	Global_262145.f_24553 = 3600000;
-	Global_262145.f_24554 = 8400000;
-]]
+        if loopa20 == 1 then
+            tunables.set_int(-147565853, 14400000)
+            tunables.set_int(-1390027611, 7200000)
+            tunables.set_int(-1292210552, 2400000)
+            tunables.set_int(1007184806, 2400000)
+            tunables.set_int(18969287, 1800000)
+            tunables.set_int(-863328938, 3600000)
+            tunables.set_int(1607981264, 8400000)
             loopa20 =0
         end    
     end
@@ -4111,37 +4258,37 @@ script.register_looped("schlua-dataservice", function()
         if loopa21 == 0 then
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
-        if globals.get_int(262145 + 24548) ~= 3600000 then
-            globals_set_int(262145 + 24548, 3600000) -- tuneables_processing.c -147565853
+        if tunables.get_int(-147565853) ~= 3600000 then
+            tunables.set_int(-147565853, 3600000)
         end
-        if globals.get_int(262145 + 24549) ~= 1800000 then
-            globals_set_int(262145 + 24549, 1800000) -- tuneables_processing.c -1390027611
+        if tunables.get_int(-1390027611) ~= 1800000 then
+            tunables.set_int(-1390027611, 1800000)
         end
-        if globals.get_int(262145 + 24550) ~= 600000 then
-            globals_set_int(262145 + 24550, 600000) -- tuneables_processing.c -1292210552
+        if tunables.get_int(-1292210552) ~= 600000 then
+            tunables.set_int(-1292210552, 600000)
         end
-        if globals.get_int(262145 + 24551) ~= 600000 then
-            globals_set_int(262145 + 24551, 600000) -- tuneables_processing.c 1007184806
+        if tunables.get_int(1007184806) ~= 600000 then
+            tunables.set_int(1007184806, 600000)
         end
-        if globals.get_int(262145 + 24552) ~= 450000 then
-            globals_set_int(262145 + 24552, 450000) -- tuneables_processing.c 18969287
+        if tunables.get_int(18969287) ~= 450000 then
+            tunables.set_int(18969287, 450000)
         end
-        if globals.get_int(262145 + 24553) ~= 900000 then
-            globals_set_int(262145 + 24553, 900000) -- tuneables_processing.c -863328938
+        if tunables.get_int(-863328938) ~= 900000 then
+            tunables.set_int(-863328938, 900000)
         end
-        if globals.get_int(262145 + 24554) ~= 2100000 then
-            globals_set_int(262145 + 24554, 2100000) -- tuneables_processing.c 1607981264
+        if tunables.get_int(1607981264) ~= 2100000 then
+            tunables.set_int(1607981264, 2100000)
         end
         loopa21 =1
     else
         if loopa21 == 1 then 
-            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            tunables.set_int(-147565853, 14400000)
+            tunables.set_int(-1390027611, 7200000)
+            tunables.set_int(-1292210552, 2400000)
+            tunables.set_int(1007184806, 2400000)
+            tunables.set_int(18969287, 1800000)
+            tunables.set_int(-863328938, 3600000)
+            tunables.set_int(1607981264, 8400000)
             loopa21 =0
         end    
     end
@@ -4150,37 +4297,37 @@ script.register_looped("schlua-dataservice", function()
         if loopa22 == 0 then
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
-        if globals.get_int(262145 + 24548) ~= 1440000 then
-            globals_set_int(262145 + 24548, 1440000) -- tuneables_processing.c -147565853
+        if tunables.get_int(-147565853) ~= 1440000 then
+            tunables.set_int(-147565853, 1440000)
         end
-        if globals.get_int(262145 + 24549) ~= 720000 then
-            globals_set_int(262145 + 24549, 720000) -- tuneables_processing.c -1390027611
+        if tunables.get_int(-1390027611) ~= 720000 then
+            tunables.set_int(-1390027611, 720000)
         end
-        if globals.get_int(262145 + 24550) ~= 240000 then
-            globals_set_int(262145 + 24550, 240000) -- tuneables_processing.c -1292210552
+        if tunables.get_int(-1292210552) ~= 240000 then
+            tunables.set_int(-1292210552, 240000)
         end
-        if globals.get_int(262145 + 24551) ~= 240000 then
-            globals_set_int(262145 + 24551, 240000) -- tuneables_processing.c 1007184806
+        if tunables.get_int(1007184806) ~= 240000 then
+            tunables.set_int(1007184806, 240000)
         end
-        if globals.get_int(262145 + 24552) ~= 180000 then
-            globals_set_int(262145 + 24552, 180000) -- tuneables_processing.c 18969287
+        if tunables.get_int(18969287) ~= 180000 then
+            tunables.set_int(18969287, 180000)
         end
-        if globals.get_int(262145 + 24553) ~= 360000 then
-            globals_set_int(262145 + 24553, 360000) -- tuneables_processing.c -863328938
+        if tunables.get_int(-863328938) ~= 360000 then
+            tunables.set_int(-863328938, 360000)
         end
-        if globals.get_int(262145 + 24554) ~= 840000 then
-            globals_set_int(262145 + 24554, 840000) -- tuneables_processing.c 1607981264
+        if tunables.get_int(1607981264) ~= 840000 then
+            tunables.set_int(1607981264, 840000)
         end
         loopa22 =1
     else
         if loopa22 == 1 then 
-            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            tunables.set_int(-147565853, 14400000)
+            tunables.set_int(-1390027611, 7200000)
+            tunables.set_int(-1292210552, 2400000)
+            tunables.set_int(1007184806, 2400000)
+            tunables.set_int(18969287, 1800000)
+            tunables.set_int(-863328938, 3600000)
+            tunables.set_int(1607981264, 8400000)
             loopa22 =0
         end    
     end
@@ -4189,37 +4336,37 @@ script.register_looped("schlua-dataservice", function()
         if loopa23 == 0 then
             gui.show_message("下次触发生产时才能生效","重新指派员工以立即生效")
         end
-        if globals.get_int(262145 + 24548) ~= 720000 then
-            globals_set_int(262145 + 24548, 720000) -- tuneables_processing.c -147565853
+        if tunables.get_int(-147565853) ~= 720000 then
+            tunables.set_int(-147565853, 720000)
         end
-        if globals.get_int(262145 + 24549) ~= 360000 then
-            globals_set_int(262145 + 24549, 360000) -- tuneables_processing.c -1390027611
+        if tunables.get_int(-1390027611) ~= 360000 then
+            tunables.set_int(-1390027611, 360000)
         end
-        if globals.get_int(262145 + 24550) ~= 120000 then
-            globals_set_int(262145 + 24550, 120000) -- tuneables_processing.c -1292210552
+        if tunables.get_int(-1292210552) ~= 120000 then
+            tunables.set_int(-1292210552, 120000)
         end
-        if globals.get_int(262145 + 24551) ~= 120000 then
-            globals_set_int(262145 + 24551, 120000) -- tuneables_processing.c 1007184806
+        if tunables.get_int(1007184806) ~= 120000 then
+            tunables.set_int(1007184806, 120000)
         end
-        if globals.get_int(262145 + 24552) ~= 90000 then
-            globals_set_int(262145 + 24552, 90000) -- tuneables_processing.c 18969287
+        if tunables.get_int(18969287) ~= 90000 then
+            tunables.set_int(18969287, 90000)
         end
-        if globals.get_int(262145 + 24553) ~= 180000 then
-            globals_set_int(262145 + 24553, 180000) -- tuneables_processing.c -863328938
+        if tunables.get_int(-863328938) ~= 180000 then
+            tunables.set_int(-863328938, 180000)
         end
-        if globals.get_int(262145 + 24554) ~= 420000 then
-            globals_set_int(262145 + 24554, 420000) -- tuneables_processing.c 1607981264
+        if tunables.get_int(1607981264) ~= 420000 then
+            tunables.set_int(1607981264, 420000)
         end
         loopa23 =1
     else
         if loopa23 == 1 then 
-            globals_set_int(262145 + 24548, 14400000) -- tuneables_processing.c -147565853
-            globals_set_int(262145 + 24549, 7200000) -- tuneables_processing.c -1390027611
-            globals_set_int(262145 + 24550, 2400000) -- tuneables_processing.c -1292210552
-            globals_set_int(262145 + 24551, 2400000) -- tuneables_processing.c 1007184806
-            globals_set_int(262145 + 24552, 1800000) -- tuneables_processing.c 18969287
-            globals_set_int(262145 + 24553, 3600000) -- tuneables_processing.c -863328938
-            globals_set_int(262145 + 24554, 8400000) -- tuneables_processing.c 1607981264
+            tunables.set_int(-147565853, 14400000)
+            tunables.set_int(-1390027611, 7200000)
+            tunables.set_int(-1292210552, 2400000)
+            tunables.set_int(1007184806, 2400000)
+            tunables.set_int(18969287, 1800000)
+            tunables.set_int(-863328938, 3600000)
+            tunables.set_int(1607981264, 8400000)
             loopa23 =0
         end    
     end
@@ -4228,8 +4375,8 @@ script.register_looped("schlua-dataservice", function()
     
 
     if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
-        globals_set_int(262145 + 30394, 0) --tuneables_processing.c IH_SUBMARINE_MISSILES_COOLDOWN
-        globals_set_int(262145 + 30395, 80000) --tuneables_processing.c IH_SUBMARINE_MISSILES_DISTANCE
+        tunables.set_int("IH_SUBMARINE_MISSILES_COOLDOWN", 0) --tuneables_processing.c 
+        tunables.set_int("IH_SUBMARINE_MISSILES_DISTANCE", 80000) --tuneables_processing.c IH_SUBMARINE_MISSILES_DISTANCE
     end
 
     if checkbypassconv:is_enabled() then  --跳过NPC对话
@@ -5591,7 +5738,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 request_control(peds)
                 TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
             end
@@ -5603,7 +5750,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 request_control(peds)
                 PED.SET_PED_TO_RAGDOLL(peds, 5000, 0,0 , false, false, false)
             end
@@ -5615,7 +5762,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 request_control(peds)
                 ENTITY.SET_ENTITY_HEALTH(peds,0,true)
             end
@@ -5729,7 +5876,7 @@ script.register_looped("schlua-ectrlservice", function()
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
             local ismarked = false
             if calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and ENTITY.GET_ENTITY_HEALTH(peds) > 0 then 
-                if PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") then 
+                if PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01") then 
                     ismarked = true
                     GRAPHICS.DRAW_BOX(ped_pos.x-0.1,ped_pos.y-0.1,ped_pos.z+0.8,ped_pos.x+0.1,ped_pos.y+0.1,ped_pos.z+20,255,76,0,255)
                 end
@@ -5749,7 +5896,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and not PED.IS_PED_DEAD_OR_DYING(peds,1)  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 request_control(peds)
                 FIRE.START_ENTITY_FIRE(peds)
                 FIRE.START_SCRIPT_FIRE(ped_pos.x, ped_pos.y, ped_pos.z, 25, true)
@@ -5763,7 +5910,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID()  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID()  and PED.IS_PED_A_PLAYER(peds) ~= 1 then 
                 request_control(peds)
                 if PED.IS_PED_IN_ANY_VEHICLE(peds) then
                     tarpensveh = PED.GET_VEHICLE_PED_IS_IN(peds)
@@ -5781,7 +5928,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and ENTITY.GET_ENTITY_HEALTH(peds) > 0 and PED.IS_PED_A_PLAYER(peds) == false then 
                 request_control(peds)
                 TASK.CLEAR_PED_TASKS(peds)
                 pedblip = HUD.GET_BLIP_FROM_ENTITY(peds)
@@ -5796,7 +5943,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() then 
                 GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT("golfputting", true)
                 GRAPHICS.DRAW_BOX(ped_pos.x-0.1,ped_pos.y-0.1,ped_pos.z+0.8,ped_pos.x+0.1,ped_pos.y+0.1,ped_pos.z+20,255,0,0,255)
             end
@@ -5808,7 +5955,7 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1  then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1  then 
                 request_control(peds)
                 WEAPON.REMOVE_ALL_PED_WEAPONS(peds,true)
             end
@@ -5820,13 +5967,24 @@ script.register_looped("schlua-ectrlservice", function()
         for _, peds in pairs(pedtable) do
             local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
             local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
-            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and ENTITY.GET_ENTITY_HEALTH(peds) > 0  then 
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and ENTITY.GET_ENTITY_HEALTH(peds) > 0  then 
                 request_control(peds)
                 if PED.IS_PED_IN_ANY_VEHICLE(peds) then
                     TASK.CLEAR_PED_TASKS_IMMEDIATELY(peds)
                 else
                     MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(ped_pos.x, ped_pos.y, ped_pos.z + 1, ped_pos.x, ped_pos.y, ped_pos.z, 0, true, joaat("weapon_stungun"), PLAYER.GET_PLAYER_PED(), false, true, 1.0)
                 end 
+            end
+        end
+    end
+
+    if  stnpcany7:is_enabled() then --控制敌对NPC-爆炸
+        local pedtable = entities.get_all_peds_as_handles()
+        for _, peds in pairs(pedtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
+            local ped_pos = ENTITY.GET_ENTITY_COORDS(peds)
+            if (PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 4 or PED.GET_RELATIONSHIP_BETWEEN_PEDS(peds, PLAYER.PLAYER_PED_ID()) == 5 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 1 or HUD.GET_BLIP_COLOUR(HUD.GET_BLIP_FROM_ENTITY(peds)) == 49 or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Swat_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Cop_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_M_Y_Sheriff_01") or ENTITY.GET_ENTITY_MODEL(peds) == joaat("S_F_Y_Sheriff_01")) and calcDistance(selfpos, ped_pos) <= npcctrlr:get_value() and peds ~= PLAYER.PLAYER_PED_ID() and PED.IS_PED_A_PLAYER(peds) ~= 1 and ENTITY.GET_ENTITY_HEALTH(peds) > 0  then 
+                FIRE.ADD_EXPLOSION(ped_pos.x, ped_pos.y, ped_pos.z, 1, 1, true, true, 1, false)
             end
         end
     end
@@ -6017,6 +6175,12 @@ script.register_looped("schlua-drawservice", function()
         screen_draw_text(string.format("Interior ID:".. Interior),0.875,0.2, 0.4 , 0.4)
     end
 
+    if  DrawMyHeading:is_enabled() then
+        formattedselfheading = string.format("%.2f", ENTITY.GET_ENTITY_HEADING(PLAYER.PLAYER_PED_ID()))
+
+        screen_draw_text(string.format("Heading:"..formattedselfheading),0.875,0.25, 0.4 , 0.4)
+    end
+
     if  fakeban1:is_enabled() then --虚假的封号警告
         HUD.SET_WARNING_MESSAGE_WITH_HEADER_AND_SUBSTRING_FLAGS("WARN","JL_INVITE_ND",2,"",true,-1,-1,"您已被永久禁止进入 Grand Theft Auto 在线模式。","返回 Grand Theft Auto V。",true,0)
     end
@@ -6037,7 +6201,7 @@ event.register_handler(menu_event.PlayerMgrInit, function ()
     verchka1 = verchka1 + 1 --触发lua版本检查:检查lua是否适配当前游戏版本
 
     if cashmtpin:get_value() == 0 then -- 读取在线模式当前联系人差事 现金奖励倍率
-        cashmtpin:set_value(globals.get_float(262145))
+        cashmtpin:set_value(tunables.get_float("CASH_MULTIPLIER"))
     end
 end)
 
@@ -6158,15 +6322,8 @@ void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip
 
 --[[  已被检测
 gentab:add_button("移除赌场轮盘冷却", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-
-local mpx = "MP0_"
-if playerid == 1 then 
-    mpx = "MP1_" 
-
-end
-    STATS.STAT_SET_INT(joaat(mpx.."LUCKY_WHEEL_NUM_SPIN"), 0, true)
-    globals_set_int(262145+27382,1) -- 9960150 
-    globals_set_int(262145+27383,1) -- -312420223
+    stats.set_int("MPX_LUCKY_WHEEL_NUM_SPIN", 0)
+    tunables.set_int(9960150,1)
+    tunables.set_int(-312420223,1)
 end)
 ]]--

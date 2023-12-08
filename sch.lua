@@ -647,7 +647,7 @@ end
 --------------------------------------------------------------------------------------- TEST
 --[[
 gentab:add_button("test01", function()
-    MCprintspl()
+
 end)
 ]]
 --------------------------------------------------------------------------------------- TEST
@@ -4145,11 +4145,11 @@ script.register_looped("schlua-dataservice", function()
         if tunables.get_int("GR_MANU_PRODUCTION_TIME") ~= 5000 then
             tunables.set_int("GR_MANU_PRODUCTION_TIME", 5000)
         end
-        if tunables.get_int("631477612") ~= 5000 then
-            tunables.set_int("631477612", 5000)
+        if tunables.get_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME") ~= 5000 then
+            tunables.set_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME", 5000)
         end
-        if tunables.get_int("818645907") ~= 5000 then
-            tunables.set_int("818645907", 5000)
+        if tunables.get_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME") ~= 5000 then
+            tunables.set_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME", 5000)
         end
         loopa32 =1
     else
@@ -4161,8 +4161,8 @@ script.register_looped("schlua-dataservice", function()
             tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 720000) 
             tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 135000) 
             tunables.set_int("GR_MANU_PRODUCTION_TIME", 600000)
-            tunables.set_int("631477612", 90000)
-            tunables.set_int("818645907", 90000)
+            tunables.set_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME", 90000)
+            tunables.set_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME", 90000)
             loopa32 =0
         end    
     end
@@ -4193,11 +4193,11 @@ script.register_looped("schlua-dataservice", function()
         if tunables.get_int("GR_MANU_PRODUCTION_TIME") ~= 60000 then
             tunables.set_int("GR_MANU_PRODUCTION_TIME", 60000)
         end
-        if tunables.get_int("631477612") ~= 60000 then
-            tunables.set_int("631477612", 60000)
+        if tunables.get_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME") ~= 60000 then
+            tunables.set_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME", 60000)
         end
-        if tunables.get_int("818645907") ~= 60000 then
-            tunables.set_int("818645907", 60000)
+        if tunables.get_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME") ~= 60000 then
+            tunables.set_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME", 60000)
         end
         loopa19 =1
     else
@@ -4209,8 +4209,8 @@ script.register_looped("schlua-dataservice", function()
             tunables.set_int("BIKER_COUNTERCASH_PRODUCTION_TIME", 720000) 
             tunables.set_int("BIKER_ACID_PRODUCTION_TIME", 135000) 
             tunables.set_int("GR_MANU_PRODUCTION_TIME", 600000)
-            tunables.set_int("631477612", 90000)
-            tunables.set_int("818645907", 90000)
+            tunables.set_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME", 90000)
+            tunables.set_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME", 90000)
             loopa19 =0
         end    
     end

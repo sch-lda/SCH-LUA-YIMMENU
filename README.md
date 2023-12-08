@@ -1,5 +1,5 @@
 # SCH-LUA-YIMMENU
-[English Version v2.04 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
+[English Version v2.05 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
 [English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
 由于学业，可能仅在假期更新 :( \
 Due to academic commitments, updates may only be made during holidays. \

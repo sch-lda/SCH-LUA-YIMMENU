@@ -1,8 +1,8 @@
 # SCH-LUA-YIMMENU
 [English Version v2.05 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
-[English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) \
-## 不可用!20231210 Yimmenu官方修改了SOL_ALL_SAFETIES_ON，强制检查lua类型。我不讨论这种修改是否真的有意义，但对我这种根本就没有按照任何规范的lua来说是一场灾难。我不确定我是否能够花大量时间来调试和修改。如果你仍然需要使用这个lua,请自行编译Yimmenu,从Yimmenu的源代码中找到src/common.hpp删掉#define SOL_ALL_SAFETIES_ON 1 
-## Not available! Yimmenu officially modified SOL_ALL_SAFETIES_ON on 20231210, forcing Lua type checking. I'm not discussing whether this modification really makes sense, but for someone like me who hasn't followed any standards in Lua at all, it's a disaster. I'm not sure if I can spend a lot of time debugging and modifying my lua. If you still need to use this Lua, please compile Yimmenu yourself and find src/common.hpp in the source code of Yimmenu to remove #define SOL_ALL_SAFETIES_ON 1.
+[English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) 
+### 不完全可用!20231210 Yimmenu官方修改了SOL_ALL_SAFETIES_ON，强制检查lua类型。我试图修复了大部分功能，但仍有少数功能不可用。
+### Partially unavailable! Yimmenu has modified SOL_ALL_SAFETIES_ON on 20231210, enforcing Lua type checking. I've attempted to fix most of the functionalities, but there are still a few that remain unavailable.
 由于学业，可能仅在假期更新 :( \
 Due to academic commitments, updates may only be made during holidays. \
 学习使用Lua的一次尝试.试图让免费菜单Yimmenu具备更多P2C菜单的实用功能 \

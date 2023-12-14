@@ -647,11 +647,17 @@ end
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
 --------------------------------------------------------------------------------------- TEST
---[[
-gentab:add_button("test01", function()
 
+gentab:add_button("test01", function()
+    for fm2i=0,60000 do
+        rst = locals.get_int("fm_mission_controller_2020", fm2i)
+        if rst == 291 then 
+            log.info(tostring(fm2i.."  "..rst))
+        end
+    end
+    log.info("done")
 end)
-]]
+
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单
@@ -719,11 +725,11 @@ gentab:add_button("佩里科终章一键完成", function()
         end
         if FMMC2020host == PLAYER.PLAYER_ID() or FMMChost == PLAYER.PLAYER_ID() then
             gui.show_message("已成为脚本主机","尝试自动完成...")
-            locals_set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
-            locals_set_int("fm_mission_controller_2020",46829,50) --关键代码
-            locals_set_int("fm_mission_controller", 19710, 12)
-            locals_set_int("fm_mission_controller", 28332, 99999)
-            locals_set_int("fm_mission_controller", 31656, 99999)
+            locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
+            locals_set_int("fm_mission_controller_2020",50279,50) --关键代码 --3095
+            --locals_set_int("fm_mission_controller", 19710, 12) 
+            --locals_set_int("fm_mission_controller", 28332, 99999)
+            --locals_set_int("fm_mission_controller", 31656, 99999)
         else
             log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
             log.info("已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)")
@@ -735,11 +741,12 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("佩里科终章一键完成(强制)", function()
-    locals_set_int("fm_mission_controller_2020",45451,51338752)  --关键代码    
-    locals_set_int("fm_mission_controller_2020",46829,50) --关键代码
-    locals_set_int("fm_mission_controller", 19710, 12)
-    locals_set_int("fm_mission_controller", 28332, 99999)
-    locals_set_int("fm_mission_controller", 31656, 99999)
+    locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
+    locals_set_int("fm_mission_controller_2020",50279,50) --关键代码 --3095
+
+    --locals_set_int("fm_mission_controller", 19710, 12)
+    --locals_set_int("fm_mission_controller", 28332, 99999)
+    --locals_set_int("fm_mission_controller", 31656, 99999)
 end)
 
 gentab:add_sameline()
@@ -763,7 +770,7 @@ gentab:add_button("配置佩岛前置(猎豹雕像)", function()
     stats.set_int("MPX_H4_MISSIONS", 65279)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
-    locals_set_int("heist_island_planning", 1526, 2) --刷新面板
+    --locals_set_int("heist_island_planning", 1526, 2) --刷新面板
 end)
 
 gentab:add_sameline()
@@ -787,7 +794,7 @@ gentab:add_button("配置佩岛前置(粉钻)", function()
     stats.set_int("MPX_H4_MISSIONS", 65279)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
-    locals_set_int("heist_island_planning", 1526, 2)
+    --locals_set_int("heist_island_planning", 1526, 2)
 end)
 
 gentab:add_sameline()
@@ -811,7 +818,7 @@ gentab:add_button("重置佩岛", function()
     stats.set_int("MPX_H4_MISSIONS", 0)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 0)
     stats.set_int("MPX_H4LOOT_COKE_I", 0)
-    locals_set_int("heist_island_planning", 1526, 2)
+    --locals_set_int("heist_island_planning", 1526, 2)
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
 
@@ -1745,7 +1752,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("摩托帮出货一键完成", function()
-    if locals.get_int("gb_biker_contraband_sell",716) >= 1 then
+    if locals.get_int("gb_biker_contraband_sell",719) >= 1 then --3095
         locals_set_int("gb_biker_contraband_sell",821,15)
     else
         gui.show_error("该任务类型不支持一键完成","一共就一辆卡车也要一键??")

@@ -1746,35 +1746,35 @@ gentab:add_separator()
 gentab:add_text("产业功能-中高风险") 
 
 gentab:add_button("CEO仓库出货一键完成", function()
-    locals_set_int("gb_contraband_sell",542,99999)
+    locals_set_int("gb_contraband_sell",545,99999) --iLocal_543.f_2 --3095
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("摩托帮出货一键完成", function()
     if locals.get_int("gb_biker_contraband_sell",719) >= 1 then --3095
-        locals_set_int("gb_biker_contraband_sell",821,15)
+        locals_set_int("gb_biker_contraband_sell",824,15) --702 + 122 --3095
     else
         gui.show_error("该任务类型不支持一键完成","一共就一辆卡车也要一键??")
         log.info("该任务类型不支持一键完成,否则不会有任何收入.一共就一辆送货载具也要使用一键完成??")
     end
 end)
-
+--[[extremely unstable 
 gentab:add_sameline()
 
-gentab:add_button("致幻剂出货一键完成", function()
+gentab:add_button("致幻剂出货一键完成", function() 
     locals_set_int("fm_content_acid_lab_sell",6596,9)
     locals_set_int("fm_content_acid_lab_sell",6597,10)
     locals_set_int("fm_content_acid_lab_sell",6530,2)
 end)
-
+]]
 gentab:add_sameline()
 
 gentab:add_button("地堡出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
-    locals_set_int("gb_gunrunning",1980,0)
-    --  gb_gunrunning.c iLocal_1206.f_774
-    --	for (i = 0; i < func_833(func_3786(), func_60(), iLocal_1206.f_774, iLocal_1206.f_809); i = i + 1)
+    locals_set_int("gb_gunrunning",1983,0) --3095
+    --  gb_gunrunning.c iLocal_1209.f_774
+    --	for (i = 0; i < func_833(func_3786(), func_60(), iLocal_1209.f_774, iLocal_1209.f_809); i = i + 1)
     --  REMOVE_PARTICLE_FX_FROM_ENTITY
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
@@ -1783,8 +1783,8 @@ gentab:add_sameline()
 
 gentab:add_button("机库(空运)出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
-    local integer = locals.get_int("gb_smuggler", 3007)
-    locals_set_int("gb_smuggler",2964,integer)
+    local integer = locals.get_int("gb_smuggler", 3010)  --1932 + 1078 --3095
+    locals_set_int("gb_smuggler",2967,integer) --1932 + 1035 --3095
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
 

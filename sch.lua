@@ -2157,92 +2157,89 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("恢复1.66下架载具", function()
-    for x = 14908, 14916 do
+    for x = 14936, 14944 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 17482, 17500 do
+    for x = 17510, 17528 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 17654, 17675 do
+    for x = 17682, 17703 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 19311, 19335 do
+    for x = 19341, 19365 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 20392, 20395 do
+    for x = 20422, 20425 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 21274, 21279 do
+    for x = 21304, 21309 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 22073, 22092 do
+    for x = 22103, 22122 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 23041, 23068 do
+    for x = 23071, 23098 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 24262, 24375 do
+    for x = 24292, 24405 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 25969, 25975 do
+    for x = 26039, 26045 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 25980, 26000 do
+    for x = 26050, 26070 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 26956, 26957 do
+    for x = 27026, 27027 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 28820, 28840 do
-        globals_set_int(262145 + x, 1)
-    end
-    
-    globals_set_int(262145 + 28863, 1)
-    globals_set_int(262145 + 28866, 1)
-
-    for x = 29534, 29541 do
-        globals_set_int(262145 + x, 1)
-    end
-    
-    for x = 29883, 29889 do
+    for x = 28890, 28910 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 30348, 30364 do
+    globals_set_int(262145 + 28888, 1) --3095
+    globals_set_int(262145 + 28936, 1) --3095
+
+    for x = 29604, 29611 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 31216, 31232 do
+    for x = 29953, 29959 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 32099, 32113 do
+    for x = 30418, 30434 do --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 33341, 33359 do
+    for x = 31290, 31306 do --3095
         globals_set_int(262145 + x, 1)
     end
 
-    for x = 34212, 34227 do
+    for x = 32214, 32228 do  --3095
         globals_set_int(262145 + x, 1)
     end
     
-    for x = 35167, 35443 do
+    for x = 33463, 33481 do  --3095
         globals_set_int(262145 + x, 1)
     end
+
+    for x = 34446, 34461 do  --3095
+        globals_set_int(262145 + x, 1)
+    end
+    
 end)
 
 gentab:add_sameline()
@@ -2266,13 +2263,13 @@ gentab:add_button("移除CEO载具冷却", function()
 end)
 
 gentab:add_sameline()
-
-gentab:add_button("移除自身悬赏", function()
+--[[
+gentab:add_button("移除自身悬赏", function() --1.67
     globals_set_int(1+2359296+5150+13,2880000)   
 end)
 
 gentab:add_sameline()
-
+]]
 gentab:add_button("卡云退线下", function()
     if NETWORK.NETWORK_CAN_BAIL() then
         NETWORK.NETWORK_BAIL(0, 0, 0)
@@ -2327,13 +2324,13 @@ gentab:add_button("生成空中加速条", function()
     ENTITY.SET_ENTITY_HEADING(obj, heading)
     end)
 end)
-
+--[[
 gentab:add_sameline()
 
-gentab:add_button("强制保存", function()
+gentab:add_button("强制保存", function() --1.67
     globals_set_int(2694471, 27)
 end)
-
+]]
 gentab:add_text("视觉")
 
 gentab:add_sameline()
@@ -4082,22 +4079,28 @@ script.register_looped("schlua-dataservice", function(script)
     end
 
     if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘奖品--只影响实际结果，不影响转盘显示
-        locals_set_int("casino_lucky_wheel",292,18) -- 3095  -- 276 + 14
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("casino_lucky_wheel")) ~= 0 then
+            locals_set_int("casino_lucky_wheel",292,18) -- 3095  -- 276 + 14
+        end
         --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
         --你可以自定义代码中的18来获取其他物品。设定为18是展台载具，16衣服，17经验，19现金，4载具折扣，11神秘礼品，15 chips不认识是什么
     end
 
     if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 
-        if locals.get_int("gb_biker_contraband_sell",719) ~= 0 then --3095
-            log.info("已锁定摩托帮产业出货任务类型.目标出货载具生成前不要关闭此开关.注意:此功能与摩托帮一键完成出货冲突")
-            locals_set_int("gb_biker_contraband_sell",719,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("gb_biker_contraband_sell")) ~= 0 then
+            if locals.get_int("gb_biker_contraband_sell",719) ~= 0 then --3095
+                log.info("已锁定摩托帮产业出货任务类型.目标出货载具生成前不要关闭此开关.注意:此功能与摩托帮一键完成出货冲突")
+                locals_set_int("gb_biker_contraband_sell",719,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
+            end    
         end
     end
 
     if  ccrgsl:is_enabled() then--锁定CEO仓库出货任务 
-        if locals.get_int("gb_contraband_sell",550) ~= 12 then -- 3095
-            log.info("已锁定CEO仓库出货任务类型.目标出货载具生成前不要关闭此开关")
-            locals_set_int("gb_contraband_sell",550,12) -- gb_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 14); --iLocal_541.f_7 = randomIntInRange;
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("gb_contraband_sell")) ~= 0 then
+            if locals.get_int("gb_contraband_sell",550) ~= 12 then -- 3095
+                log.info("已锁定CEO仓库出货任务类型.目标出货载具生成前不要关闭此开关")
+                locals_set_int("gb_contraband_sell",550,12) -- gb_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 14); --iLocal_541.f_7 = randomIntInRange;
+            end
         end
     end
 

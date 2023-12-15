@@ -1,4 +1,3 @@
-# [Outdated] Please wait, I've already started the update progress, you can still use features (such as entity control) unrelated to online data.
 # SCH-LUA-YIMMENU
 [English Version v2.05 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
 [English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) 

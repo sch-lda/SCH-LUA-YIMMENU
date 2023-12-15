@@ -1,4 +1,4 @@
--- v3.02 -- 
+-- v3.03 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.02"
+luaversion = "v3.03"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -770,7 +770,7 @@ gentab:add_button("配置佩岛前置(猎豹雕像)", function()
     stats.set_int("MPX_H4_MISSIONS", 65279)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
-    --locals_set_int("heist_island_planning", 1526, 2) --刷新面板
+    locals.set_int("heist_island_planning", 1544, 2) --3095
 end)
 
 gentab:add_sameline()
@@ -794,7 +794,7 @@ gentab:add_button("配置佩岛前置(粉钻)", function()
     stats.set_int("MPX_H4_MISSIONS", 65279)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
-    --locals_set_int("heist_island_planning", 1526, 2)
+    locals.set_int("heist_island_planning", 1544, 2) --3095
 end)
 
 gentab:add_sameline()
@@ -818,7 +818,7 @@ gentab:add_button("重置佩岛", function()
     stats.set_int("MPX_H4_MISSIONS", 0)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 0)
     stats.set_int("MPX_H4LOOT_COKE_I", 0)
-    --locals_set_int("heist_island_planning", 1526, 2)
+    locals.set_int("heist_island_planning", 1544, 2) --3095
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
 
@@ -2263,13 +2263,13 @@ gentab:add_button("移除CEO载具冷却", function()
 end)
 
 gentab:add_sameline()
---[[
-gentab:add_button("移除自身悬赏", function() --1.67
+
+gentab:add_button("移除自身悬赏", function() --3095
     globals_set_int(1+2359296+5150+13,2880000)   
 end)
 
 gentab:add_sameline()
-]]
+
 gentab:add_button("卡云退线下", function()
     if NETWORK.NETWORK_CAN_BAIL() then
         NETWORK.NETWORK_BAIL(0, 0, 0)

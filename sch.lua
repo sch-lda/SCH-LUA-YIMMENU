@@ -727,9 +727,9 @@ gentab:add_button("佩里科终章一键完成", function()
             gui.show_message("已成为脚本主机","尝试自动完成...")
             locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
             locals_set_int("fm_mission_controller_2020",50279,50) --关键代码 --3095
-            --locals_set_int("fm_mission_controller", 19710, 12) 
+            locals_set_int("fm_mission_controller", 19728, 12) --3095
             --locals_set_int("fm_mission_controller", 28332, 99999)
-            --locals_set_int("fm_mission_controller", 31656, 99999)
+            locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095
         else
             log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
             log.info("已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)")
@@ -743,10 +743,9 @@ gentab:add_sameline()
 gentab:add_button("佩里科终章一键完成(强制)", function()
     locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
     locals_set_int("fm_mission_controller_2020",50279,50) --关键代码 --3095
-
-    --locals_set_int("fm_mission_controller", 19710, 12)
+    locals_set_int("fm_mission_controller", 19728, 12) --3095
     --locals_set_int("fm_mission_controller", 28332, 99999)
-    --locals_set_int("fm_mission_controller", 31656, 99999)
+    locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095
 end)
 
 gentab:add_sameline()

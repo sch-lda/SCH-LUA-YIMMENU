@@ -721,7 +721,7 @@ gentab:add_text("最低分辨率要求:1920X1080.要使用玩家功能,请在yim
 
 gentab:add_text("任务功能") 
 
-gentab:add_button("佩里科终章一键完成", function()
+gentab:add_button("佩里科/事务所合约终章/ULP一键完成", function()
     script.run_in_fiber(function (pericoinstcpl)
         network.force_script_host("fm_mission_controller_2020") --抢脚本主机
         network.force_script_host("fm_mission_controller") --抢脚本主机
@@ -745,7 +745,7 @@ gentab:add_button("佩里科终章一键完成", function()
             locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
             locals_set_int("fm_mission_controller_2020",50279,100) --关键代码 --3095
             locals_set_int("fm_mission_controller", 19728, 12) --3095
-            --locals_set_int("fm_mission_controller", 28332, 99999)
+            locals_set_int("fm_mission_controller", 27489 + 859, 99999) --3095
             locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095
         else
             log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
@@ -753,16 +753,6 @@ gentab:add_button("佩里科终章一键完成", function()
             gui.show_error("失败,未成为脚本主机","您可能不在支持一键完成的任务中")
         end
     end)
-end)
-
-gentab:add_sameline()
-
-gentab:add_button("佩里科终章一键完成(强制)", function()
-    locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
-    locals_set_int("fm_mission_controller_2020",50279,100) --关键代码 --3095
-    locals_set_int("fm_mission_controller", 19728, 12) --3095
-    --locals_set_int("fm_mission_controller", 28332, 99999)
-    locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095
 end)
 
 gentab:add_sameline()
@@ -3492,6 +3482,16 @@ emmode2:set_enabled(true) --开启上方创建的复选框，删除此行代码�
 gentab:add_sameline()
 
 local allclear = gentab:add_checkbox("循环清除实体") --只是一个开关，代码往后面找
+
+gentab:add_sameline()
+
+gentab:add_button("佩里科/事务所合约终章/ULP一键完成(强制)", function()
+    locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
+    locals_set_int("fm_mission_controller_2020",50279,100) --关键代码 --3095
+    locals_set_int("fm_mission_controller", 19728, 12) --3095
+    locals_set_int("fm_mission_controller", 27489 + 859, 99999) --3095
+    locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095
+end)
 
 local emmode3 = gentab:add_checkbox("紧急模式3-持续清除任何实体+阻止PTFX火柱水柱+阻止滤镜和镜头抖动+清理物体表面痕迹") --只是一个开关，代码往后面找
 

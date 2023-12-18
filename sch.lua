@@ -1,4 +1,4 @@
--- v3.04 -- 
+-- v3.05 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.04"
+luaversion = "v3.05"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -95,33 +95,36 @@ verchkok = 2 --版本检查状态 0:不支持 1:支持 2:未检查
 suppver = "1.68" --支持的游戏版本
 autoresply = 0
 devmode = 0 --0:禁用某些调试功能 1:启用某些调试功能
+devmode2 = 0 --0:禁用某些调试功能 1:启用某些调试功能
+islistwed = 0 --是否已展开时间和金钱stats表单
 
 gentab = gui.add_tab("sch-lua-Alpha-"..luaversion)
-local LuaTablesTab = gentab:add_tab("++表")
+TuneablesandStatsTab = gentab:add_tab("可调整项和统计")
+LuaTablesTab = gentab:add_tab("++表")
 
-local EntityTab = LuaTablesTab:add_tab("+游戏实体表")
+EntityTab = LuaTablesTab:add_tab("+游戏实体表")
 
-local PlayerTableTab = EntityTab:add_tab("-玩家表")
+PlayerTableTab = EntityTab:add_tab("-玩家表")
 PlayerTableTab:add_button("写出玩家表", function()
     writeplayertable()
 end)
 PlayerTableTab:add_text("玩家表是为玩家瞄准反应服务的")
-local NPCTableTab = EntityTab:add_tab("-NPC表")
+NPCTableTab = EntityTab:add_tab("-NPC表")
 NPCTableTab:add_button("写出NPC表", function()
     writepedtable()
 end)
-local VehicleTableTab = EntityTab:add_tab("-载具表")
+VehicleTableTab = EntityTab:add_tab("-载具表")
 VehicleTableTab:add_button("写出载具表", function()
     writevehtable()
 end)
-local ObjTableTab = EntityTab:add_tab("-物体表")
+ObjTableTab = EntityTab:add_tab("-物体表")
 ObjTableTab:add_button("写出物体表", function()
     writeobjtable()
 end)
 
-local LuaownedTab = LuaTablesTab:add_tab("+lua内部表")
-local HeliTableTab = LuaownedTab:add_tab("-保镖直升机表")
-local NPCguardTableTab = LuaownedTab:add_tab("-保镖NPC表")
+LuaownedTab = LuaTablesTab:add_tab("+lua内部表")
+HeliTableTab = LuaownedTab:add_tab("-保镖直升机表")
+NPCguardTableTab = LuaownedTab:add_tab("-保镖NPC表")
 
 HeliTableTab:add_button("写出保镖直升机表", function()
     writebodyguardhelitable()
@@ -194,6 +197,22 @@ function locals_set_int(scriptname, intlocal, intlocalval) --当游戏版本不�
     end
     if verchkok == 1 then
         locals.set_int(scriptname, intlocal, intlocalval)
+    else
+        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+    end
+end
+
+function locals_set_float(scriptname, flocal, flocalval) --当游戏版本不受支持时拒绝修改locals避免损坏线上存档
+    if verchkok == 2 then
+        log.info("正在检查sch-lua是否支持当前游戏版本")
+        if NETWORK.GET_ONLINE_VERSION() == suppver then
+            verchka1 = 100
+            verchkok = 1
+            log.info("通过检测")
+        end
+    end
+    if verchkok == 1 then
+        locals.set_float(scriptname, flocal, flocalval)
     else
         log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
     end
@@ -351,8 +370,13 @@ end
 allbodyguardtable = {} --保镖NPC表
 
 function npc2bodyguard(peds_func) --将NPC设置为自己的保镖
-    WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_MICROSMG"), 9999, false, true)
-    WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_CARBINERIFLE_MK2"), 9999, false, true)
+    if math.random(0, 100) > 50 then 
+        WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_MICROSMG"), 9999, false, true)
+    else
+    --WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_CARBINERIFLE_MK2"), 9999, false, true)
+    WEAPON.GIVE_WEAPON_TO_PED(peds_func, joaat("WEAPON_RAILGUNXM3"), 1, false, true)
+    end
+    WEAPON.SET_PED_INFINITE_AMMO(peds_func, true, joaat("WEAPON_RAILGUNXM3"))
     PED.SET_PED_AS_GROUP_MEMBER(peds_func, PED.GET_PED_GROUP_INDEX(PLAYER.PLAYER_PED_ID()))
     PED.SET_PED_RELATIONSHIP_GROUP_HASH(peds_func, PED.GET_PED_RELATIONSHIP_GROUP_HASH(PLAYER.PLAYER_PED_ID()))
     PED.SET_PED_NEVER_LEAVES_GROUP(peds_func, true)
@@ -366,13 +390,16 @@ function npc2bodyguard(peds_func) --将NPC设置为自己的保镖
     PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 131072, true)
     PED.SET_PED_FLEE_ATTRIBUTES(peds_func, 262144, true)
     PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 5, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 12, true)
     PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 13, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 21, false)
+    PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 27, true)
+    PED.SET_PED_COMBAT_ATTRIBUTES(peds_func, 58, true)
     PED.SET_PED_CONFIG_FLAG(peds_func, 394, true)
     PED.SET_PED_CONFIG_FLAG(peds_func, 400, true)
     PED.SET_PED_CONFIG_FLAG(peds_func, 134, true)
-    if peds then
-        PED.SET_PED_SHOOT_RATE(peds, 1000)
-    end
+    PED.SET_PED_CAN_RAGDOLL(peds_func, false)
+    PED.SET_PED_SHOOT_RATE(peds_func, 1000)
     PED.SET_PED_ACCURACY(peds_func,100)
     TASK.TASK_COMBAT_HATED_TARGETS_AROUND_PED(peds_func, 100, 67108864)
     ENTITY.SET_ENTITY_HEALTH(peds_func,1000,0,0)
@@ -659,12 +686,49 @@ gentab:add_button("test01", function()
     log.info("done")
 end)
 
+
+gentab:add_button("localsnapshot", function()
+    local monValues = {}
+
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
+        for i = 40000, 60000 do
+            local value = locals.get_int("fm_mission_controller_2020", i)
+            if value ~= -1 then
+                table.insert(monValues, string.format("%d:%d", i, value))
+            end
+        end
+        log.info("Ready to print")
+        for _, smt in ipairs(monValues) do
+            log.info(tostring(smt))
+        end
+        log.info("Done")
+
+    end
+end)
+gentab:add_sameline()
+
+prevValues = {}
+gentab:add_button("localbatchmon", function()
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then
+        for i = 0, 60000 do
+            local newValue = locals.get_int("fm_mission_controller", i)
+            if prevValues[i] ~= newValue then
+                log.info(string.format("%d : %d -> %d", i, prevValues[i] or 0, newValue))
+                prevValues[i] = newValue
+            end
+        end
+        log.info("Down")
+    end
+end)
+gentab:add_sameline()
 gentab:add_button("testmode on", function()
     devmode = 1
     deva1 = 71
     deva2 = 72
     deva3 = 73
     deva4 = 74
+    deva5 = 75
+    deva6 = 76
 end)
 gentab:add_sameline()
 gentab:add_button("testmode off", function()
@@ -673,8 +737,27 @@ gentab:add_button("testmode off", function()
     deva2 = 72
     deva3 = 73
     deva4 = 74
+    deva5 = 75
+    deva6 = 76
+end)
+gentab:add_sameline()
+gentab:add_button("fulllocalmon on", function()
+    devmode2 = 1
+end)
+gentab:add_sameline()
+gentab:add_button("fulllocalmon off", function()
+    devmode2 = 0
+end)
+gentab:add_sameline()
+gentab:add_button("montable reset", function()
+    prevValues = {}
 end)
 ]]
+
+gentab:add_button("test02", function()
+    STATS.STAT_INCREMENT(joaat("MPPLY_TOTAL_EVC"), 2147483647)
+end)
+
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单
@@ -826,6 +909,13 @@ gentab:add_button("重置佩岛", function()
     stats.set_int("MPX_H4LOOT_COKE_I", 0)
     locals.set_int("heist_island_planning", 1544, 2) --3095
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("跳过前置-事务所数据泄露合约(别惹德瑞)", function()
+    stats.set_int("MPx_FIXER_GENERAL_BS", -1)
+    stats.set_int("MPx_FIXER_STORY_BS", 4092)
 end)
 
 gentab:add_button("配置赌场前置(钻石)", function()
@@ -1096,7 +1186,7 @@ end)
 
 gentab:add_sameline()
 
-local fwglb = gentab:add_checkbox("范围烟花~") --这只是一个复选框,代码往最后的循环脚本部分找
+local fwglb = gentab:add_checkbox("范围烟花") --这只是一个复选框,代码往最后的循环脚本部分找
 
 gentab:add_sameline()
 
@@ -1688,6 +1778,14 @@ gentab:add_button("生成保镖直升机", function()
     PED.SET_PED_INTO_VEHICLE(heli_guards[3], heli_sp, 2)
     PED.SET_PED_INTO_VEHICLE(heli_guards[2], heli_sp, 1)
     PED.SET_PED_INTO_VEHICLE(heli_guards[1], heli_sp, -1)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guards[1], 3, false)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guards[2], 3, false)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guards[3], 3, false)
+    PED.SET_PED_COMBAT_ATTRIBUTES(heli_guards[4], 3, false)
+    PED.SET_PED_CONFIG_FLAG(heli_guards[1], 402, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guards[2], 402, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guards[3], 402, true)
+    PED.SET_PED_CONFIG_FLAG(heli_guards[4], 402, true)
     TASK.TASK_VEHICLE_FOLLOW(heli_guards[1], heli_sp, PLAYER.PLAYER_PED_ID(), 80, 1, 10, 10)
     PED.SET_PED_KEEP_TASK(heli_guards[1], true)
 end)
@@ -2115,6 +2213,18 @@ gentab:add_button("附靶场的武装国度", function()
     PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 335)
 end)
 
+gentab:add_button("佩里科排水口栅栏", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  5044.62, -5815.75, -12.3)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("佩里科排水口入侵点", function()
+    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  5055, -5771, -6)
+end)
+
+gentab:add_sameline()
+
 gentab:add_button("佩里科地下金库", function()
     PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(),  5006.74, -5756, 15.5)
     PED.SET_PED_DESIRED_HEADING(PLAYER.PLAYER_PED_ID(), 144)
@@ -2538,6 +2648,21 @@ gentab:add_text("PTFX collection")
 
 local ptfxt1 = gentab:add_checkbox("雷电a") --只是一个开关，代码往后面找
 
+gentab:add_button("佩里科栅栏立即切割", function()
+    locals_set_int("fm_mission_controller_2020", 29118, 6) --3095 --https://www.unknowncheats.me/forum/3418914-post13398.html
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("佩里科等离子切割立即完成", function()
+    locals_set_float("fm_mission_controller_2020", 30357 + 3, 100) --3095 --https://www.unknowncheats.me/forum/3418914-post13398.html
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("佩里科指纹锁破解", function()
+    locals_set_int("fm_mission_controller_2020", 24333, 5) --3095 --https://www.unknowncheats.me/forum/3418914-post13398.html
+end)
 --------------------------------------------------------------------------------------- Players 页面
 
 gui.get_tab(""):add_text("SCH LUA玩家选项-!!!!!不接受任何反馈!!!!!") 
@@ -3489,8 +3614,8 @@ gentab:add_button("佩里科/事务所合约终章/ULP一键完成(强制)", fun
     locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
     locals_set_int("fm_mission_controller_2020",50279,100) --关键代码 --3095
     locals_set_int("fm_mission_controller", 19728, 12) --3095
-    locals_set_int("fm_mission_controller", 27489 + 859, 99999) --3095
-    locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095
+    locals_set_int("fm_mission_controller", 27489 + 859, 99999) --3095 --泰坦号差事 0 --赌场日常差事 99999 --巴勒邦背水一战 99999
+    locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095 --泰坦号差事 1 --赌场日常差事 6 --巴勒邦背水一战 1
 end)
 
 local emmode3 = gentab:add_checkbox("紧急模式3-持续清除任何实体+阻止PTFX火柱水柱+阻止滤镜和镜头抖动+清理物体表面痕迹") --只是一个开关，代码往后面找
@@ -3676,6 +3801,164 @@ plyaimkarma3 = EntityTab:add_checkbox("电击f") --这只是一个复选框,代�
 EntityTab:add_sameline()
 plyaimkarma4 = EntityTab:add_checkbox("踢出f") --这只是一个复选框,代码往最后的循环脚本部分找
 
+--------------------------------------------------------------------------------------- 可调整项
+TuneablesandStatsTab:add_text("篡改可调整项获取大量金钱可能导致封禁!")
+
+TuneablesandStatsTab:add_button("联网重载所有可调整项", function()
+    NETWORK.NETWORK_REQUEST_CLOUD_TUNABLES()
+end)
+TuneablesandStatsTab:add_text("修改流程: 1.读取 2.修改 3.应用")
+
+t_heisttab = TuneablesandStatsTab:add_tab("抢劫任务")
+
+t_heisttab:add_text("佩里科岛抢劫")
+t_heisttab:add_text("主要目标价值")
+perico_value_STATUE = t_heisttab:add_input_int("猎豹雕像")
+perico_value_DIAMOND = t_heisttab:add_input_int("粉钻")
+perico_value_FILES = t_heisttab:add_input_int("马德拉索文件")
+perico_value_BONDS = t_heisttab:add_input_int("不记名债卷")
+perico_value_NECKLACE = t_heisttab:add_input_int("项链")
+perico_value_TEQUILA = t_heisttab:add_input_int("西西米托龙舌兰")
+t_heisttab:add_text("杂项")
+perico_pack_vol = t_heisttab:add_input_int("战利品包容量")
+
+t_heisttab:add_button("读取##preicov", function()
+    perico_value_TEQUILA:set_value(tunables.get_int("IH_PRIMARY_TARGET_VALUE_TEQUILA"))
+    perico_value_NECKLACE:set_value(tunables.get_int("IH_PRIMARY_TARGET_VALUE_PEARL_NECKLACE"))
+    perico_value_BONDS:set_value(tunables.get_int("IH_PRIMARY_TARGET_VALUE_BEARER_BONDS"))
+    perico_value_DIAMOND:set_value(tunables.get_int("IH_PRIMARY_TARGET_VALUE_PINK_DIAMOND"))
+    perico_value_FILES:set_value(tunables.get_int("IH_PRIMARY_TARGET_VALUE_MADRAZO_FILES"))
+    perico_value_STATUE:set_value(tunables.get_int("IH_PRIMARY_TARGET_VALUE_SAPPHIRE_PANTHER_STATUE"))
+
+    perico_pack_vol:set_value(tunables.get_int(1859395035))
+end)
+
+t_heisttab:add_sameline()
+
+perico_pri_target_val_lock = t_heisttab:add_checkbox("应用##preicov") --这只是一个复选框,代码往最后的循环脚本部分找
+
+t_heisttab:add_separator()
+t_heisttab:add_text("事务所数据泄露合约-别惹德瑞")
+
+fixer_final_value = t_heisttab:add_input_int("合约终章奖励")
+
+t_heisttab:add_button("读取##drev", function()
+    fixer_final_value:set_value(tunables.get_int("FIXER_FINALE_LEADER_CASH_REWARD"))
+end)
+
+t_heisttab:add_sameline()
+fixer_final_val_lock = t_heisttab:add_checkbox("应用##drev") --这只是一个复选框,代码往最后的循环脚本部分找
+
+t_heisttab:add_separator()
+t_heisttab:add_text("末日抢劫")
+
+h2_d1_awd = t_heisttab:add_input_int("末日1")
+h2_d2_awd = t_heisttab:add_input_int("末日2")
+h2_d3_awd = t_heisttab:add_input_int("末日3")
+
+t_heisttab:add_button("读取##h2v", function()
+    h2_d1_awd:set_value(tunables.get_int("GANGOPS_THE_IAA_JOB_CASH_REWARD"))
+    h2_d2_awd:set_value(tunables.get_int("GANGOPS_THE_SUBMARINE_JOB_CASH_REWARD"))
+    h2_d3_awd:set_value(tunables.get_int("GANGOPS_THE_MISSILE_SILO_JOB_CASH_REWARD"))
+end)
+
+t_heisttab:add_sameline()
+h2_awd_lock = t_heisttab:add_checkbox("应用##h2v") --这只是一个复选框,代码往最后的循环脚本部分找
+
+t_heisttab:add_separator()
+t_heisttab:add_text("名钻赌场抢劫")
+
+h3_t1_awd = t_heisttab:add_input_int("现金")
+h3_t2_awd = t_heisttab:add_input_int("画作")
+h3_t3_awd = t_heisttab:add_input_int("黄金")
+h3_t4_awd = t_heisttab:add_input_int("钻石")
+
+t_heisttab:add_button("读取##h3v", function()
+    h3_t1_awd:set_value(tunables.get_int(-1638885821))
+    h3_t2_awd:set_value(tunables.get_int(1934398910))
+    h3_t3_awd:set_value(tunables.get_int(-582734553))
+    h3_t4_awd:set_value(tunables.get_int(1277889925))
+end)
+
+t_heisttab:add_sameline()
+h3_awd_lock = t_heisttab:add_checkbox("应用##h3v") --这只是一个复选框,代码往最后的循环脚本部分找
+
+odatatab = TuneablesandStatsTab:add_tab("时间和金钱")
+
+odatatab:add_text("当数值大于2147483647时无法正常读取，但仍能写入.")
+odatatab:add_text("此lua不能将被修改的数据恢复默认,修改前自行拍照记录")
+
+odatatab:add_text("修改统计数据存在风险,操作之前确认自己在做什么")
+
+local statstable1 = {
+    [1]  = {statstring = "MP_PLAYING_TIME", friendlyname = "在线模式游戏时间(ms)", p1 = mp_mo_ply_time_val, p2 = mp_mo_ply_time},
+    [2]  = {statstring = "MP_FIRST_PERSON_CAM_TIME", friendlyname = "第一人称游戏时间(ms)", p1 = mp_mo_ply_firstcam_time_val, p2 = mp_mo_ply_firstcam_time},
+    [3]  = {statstring = "MP0_TOTAL_PLAYING_TIME", friendlyname = "角色1第三人称游戏时间(ms)", p1 = mp_mo_ply1_thirdcam_time_val, p2 = mp_mo_ply1_thirdcam_time},
+    [4]  = {statstring = "MP1_TOTAL_PLAYING_TIME", friendlyname = "角色2第三人称游戏时间(ms)", p1 = mp_mo_ply2_thirdcam_time_val, p2 = mp_mo_ply2_thirdcam_time},
+
+    [5]  = {statstring = "MPPLY_TOTAL_EVC", friendlyname = "总收入$", p1 = mp_mo_total_earn_val, p2 = mp_mo_total_earn},
+    [6]  = {statstring = "MPPLY_TOTAL_SVC", friendlyname = "总支出$", p1 = mp_mo_total_sp_val, p2 = mp_mo_total_sp},
+
+    [7]  = {statstring = "MP0_MONEY_EARN_JOBS", friendlyname = "角色1差事收入$", p1 = mp_mo_job_ply1_val, p2 = mp_mo_job_ply1},
+    [8]  = {statstring = "MP1_MONEY_EARN_JOBS", friendlyname = "角色2差事收入$", p1 = mp_mo_job_ply2_val, p2 = mp_mo_job_ply2},
+    [9]  = {statstring = "MP0_MONEY_EARN_BETTING", friendlyname = "角色1赌博收入$", p1 = mp_mo_bt_ply1_val, p2 = mp_mo_bt_ply1},
+    [10]  = {statstring = "MP1_MONEY_EARN_BETTING", friendlyname = "角色2赌博收入$", p1 = mp_mo_bt_ply2_val, p2 = mp_mo_bt_ply2},
+    [11]  = {statstring = "MP0_MONEY_EARN_SELLING_VEH", friendlyname = "角色1卖车收入$", p1 = mp_mo_sv_ply1_val, p2 = mp_mo_sv_ply1},
+    [12]  = {statstring = "MP1_MONEY_EARN_SELLING_VEH", friendlyname = "角色2卖车收入$", p1 = mp_mo_sv_ply2_val, p2 = mp_mo_sv_ply2},
+    [13]  = {statstring = "MP0_MONEY_EARN_GOOD_SPORT", friendlyname = "角色1良民收入$", p1 = mp_mo_gs_ply1_val, p2 = mp_mo_gs_ply1},
+    [14]  = {statstring = "MP1_MONEY_EARN_GOOD_SPORT", friendlyname = "角色2良民收入$", p1 = mp_mo_gs_ply2_val, p2 = mp_mo_gs_ply2},
+    [15]  = {statstring = "MP0_MONEY_EARN_PICKED_UP", friendlyname = "角色1拾取收入$", p1 = mp_mo_pu_ply1_val, p2 = mp_mo_pu_ply1},
+    [16]  = {statstring = "MP1_MONEY_EARN_PICKED_UP", friendlyname = "角色2拾取收入$", p1 = mp_mo_pu_ply2_val, p2 = mp_mo_pu_ply2},
+
+    [17]  = {statstring = "MP0_MONEY_SPENT_WEAPON_ARMOR", friendlyname = "角色1武器护甲支出$", p1 = mp_mo_wa_ply1_val, p2 = mp_mo_wa_ply1},
+    [18]  = {statstring = "MP1_MONEY_SPENT_WEAPON_ARMOR", friendlyname = "角色2武器护甲支出$", p1 = mp_mo_wa_ply2_val, p2 = mp_mo_wa_ply2},
+    [19]  = {statstring = "MP0_MONEY_SPENT_VEH_MAINTENANCE", friendlyname = "角色1载具支出$", p1 = mp_mo_veh_ply1_val, p2 = mp_mo_veh_ply1},
+    [20]  = {statstring = "MP1_MONEY_SPENT_VEH_MAINTENANCE", friendlyname = "角色2载具支出$", p1 = mp_mo_veh_ply2_val, p2 = mp_mo_veh_ply2},
+    [21]  = {statstring = "MP0_MONEY_SPENT_STYLE_ENT", friendlyname = "角色1风格娱乐支出$", p1 = mp_mo_st_ply1_val, p2 = mp_mo_st_ply1},
+    [22]  = {statstring = "MP1_MONEY_SPENT_STYLE_ENT", friendlyname = "角色2风格娱乐支出$", p1 = mp_mo_st_ply2_val, p2 = mp_mo_st_ply2},
+    [23]  = {statstring = "MP0_MONEY_SPENT_PROPERTY_UTIL", friendlyname = "角色1资产支出$", p1 = mp_mo_pr_ply1_val, p2 = mp_mo_pr_ply1},
+    [24]  = {statstring = "MP1_MONEY_SPENT_PROPERTY_UTIL", friendlyname = "角色2资产支出$", p1 = mp_mo_pr_ply2_val, p2 = mp_mo_pr_ply2},
+    [25]  = {statstring = "MP0_MONEY_SPENT_JOB_ACTIVITY", friendlyname = "角色1差事支出$", p1 = mp_mo_pre_ply1_val, p2 = mp_mo_pre_ply1},
+    [26]  = {statstring = "MP1_MONEY_SPENT_JOB_ACTIVITY", friendlyname = "角色2差事支出$", p1 = mp_mo_pre_ply2_val, p2 = mp_mo_pre_ply2},
+    [27]  = {statstring = "MP0_MONEY_SPENT_CONTACT_SERVICE", friendlyname = "角色1联系人支出$", p1 = mp_mo_ct_ply1_val, p2 = mp_mo_ct_ply1},
+    [28]  = {statstring = "MP1_MONEY_SPENT_CONTACT_SERVICE", friendlyname = "角色2联系人支出$", p1 = mp_mo_ct_ply2_val, p2 = mp_mo_ct_ply2},
+    [29]  = {statstring = "MP0_MONEY_SPENT_HEALTHCARE", friendlyname = "角色1医疗支出$", p1 = mp_mo_hc_ply1_val, p2 = mp_mo_hc_ply1},
+    [30]  = {statstring = "MP1_MONEY_SPENT_HEALTHCARE", friendlyname = "角色2医疗支出$", p1 = mp_mo_hc_ply2_val, p2 = mp_mo_hc_ply2},
+    [31]  = {statstring = "MP0_MONEY_SPENT_DROPPED_STOLEN", friendlyname = "角色1丢失被盗支出$", p1 = mp_mo_lt_ply1_val, p2 = mp_mo_lt_ply1},
+    [32]  = {statstring = "MP1_MONEY_SPENT_DROPPED_STOLEN", friendlyname = "角色2丢失被盗支出$", p1 = mp_mo_lt_ply2_val, p2 = mp_mo_lt_ply2},
+
+}
+
+odatatab:add_button("我同意", function()
+    if islistwed == 1 then
+        return
+    end
+    islistwed = 1
+    for i = 1, 32 do
+        statstable1[i].p1 = odatatab:add_input_string(statstable1[i].friendlyname)
+        odatatab:add_sameline()
+        odatatab:add_button(tostring("读取##"..i), function()
+            statstable1[i].p1:set_value(tostring(stats.get_int(statstable1[i].statstring)))
+        end)
+        odatatab:add_sameline()
+        odatatab:add_button(tostring("应用##"..i), function()
+            statstable1[i].p2 = tonumber(statstable1[i].p1:get_value())
+            if statstable1[i].p2 > 2147483647 then
+                local inc_time = string.format("%.0f",  statstable1[i].p2 / 2147483647)
+                stats.set_int(tostring(statstable1[i].statstring), 2147483647)
+                for c = 1, inc_time - 1 do
+                    STATS.STAT_INCREMENT(joaat(statstable1[i].statstring), 2147483647)
+                end
+                STATS.STAT_INCREMENT(joaat(tostring(statstable1[i].statstring)), (statstable1[i].p2 - inc_time * 2147483647))
+            else
+                if statstable1[i].p2 < 0 then
+                else
+                    stats.set_int(tostring(statstable1[i].statstring), statstable1[i].p2)
+                end
+            end        
+        end)
+    end
+end)
 --------------------------------------------------------------------------------------- 注册的循环脚本,主要用来实现Lua里面那些复选框的功能
 --存放一些变量，阻止无限循环，间接实现 checkbox 的 on_enable() 和 on_disable()
 
@@ -3716,24 +3999,87 @@ deva1 = 71
 deva2 = 72
 deva3 = 73
 deva4 = 74
+deva5 = 75
+deva6 = 76
 script.register_looped("schlua-test", function(script) 
     if  devmode == 1 then
-        localmon1 = 50279
-        deva1 = locals.get_int("fm_mission_controller_2020", localmon1)
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then
+
+        localmon1 = 19728
+        deva1 = locals.get_int("fm_mission_controller", localmon1)
         if deva1 ~= deva2 then
+            log.info(tostring(localmon1.." : "..deva2.." -> "..deva1))
             deva2 = deva1
-            log.info(tostring(localmon1.." : "..deva2))
         end
 
-        localmon2 = 48514
-        deva3 = locals.get_int("fm_mission_controller_2020", localmon2)
+        localmon2 = 27489 + 859
+        deva3 = locals.get_int("fm_mission_controller", localmon2)
         if deva3 ~= deva4 then
+            log.info(tostring(localmon2.." : "..deva4.." -> "..deva3))
             deva4 = deva3
-            log.info(tostring(localmon2.." : "..deva4))
+        end
+
+        localmon3 = 31603 + 69
+        deva5 = locals.get_int("fm_mission_controller", localmon3)
+        if deva5 ~= deva6 then
+            log.info(tostring(localmon3.." : "..deva6.." -> "..deva5))
+            deva6 = deva5
+        end
+
+        end
+    end
+
+    if  devmode2 == 1 then
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then
+            for i = 0, 60000 do
+                local newValue = locals.get_int("fm_mission_controller", i)
+                if prevValues[i] ~= newValue then
+                    log.info(string.format("%d : %d -> %d", i, prevValues[i] or 0, newValue))
+                    prevValues[i] = newValue
+                end
+            end
         end
     end
 end)
 
+script.register_looped("schlua-tuneables-lock", function(script)
+    if  perico_pri_target_val_lock:is_enabled() then
+        tunables.set_int("IH_PRIMARY_TARGET_VALUE_TEQUILA", perico_value_TEQUILA:get_value())
+        tunables.set_int("IH_PRIMARY_TARGET_VALUE_PEARL_NECKLACE", perico_value_NECKLACE:get_value())
+        tunables.set_int("IH_PRIMARY_TARGET_VALUE_BEARER_BONDS", perico_value_BONDS:get_value())
+        tunables.set_int("IH_PRIMARY_TARGET_VALUE_PINK_DIAMOND", perico_value_DIAMOND:get_value())
+        tunables.set_int("IH_PRIMARY_TARGET_VALUE_MADRAZO_FILES", perico_value_FILES:get_value())
+        tunables.set_int("IH_PRIMARY_TARGET_VALUE_SAPPHIRE_PANTHER_STATUE", perico_value_STATUE:get_value())
+        tunables.set_int(1859395035, perico_pack_vol:get_value())
+    end
+
+    if  fixer_final_val_lock:is_enabled() then
+        if fixer_final_value:get_value() > 2000000 or fixer_final_value:get_value() <= 0 then
+            gui.show_message("错误","终章收入不得超过2000000且必须大于0")
+            fixer_final_val_lock:set_enabled(false)
+           return
+       end
+       tunables.set_int("FIXER_FINALE_LEADER_CASH_REWARD", fixer_final_value:get_value())   
+    end
+
+    if  h2_awd_lock:is_enabled() then
+        if h2_d1_awd:get_value() > 2500000 or h2_d1_awd:get_value() <= 0 or h2_d2_awd:get_value() > 2500000 or h2_d2_awd:get_value() <= 0 or h2_d3_awd:get_value() > 2500000 or h2_d3_awd:get_value() <= 0 then
+            gui.show_message("错误","终章收入不得超过2500000且必须大于0")
+            h2_awd_lock:set_enabled(false)
+           return
+       end
+       tunables.set_int("GANGOPS_THE_IAA_JOB_CASH_REWARD", h2_d1_awd:get_value())   
+       tunables.set_int("GANGOPS_THE_SUBMARINE_JOB_CASH_REWARD", h2_d2_awd:get_value())   
+       tunables.set_int("GANGOPS_THE_MISSILE_SILO_JOB_CASH_REWARD", h2_d3_awd:get_value())   
+    end
+
+    if  h3_awd_lock:is_enabled() then
+       tunables.set_int(-1638885821, h3_t1_awd:get_value())   
+       tunables.set_int(1934398910, h3_t2_awd:get_value())   
+       tunables.set_int(-582734553, h3_t3_awd:get_value())   
+       tunables.set_int(1277889925, h3_t4_awd:get_value())  
+    end 
+end)
 
 script.register_looped("schlua-luatableautorefresh", function(script) 
     if  tableautorf:is_enabled() then

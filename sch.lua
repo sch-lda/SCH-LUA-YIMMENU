@@ -1,4 +1,4 @@
--- v3.08 -- 
+-- v3.09 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.08"
+luaversion = "v3.09"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -3775,7 +3775,7 @@ t_heisttab:add_sameline()
 
 perico_pri_target_val_lock = t_heisttab:add_checkbox("应用##preicov") --这只是一个复选框,代码往最后的循环脚本部分找
 
-t_ottab = TuneablesandStatsTab:add_tab("产业与工厂-你的资产你做主")
+t_ottab = TuneablesandStatsTab:add_tab("产业与工厂")
 bk_rs_t1 = t_ottab:add_input_int("地堡研究需时")
 bk_rs_t2 = t_ottab:add_input_int("地堡研究需时-设备升级")
 bk_rs_t3 = t_ottab:add_input_int("地堡研究需时-员工升级")
@@ -3787,7 +3787,7 @@ end)
 t_ottab:add_sameline()
 misc_tu_lock = t_ottab:add_checkbox("应用##miscv") --这只是一个复选框,代码往最后的循环脚本部分找
 
-biker_val_mtp = t_ottab:add_input_int("摩托帮产业和致幻剂产品价值倍率")
+biker_val_mtp = t_ottab:add_input_float("摩托帮产业和致幻剂产品价值倍率")
 
 biker_cap_0 = t_ottab:add_input_int("可卡因当前库存") --HUD_CASH 
 biker_cap_1 = t_ottab:add_input_int("大麻当前库存") --HUD_CASH 
@@ -3825,7 +3825,15 @@ t_ottab:add_button("读取##miscv2", function()
 end)
 t_ottab:add_sameline()
 biker_set_lock = t_ottab:add_checkbox("应用##miscv2") --这只是一个复选框,代码往最后的循环脚本部分找
+t_ottab:add_sameline()
+t_ottab:add_text("谨慎修改库存,不要超过限额")
 
+smug_val = t_ottab:add_input_int("机库货物单价")
+t_ottab:add_button("读取##miscv3", function()
+    smug_val:set_value(tunables.get_int(-954321460))
+end)
+t_ottab:add_sameline()
+smug_set_lock = t_ottab:add_checkbox("应用##miscv3") --这只是一个复选框,代码往最后的循环脚本部分找
 
 t_heisttab:add_separator()
 t_heisttab:add_text("事务所数据泄露合约-别惹德瑞")
@@ -4120,6 +4128,10 @@ script.register_looped("schlua-tuneables-lock", function(script)
         tunables.set_int("BIKER_FAKEIDS_CAPACITY", biker_cap_max_4:get_value())
         tunables.set_int("GR_MANU_CAPACITY", biker_cap_max_5:get_value())
         tunables.set_int("ACID_LAB_PRODUCT_CAPACITY", biker_cap_max_6:get_value())    
+    end
+
+    if  smug_set_lock:is_enabled() then
+        tunables.set_int(-954321460, smug_val:get_value())
     end
 
     if  fixer_final_val_lock:is_enabled() then

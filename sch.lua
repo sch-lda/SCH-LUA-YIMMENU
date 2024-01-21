@@ -1,4 +1,4 @@
--- v3.15 -- 
+-- v3.16 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.15"
+luaversion = "v3.16"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -733,8 +733,8 @@ end)
 
 
 gentab:add_button("test02", function()
-    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 5329, 0)))
-    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 5329, 1)))
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 11845, 0)))
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 11845, 1)))
 end)
 ]]
 --------------------------------------------------------------------------------------- TEST
@@ -4164,6 +4164,11 @@ tstaba1:add_button("解锁部分载具批发价", function()
     packed_stat_set_bool(41671, true)
     packed_stat_set_bool(41656, true)--appinternet.c		case joaat("squaddie"): return func_68(41656, -1);
 
+    --车友会相关
+    for ulkdisc = 31810, 34374 do
+        packed_stat_set_bool(ulkdisc, true)
+    end
+
     --末日豪劫DLC
     local dombit = stats.get_int("MPX_GANGOPS_FLOW_BITSET_MISS0")
     if (dombit & (1 << 1)) == 0 then
@@ -4311,8 +4316,12 @@ tstaba1:add_button("解锁部分载具批发价", function()
     tunables.set_int(1547508956, 1)
     tunables.set_int(-1431059775, 1)
 
+    --毒品战
+    if stats.get_int("MPX_FINISHED_SASS_RACE_TOP_3") <21 then
+        stats.set_int("MPX_FINISHED_SASS_RACE_TOP_3", 21)
+    end
 end)
-tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨+不夜城")
+tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨+不夜城+改装铺+毒品战")
 --------------------------------------------------------------------------------------- 传送点tab
 
 tpmenu:add_text("传送点页面")

@@ -1,4 +1,4 @@
--- v3.12 -- 
+-- v3.13 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.12"
+luaversion = "v3.13"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -733,7 +733,10 @@ end)
 
 
 gentab:add_button("test02", function()
-    log.info(tostring(stats.get_bool("mpx_complete_h4_f_using_alkonos")))
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 739, 0)))
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 739, 1)))
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 740, 0)))
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 740, 1)))
 
 end)
 ]]
@@ -4165,7 +4168,7 @@ tstaba1:add_button("解锁部分载具批发价", function()
     packed_stat_set_bool(41656, true)--appinternet.c		case joaat("squaddie"): return func_68(41656, -1);
 
     --末日豪劫DLC
-    local dombit = stats.get_int("MP0_GANGOPS_FLOW_BITSET_MISS0")
+    local dombit = stats.get_int("MPX_GANGOPS_FLOW_BITSET_MISS0")
     if (dombit & (1 << 1)) == 0 then
         dombit = dombit ~ (1 << 1)
     end
@@ -4193,9 +4196,68 @@ tstaba1:add_button("解锁部分载具批发价", function()
     if (dombit & (1 << 15)) == 0 then
         dombit = dombit ~ (1 << 15)
     end
-    stats.set_int("MP0_GANGOPS_FLOW_BITSET_MISS0", dombit)
+    stats.set_int("MPX_GANGOPS_FLOW_BITSET_MISS0", dombit)
+
+    --公寓抢劫
+    local h1bit = stats.get_int("MPX_CHAR_FM_VEHICLE_1_UNLCK")
+    if (h1bit & (1 << 12)) == 0 then
+        h1bit = h1bit ~ (1 << 12)
+    end
+    if (h1bit & (1 << 14)) == 0 then
+        h1bit = h1bit ~ (1 << 14)
+    end
+    if (h1bit & (1 << 16)) == 0 then
+        h1bit = h1bit ~ (1 << 16)
+    end
+    if (h1bit & (1 << 9)) == 0 then
+        h1bit = h1bit ~ (1 << 9)
+    end
+    if (h1bit & (1 << 20)) == 0 then
+        h1bit = h1bit ~ (1 << 20)
+    end
+    if (h1bit & (1 << 7)) == 0 then
+        h1bit = h1bit ~ (1 << 7)
+    end
+    if (h1bit & (1 << 8)) == 0 then
+        h1bit = h1bit ~ (1 << 8)
+    end
+    if (h1bit & (1 << 10)) == 0 then
+        h1bit = h1bit ~ (1 << 10)
+    end
+    if (h1bit & (1 << 11)) == 0 then
+        h1bit = h1bit ~ (1 << 11)
+    end
+    if (h1bit & (1 << 5)) == 0 then
+        h1bit = h1bit ~ (1 << 5)
+    end
+    if (h1bit & (1 << 6)) == 0 then
+        h1bit = h1bit ~ (1 << 6)
+    end
+    if (h1bit & (1 << 21)) == 0 then
+        h1bit = h1bit ~ (1 << 21)
+    end
+    if (h1bit & (1 << 18)) == 0 then
+        h1bit = h1bit ~ (1 << 18)
+    end
+    if (h1bit & (1 << 22)) == 0 then
+        h1bit = h1bit ~ (1 << 22)
+    end
+    if (h1bit & (1 << 19)) == 0 then
+        h1bit = h1bit ~ (1 << 19)
+    end
+    if (h1bit & (1 << 13)) == 0 then
+        h1bit = h1bit ~ (1 << 13)
+    end
+    if (h1bit & (1 << 15)) == 0 then
+        h1bit = h1bit ~ (1 << 15)
+    end
+    if (h1bit & (1 << 17)) == 0 then
+        h1bit = h1bit ~ (1 << 17)
+    end
+    stats.set_int("MPX_CHAR_FM_VEHICLE_1_UNLCK", h1bit)
+
 end)
-tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫")
+tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫")
 --------------------------------------------------------------------------------------- 传送点tab
 
 tpmenu:add_text("传送点页面")

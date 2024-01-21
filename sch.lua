@@ -1,4 +1,4 @@
--- v3.14 -- 
+-- v3.15 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.14"
+luaversion = "v3.15"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -4302,8 +4302,17 @@ tstaba1:add_button("解锁部分载具批发价", function()
         atbit = atbit ~ (1 << 7)
     end
     stats.set_int("MPX_AT_FLOW_VEHICLE_BS", atbit)
+
+    --不夜城
+    tunables.set_int(1416880888, 1)
+    tunables.set_int(132690314, 1)
+    tunables.set_int(407802353, 1)
+    tunables.set_int(-26415325, 1)
+    tunables.set_int(1547508956, 1)
+    tunables.set_int(-1431059775, 1)
+
 end)
-tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨")
+tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨+不夜城")
 --------------------------------------------------------------------------------------- 传送点tab
 
 tpmenu:add_text("传送点页面")

@@ -1,4 +1,4 @@
--- v3.11 -- 
+-- v3.12 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.11"
+luaversion = "v3.12"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -733,7 +733,8 @@ end)
 
 
 gentab:add_button("test02", function()
-    
+    log.info(tostring(stats.get_bool("mpx_complete_h4_f_using_alkonos")))
+
 end)
 ]]
 --------------------------------------------------------------------------------------- TEST
@@ -4112,6 +4113,7 @@ end)
 
 tstaba1 = TuneablesandStatsTab:add_tab("杂项")
 tstaba1:add_button("解锁部分载具批发价", function()
+
     --机库相关
     tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_MICROLIGHT", 0);
     tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_ROGUE", 0);
@@ -4154,23 +4156,46 @@ tstaba1:add_button("解锁部分载具批发价", function()
     tunables.set_int(-1071451023, 1)
 
     --佩里科相关 维泰尔\长鳍等
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 281, 0), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 281, 1), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 282, 0), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 282, 1), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 283, 0), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 283, 1), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 284, 0), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 284, 1), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 285, 0), true, true)
-    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 285, 1), true, true)
-    STATS.SET_PACKED_STAT_BOOL_CODE(41671, true, 0)
-    STATS.SET_PACKED_STAT_BOOL_CODE(41671, true, 1)
-    STATS.SET_PACKED_STAT_BOOL_CODE(41656, true, 0) --appinternet.c		case joaat("squaddie"): return func_68(41656, -1);
-    STATS.SET_PACKED_STAT_BOOL_CODE(41656, true, 1)
+    stats.set_bool("MPX_COMPLETE_H4_F_USING_VETIR", true)
+    stats.set_bool("MPX_COMPLETE_H4_F_USING_LONGFIN", true)
+    stats.set_bool("MPX_COMPLETE_H4_F_USING_ANNIH", true)
+    stats.set_bool("MPX_COMPLETE_H4_F_USING_ALKONOS", true)
+    stats.set_bool("MPX_COMPLETE_H4_F_USING_PATROLB", true)
+    packed_stat_set_bool(41671, true)
+    packed_stat_set_bool(41656, true)--appinternet.c		case joaat("squaddie"): return func_68(41656, -1);
 
+    --末日豪劫DLC
+    local dombit = stats.get_int("MP0_GANGOPS_FLOW_BITSET_MISS0")
+    if (dombit & (1 << 1)) == 0 then
+        dombit = dombit ~ (1 << 1)
+    end
+    if (dombit & (1 << 5)) == 0 then
+        dombit = dombit ~ (1 << 5)
+    end
+    if (dombit & (1 << 6)) == 0 then
+        dombit = dombit ~ (1 << 6)
+    end
+    if (dombit & (1 << 7)) == 0 then
+        dombit = dombit ~ (1 << 7)
+    end
+    if (dombit & (1 << 10)) == 0 then
+        dombit = dombit ~ (1 << 10)
+    end    
+    if (dombit & (1 << 11)) == 0 then
+        dombit = dombit ~ (1 << 0)
+    end
+    if (dombit & (1 << 13)) == 0 then
+        dombit = dombit ~ (1 << 13)
+    end    
+    if (dombit & (1 << 12)) == 0 then
+        dombit = dombit ~ (1 << 12)
+    end    
+    if (dombit & (1 << 15)) == 0 then
+        dombit = dombit ~ (1 << 15)
+    end
+    stats.set_int("MP0_GANGOPS_FLOW_BITSET_MISS0", dombit)
 end)
-tstaba1:add_text("支持范围: 走私犯大进击DLC+名钻赌场豪劫DLC+佩里科岛豪劫DLC 所属载具")
+tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫")
 --------------------------------------------------------------------------------------- 传送点tab
 
 tpmenu:add_text("传送点页面")

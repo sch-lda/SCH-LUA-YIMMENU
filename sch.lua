@@ -1,4 +1,4 @@
--- v3.13 -- 
+-- v3.14 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.13"
+luaversion = "v3.14"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -733,11 +733,8 @@ end)
 
 
 gentab:add_button("test02", function()
-    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 739, 0)))
-    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 739, 1)))
-    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 740, 0)))
-    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 740, 1)))
-
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 5329, 0)))
+    log.info(tostring(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 5329, 1)))
 end)
 ]]
 --------------------------------------------------------------------------------------- TEST
@@ -4256,8 +4253,57 @@ tstaba1:add_button("解锁部分载具批发价", function()
     end
     stats.set_int("MPX_CHAR_FM_VEHICLE_1_UNLCK", h1bit)
 
+    --军火霸业
+    local grbit = stats.get_int("MPX_WVM_FLOW_VEHICLE_BS")
+    if (grbit & (1 << 0)) == 0 then
+        grbit = grbit ~ (1 << 0)
+    end
+    if (grbit & (1 << 1)) == 0 then
+        grbit = grbit ~ (1 << 1)
+    end
+    if (grbit & (1 << 2)) == 0 then
+        grbit = grbit ~ (1 << 2)
+    end
+    if (grbit & (1 << 3)) == 0 then
+        grbit = grbit ~ (1 << 3)
+    end
+    if (grbit & (1 << 5)) == 0 then
+        grbit = grbit ~ (1 << 5)
+    end
+    if (grbit & (1 << 7)) == 0 then
+        grbit = grbit ~ (1 << 7)
+    end
+    stats.set_int("MPX_WVM_FLOW_VEHICLE_BS", grbit)
+
+    --进出口大亨
+    local atbit = stats.get_int("MPX_AT_FLOW_VEHICLE_BS")
+    if (atbit & (1 << 0)) == 0 then
+        atbit = atbit ~ (1 << 0)
+    end
+    if (atbit & (1 << 1)) == 0 then
+        atbit = atbit ~ (1 << 1)
+    end
+    if (atbit & (1 << 2)) == 0 then
+        atbit = atbit ~ (1 << 2)
+    end
+    if (atbit & (1 << 3)) == 0 then
+        atbit = atbit ~ (1 << 3)
+    end
+    if (atbit & (1 << 4)) == 0 then
+        atbit = atbit ~ (1 << 4)
+    end
+    if (atbit & (1 << 5)) == 0 then
+        atbit = atbit ~ (1 << 5)
+    end
+    if (atbit & (1 << 6)) == 0 then
+        atbit = atbit ~ (1 << 6)
+    end
+    if (atbit & (1 << 7)) == 0 then
+        atbit = atbit ~ (1 << 7)
+    end
+    stats.set_int("MPX_AT_FLOW_VEHICLE_BS", atbit)
 end)
-tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫")
+tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨")
 --------------------------------------------------------------------------------------- 传送点tab
 
 tpmenu:add_text("传送点页面")

@@ -1,4 +1,4 @@
--- v3.10 -- 
+-- v3.11 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.10"
+luaversion = "v3.11"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -4110,6 +4110,67 @@ odatatab:add_button("我同意", function()
     end
 end)
 
+tstaba1 = TuneablesandStatsTab:add_tab("杂项")
+tstaba1:add_button("解锁部分载具批发价", function()
+    --机库相关
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_MICROLIGHT", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_ROGUE", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_ALPHAZ1", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_HAVOK", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_STARLING", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_MOLOTOK", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_TULA", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_BOMBUSHKA", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_HOWARD", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_MOGUL", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_HUNTER", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_SEABREEZE", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_NOKOTA", 0);
+    tunables.set_int("SMUG_NUMBER_OF_STEAL_MISSIONS_TO_UNLOCK_PYRO", 0);
+
+    --名钻赌场相关
+    tunables.set_int(-1997603235, 1)
+    tunables.set_int(1293915021, 1)
+    tunables.set_int(-423431250, 1)
+    tunables.set_int(-1491164275, 1)
+    tunables.set_int(-170684478, 1)
+    tunables.set_int(-1541063863, 1)
+    tunables.set_int(2075481779, 1)
+    tunables.set_int(-1775833032, 1)
+    tunables.set_int(-1971661685, 1)
+    tunables.set_int(1161220966, 1)
+    tunables.set_int(-1874913332, 1)
+    tunables.set_int(-595990903, 1)
+    tunables.set_int(829638346, 1)
+    tunables.set_int(1362146058, 1)
+    tunables.set_int(-758040390, 1)
+    tunables.set_int(1378787619, 1)
+    tunables.set_int(1041883040, 1)
+    tunables.set_int(-463901261, 1)
+    tunables.set_int(1961619344, 1)
+    tunables.set_int(-2141495545, 1)
+    tunables.set_int(-349041781, 1)
+    tunables.set_int(-410267195, 1)
+    tunables.set_int(-1071451023, 1)
+
+    --佩里科相关 维泰尔\长鳍等
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 281, 0), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 281, 1), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 282, 0), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 282, 1), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 283, 0), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 283, 1), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 284, 0), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 284, 1), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 285, 0), true, true)
+    STATS.STAT_SET_BOOL(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, 285, 1), true, true)
+    STATS.SET_PACKED_STAT_BOOL_CODE(41671, true, 0)
+    STATS.SET_PACKED_STAT_BOOL_CODE(41671, true, 1)
+    STATS.SET_PACKED_STAT_BOOL_CODE(41656, true, 0) --appinternet.c		case joaat("squaddie"): return func_68(41656, -1);
+    STATS.SET_PACKED_STAT_BOOL_CODE(41656, true, 1)
+
+end)
+tstaba1:add_text("支持范围: 走私犯大进击DLC+名钻赌场豪劫DLC+佩里科岛豪劫DLC 所属载具")
 --------------------------------------------------------------------------------------- 传送点tab
 
 tpmenu:add_text("传送点页面")

@@ -1,4 +1,4 @@
--- v3.16 -- 
+-- v3.17 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.16"
+luaversion = "v3.17"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -4109,6 +4109,26 @@ odatatab:add_button("我同意", function()
             end        
         end)
     end
+end)
+
+unlocktab = TuneablesandStatsTab:add_tab("解锁")
+
+unlocktab:add_text("圣诞节庆货车/XMAS GIFT TRUCK")
+unlocktab:add_button("易可乐毛衣/eCola Festive Sweater", function()
+    packed_stat_set_bool(42128, true) --fm_content_xmas_truck.c func_6196("XT_TKR_SPCLa" /* GXT: eCola Festive Sweater */);
+end)
+unlocktab:add_button("霜碧毛衣/Sprunk Festive Sweater", function()
+    packed_stat_set_bool(42129, true)
+end)
+unlocktab:add_text("圣诞节事件/XMAS EVENTS")
+unlocktab:add_button("古奇套装/The Gooch Outfit", function()
+    packed_stat_set_bool(34761, true) --fm_content_xmas_mugger.c func_5997("XM_GOUTF" /* GXT: The Gooch Outfit */);
+end)
+unlocktab:add_button("雪怪套装/The Yeti Outfit", function()
+    packed_stat_set_bool(42119, true) --freemode YETIKILLHELP2
+end)
+unlocktab:add_button("雪人套装/The Snowman", function()
+    packed_stat_set_bool(36776, true) --freemode SNOWOAWDHEL2
 end)
 
 tstaba1 = TuneablesandStatsTab:add_tab("杂项")

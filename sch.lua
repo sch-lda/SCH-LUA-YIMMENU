@@ -1,4 +1,4 @@
--- v3.17 -- 
+-- v3.18 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.17"
+luaversion = "v3.18"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -4129,6 +4129,35 @@ unlocktab:add_button("雪怪套装/The Yeti Outfit", function()
 end)
 unlocktab:add_button("雪人套装/The Snowman", function()
     packed_stat_set_bool(36776, true) --freemode SNOWOAWDHEL2
+end)
+unlocktab:add_text("万圣节事件/TRICK OR TREAT")
+unlocktab:add_button("南瓜T恤/Pumpkin Tee", function()
+    packed_stat_set_bool(34380, true) --freemode TRICKOAWD2
+end)
+unlocktab:add_button("南瓜面具/The Horror Pumpkin Mask", function()
+    packed_stat_set_bool(34372, true) --freemode TRICKOAWDHEL
+end)
+unlocktab:add_text("理查德电影公司事件")
+unlocktab:add_button("太空入侵者套装/Space Interloper Outfit", function()
+    packed_stat_set_bool(30240, true) --freemode MPROP_RWD_TCK1m
+end)
+unlocktab:add_text("赌场豪劫/Casino Heist")
+unlocktab:add_button("豪赌客套装/The High Roller Outfit", function()
+    packed_stat_set_bool(26969, true) --freemode HELPACCARCOLAL2
+end)
+unlocktab:add_text("RDR2相关/RDR2 related")
+unlocktab:add_button("边境套装/The Frontier Outfit", function()
+    packed_stat_set_bool(31736, true) --freemode BURIED_OUTTIC
+end)
+unlocktab:add_text("回收站相关/Salvage Yard DLC")
+unlocktab:add_button("麦托尼保安套装/The McTony Security Outfit", function()
+    packed_stat_set_bool(42153, true) --fm_content_vehrob_submarine SUB_OUTFITa
+end)
+unlocktab:add_button("洛圣都战栗队套装/The Los Santos Panic outfit", function()
+    packed_stat_set_bool(42063, true) --fm_content_vehrob_arena MBA_OUTFITa
+end)
+unlocktab:add_button("海岸警卫队套装/Coast Guard Outfit outfit", function()
+    packed_stat_set_bool(42111, true) --fm_content_vehrob_cargo_ship CSF_T_UNLKOTFT
 end)
 
 tstaba1 = TuneablesandStatsTab:add_tab("杂项")

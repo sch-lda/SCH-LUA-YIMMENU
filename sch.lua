@@ -1,4 +1,4 @@
--- v3.19 -- 
+-- v3.20 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.19"
+luaversion = "v3.20"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -1231,6 +1231,19 @@ gentab:add_button("小游戏立即完成(任务中的各种门禁、VoltLab、�
                 locals_set_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local, minigame_tmp_v)
             end
         end
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat(minigamelocaltable[i].script_name)) ~= 0 then
+            minigame_tmp_v = locals.get_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local) --3095 --  --Biolab 条形上下浮动对准中间 的小游戏 --"Hack_Success", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"
+            if (minigame_tmp_v & (1 << 28)) == 0 then
+                minigame_tmp_v = minigame_tmp_v ~ (1 << 28)
+                locals_set_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local, minigame_tmp_v)
+            end
+        end
+    end
+
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then --patch for WINIP
+        locals_set_int("fm_mission_controller", 140 , 0)
+        locals_set_int("fm_mission_controller", 141 , 0)
+        locals_set_int("fm_mission_controller", 156 , 7)
     end
 
     minigame_tmp_v2 = globals.get_int(2737317)
@@ -1244,6 +1257,23 @@ gentab:add_button("小游戏立即完成(任务中的各种门禁、VoltLab、�
         minigame_tmp_v2 = minigame_tmp_v2 ~ (1 << 26)
     end
     globals_set_int(2737317, minigame_tmp_v2)
+
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("增加团队生命数", function() --MC_TLIVES -3095
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then 
+        network.force_script_host("fm_mission_controller_2020") --抢脚本主机
+        c_tlives_v = locals.get_int("fm_mission_controller_2020", 55004 + 873 + 1)
+        locals_set_int("fm_mission_controller_2020", 55004 + 873 + 1, c_tlives_v + 5)
+    end
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then 
+        network.force_script_host("fm_mission_controller") --抢脚本主机
+        globals_set_int(4718592 + 3318 + 1 + 38, 1)
+        c_tlives_v = locals.get_int("fm_mission_controller", 26154 + 1325 + 1)
+        locals_set_int("fm_mission_controller", 26154 + 1325 + 1, c_tlives_v + 5)
+    end
 end)
 
 gentab:add_separator()

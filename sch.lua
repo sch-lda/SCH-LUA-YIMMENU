@@ -1,4 +1,4 @@
--- v3.20 -- 
+-- v3.21 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.20"
+luaversion = "v3.21"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -733,6 +733,7 @@ end)
 
 
 gentab:add_button("test02", function()
+    log.info(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0,9834,0))
 end)
 ]]
 --------------------------------------------------------------------------------------- TEST
@@ -838,7 +839,7 @@ gentab:add_button("配置佩岛前置(猎豹雕像)", function()
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
     if globals.get_int(1970744 + 1093) == 79 then --3095 确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
-        locals.set_int("heist_island_planning", 1544, 2) --3095
+        locals_set_int("heist_island_planning", 1544, 2) --3095
     end
 end)
 
@@ -864,7 +865,7 @@ gentab:add_button("配置佩岛前置(粉钻)", function()
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
     if globals.get_int(1970744 + 1093) == 79 then --3095 确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
-        locals.set_int("heist_island_planning", 1544, 2) --3095
+        locals_set_int("heist_island_planning", 1544, 2) --3095
     end
 end)
 
@@ -890,7 +891,7 @@ gentab:add_button("重置佩岛", function()
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 0)
     stats.set_int("MPX_H4LOOT_COKE_I", 0)
     if globals.get_int(1970744 + 1093) == 79 then --3095 确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
-        locals.set_int("heist_island_planning", 1544, 2) --3095
+        locals_set_int("heist_island_planning", 1544, 2) --3095
     end
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
@@ -4025,6 +4026,29 @@ end)
 TuneablesandStatsTab:add_text("修改流程: 1.读取 2.修改 3.应用")
 
 t_heisttab = TuneablesandStatsTab:add_tab("抢劫任务")
+t_heisttab:add_text("本地分红")
+t_heisttab:add_text("请在任务启动后修改,不会体现在计划板上,不会影响队友,队友也不会看到,只影响自己的最终收入结算")
+local_cut_h234 = t_heisttab:add_input_int("佩里科/赌场/末日")
+local_cut_h1 = t_heisttab:add_input_int("公寓")
+
+t_heisttab:add_button("读取##lhcut", function()
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
+        local_cut_h234:set_value(globals.get_int(2685249 + 6615)) --3095
+        local_cut_h1:set_value(globals.get_int(2685249 + 6379 )) --3095
+    else
+        gui.show_error("错误","请先启动抢劫任务")
+    end
+end)
+
+t_heisttab:add_sameline()
+t_heisttab:add_button("应用##lhcut", function()
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
+        globals_set_int(2685249 + 6615, local_cut_h234:get_value()) --3095
+        globals_set_int(2685249 + 6379, local_cut_h1:get_value()) --3095
+    else
+        gui.show_error("错误","请先启动抢劫任务")
+    end
+end)
 
 t_heisttab:add_text("佩里科岛抢劫")
 t_heisttab:add_text("主要目标价值")
@@ -4576,6 +4600,11 @@ tstaba1:add_button("解锁部分载具批发价", function()
     end
 end)
 tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨+不夜城+改装铺+毒品战")
+
+tstaba1:add_button("完成车友会本周奖品载具挑战", function()
+    stats.set_bool("MPX_CARMEET_PV_CHLLGE_CMPLT", true)
+end)
+
 --------------------------------------------------------------------------------------- 传送点tab
 
 tpmenu:add_text("传送点页面")
@@ -7421,6 +7450,13 @@ void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip
 ]]
 
 -- MC_TLIVES 团队生命数
+
+--[[ 3095
+    佩里科个人本地分红(可能也适用于赌场、末日) Global_2685249.f_6615 
+    可能适用于公寓抢劫的本地分红Global_2685249.f_6379
+    Global_2685249.f_3485.f_79 celebration结算页面显示的个人分红 "CELEB_C_EARN" /* GXT: ~1~% CUT OF EARNINGS */
+    iVar7 = Global_2685249.f_6615; fm2020里面的个人分红，最终赋值给Global_2685249.f_3485.f_79
+]]
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 
 

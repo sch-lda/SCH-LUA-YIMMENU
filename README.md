@@ -1,5 +1,5 @@
 # SCH-LUA-YIMMENU
-[English Version v3.19 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
+[English Version v3.20 translated by Drsexo]( https://github.com/Drsexo/English-Sch-lua/) \
 [English Version v1.60 translated by Alestarov]( https://github.com/Alestarov/SCH-LUA-YIMMENU-ENG/) 
 ### 不完全可用!20231210 Yimmenu官方修改了SOL_ALL_SAFETIES_ON，强制检查lua类型。我试图修复了大部分功能，但仍有少数功能不可用。
 ### Partially unavailable! Yimmenu has modified SOL_ALL_SAFETIES_ON on 20231210, enforcing Lua type checking. I've attempted to fix most of the functionalities, but there are still a few that remain unavailable.

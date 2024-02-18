@@ -1,4 +1,4 @@
--- v3.21 -- 
+-- v3.22 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.21"
+luaversion = "v3.22"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -1089,6 +1089,16 @@ gentab:add_button("小游戏立即完成(任务中的各种门禁、VoltLab、�
 
         locals_set_int("fm_mission_controller_2020", 29118, 6) --3095 --佩里科排水口格栅切割
 
+        locals_set_int("fm_mission_controller_2020", 30356, 4) --3095 --佩里科等离子切割 开始
+
+        if locals.get_int("fm_mission_controller_2020", 30332) == 3 then --佩里科密码箱 --Input_Code_Enter_Correct
+            locals_set_int("fm_mission_controller_2020", 30333, 2) --3095 --已输入三组密码
+            locals_set_float("fm_mission_controller_2020", 30333 + 1 + 1, locals.get_int("fm_mission_controller_2020", 30333 + 1 + 1 + 1)) --3095 --使已输入密码与目标相同
+            locals_set_float("fm_mission_controller_2020", 30333 + 1 + 1 + 2, locals.get_int("fm_mission_controller_2020", 30333 + 1 + 1 + 1 + 2)) --3095 --使已输入密码与目标相同
+            locals_set_float("fm_mission_controller_2020", 30333 + 1 + 1 + 4, locals.get_int("fm_mission_controller_2020", 30333 + 1 + 1 + 1 + 4)) --3095 --使已输入密码与目标相同
+            PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 237, 1.0) --确认密码
+        end
+
         locals_set_float("fm_mission_controller_2020", 30357 + 3, 100) --3095 佩里科等离子切割
         
         locals_set_float("fm_mission_controller", 10067 + 11, 1) --3095 全福银行钻孔
@@ -1258,6 +1268,14 @@ gentab:add_button("小游戏立即完成(任务中的各种门禁、VoltLab、�
         minigame_tmp_v2 = minigame_tmp_v2 ~ (1 << 26)
     end
     globals_set_int(2737317, minigame_tmp_v2)
+
+    if locals.get_int("fm_content_stash_house", 117 + 15) == 3 then --藏匿屋密码箱 --Input_Code_Enter_Correct SH_HT_MINIG_C f6310->f6299->f6362
+        locals_set_float("fm_content_stash_house", 117 + 22 + 1, locals.get_int("fm_content_stash_house", 117 + 22 + 1 + 1)) --3095 --使已输入密码与目标相同
+        locals_set_float("fm_content_stash_house", 117 + 22 + 1 + 2, locals.get_int("fm_content_stash_house", 117 + 22 + 1 + 1 + 2)) --3095 --使已输入密码与目标相同
+        locals_set_float("fm_content_stash_house", 117 + 22 + 1 + 4, locals.get_int("fm_content_stash_house", 117 + 22 + 1 + 1 + 4)) --3095 --使已输入密码与目标相同
+        gui.show_message("藏匿屋破解","一次不成功就多按几次,直至开门") 
+        --gui.show_message("stash house detected","Continue pressing until success")
+    end
 
 end)
 

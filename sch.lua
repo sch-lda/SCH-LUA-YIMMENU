@@ -1,4 +1,4 @@
--- v3.23 -- 
+-- v4.01 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v3.23"
+luaversion = "v4.01"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -99,9 +99,10 @@ devmode3 = 0 --0:禁用某些调试功能 1:启用某些调试功能
 islistwed = 0 --是否已展开时间和金钱stats表单
 
 gtaoversion = memory.scan_pattern("8B C3 33 D2 C6 44 24 20"):add(0x24):rip()
+gtaoversionstr = gtaoversion:get_string()
 if gtaoversion:get_string() ~= "3179" then
     verchkok = 0
-    log.warning("sch-lua脚本不支持您的游戏版本,为避免损坏存档,涉及数据修改的功能将自动停用!")
+    log.warning("sch-lua未完全更新,少数功能将自动停用!")
 else
     log.info("sch-lua已适配您的当前游戏版本.")
     verchkok = 1
@@ -165,44 +166,72 @@ end)
 --------------------------------------------------------------------------------------- Imgui Test
 --------------------------------------------------------------------------------------- functions 供lua调用的用于实现特定功能的函数
 
-function globals_set_int(intglobal, intval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
-    if verchkok == 1 then
+function globals_set_int(supportedver, intglobal, intval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
         globals.set_int(intglobal, intval)
     else
-        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据修改.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
     end
 end
 
-function globals_set_float(floatglobal, floatval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
-    if verchkok == 1 then
+function globals_get_int(supportedver, intglobal) --当游戏版本不受支持时拒绝读取globals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
+        return globals.get_int(intglobal)
+    else
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据读取.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
+    end
+end
+
+function globals_set_float(supportedver, floatglobal, floatval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
         globals.set_float(floatglobal, floatval)
     else
-        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据修改.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
     end
 end
 
-function locals_set_int(scriptname, intlocal, intlocalval) --当游戏版本不受支持时拒绝修改locals避免损坏线上存档
-    if verchkok == 1 then
+function globals_get_float(supportedver, floatglobal) --当游戏版本不受支持时拒绝读取globals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
+        return globals.get_float(floatglobal)
+    else
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据读取.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
+    end
+end
+
+function locals_set_int(supportedver, scriptname, intlocal, intlocalval) --当游戏版本不受支持时拒绝修改locals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
         locals.set_int(scriptname, intlocal, intlocalval)
     else
-        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据修改.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
     end
 end
 
-function locals_set_float(scriptname, flocal, flocalval) --当游戏版本不受支持时拒绝修改locals避免损坏线上存档
-    if verchkok == 1 then
+function locals_get_int(supportedver, scriptname, intlocal) --当游戏版本不受支持时拒绝读取locals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
+        return locals.get_int(scriptname, intlocal)
+    else
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据读取.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
+    end
+end
+
+function locals_set_float(supportedver, scriptname, flocal, flocalval) --当游戏版本不受支持时拒绝修改locals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
         locals.set_float(scriptname, flocal, flocalval)
     else
-        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据修改.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
     end
 end
 
-function packed_stat_set_bool(boolindex, boolval) --当游戏版本不受支持时拒绝修改globals避免损坏线上存档
-    if verchkok == 1 then
-        stats.set_packed_stat_bool(boolindex, boolval)
+function locals_get_float(supportedver, scriptname, flocal) --当游戏版本不受支持时拒绝读取locals避免损坏线上存档
+    if tostring(supportedver) == gtaoversionstr then
+        return locals.get_float(scriptname, flocal)
     else
-        log.warning("游戏版本不受支持,为了您的线上存档安全,已停止数据修改")
+        log.warning("此功能内存地址支持版本与游戏当前版本不匹配,可能未更新,已停止数据读取.您的游戏版本是"..gtaoversionstr.."支持的版本是"..supportedver)
     end
+end
+
+function packed_stat_set_bool(boolindex, boolval) --stats通常不随版本更新变化
+    stats.set_packed_stat_bool(boolindex, boolval)
 end
 
 function calcDistance(pos, tarpos) -- 计算两个三维坐标之间的距离
@@ -231,11 +260,18 @@ function get_closest_veh(entity) -- 获取最近的载具
     return closestveh
 end
 
-function upgrade_vehicle(vehicle)
+function upgrade_vehicle(vehicle,str)
+    VEHICLE.SET_VEHICLE_MOD_KIT(vehicle, 0)
+
+    local table1 = {}
     for i = 0, 49 do
         local num = VEHICLE.GET_NUM_VEHICLE_MODS(vehicle, i)
-        VEHICLE.SET_VEHICLE_MOD(vehicle, i, num - 1, true)
+        table.insert(table1, num)
     end
+    local veh_mod_name = VEHICLE.GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(ENTITY.GET_ENTITY_MODEL(vehicle))
+    local veh_disp_name = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION(veh_mod_name)
+    local result = table.concat(table1, ",")
+    log.info("new VehicleInfo(){ Name=\""..veh_disp_name.."\", Value=\""..str.."\", Mods=new int[49]{ "..result.." } },")
 end
 
 function run_script(scriptName, stackSize) --启动脚本线程
@@ -660,7 +696,7 @@ end
 --[[
 gentab:add_button("test01", function()
     for fm2i=0,60000 do
-        rst = locals.get_int("fm_mission_controller_2020", fm2i)
+        rst = locals_get_int(0, "fm_mission_controller_2020", fm2i)
         if rst == 291 then 
             log.info(tostring(fm2i.."  "..rst))
         end
@@ -674,7 +710,7 @@ gentab:add_button("localsnapshot", function()
 
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
         for i = 40000, 60000 do
-            local value = locals.get_int("fm_mission_controller_2020", i)
+            local value = locals_get_int(0, "fm_mission_controller_2020", i)
             if value ~= -1 then
                 table.insert(monValues, string.format("%d:%d", i, value))
             end
@@ -693,7 +729,7 @@ prevValues = {}
 gentab:add_button("localbatchmon", function()
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then
         for i = 0, 60000 do
-            local newValue = locals.get_int("fm_mission_controller", i)
+            local newValue = locals_get_int(0, "fm_mission_controller", i)
             if prevValues[i] ~= newValue then
                 log.info(string.format("%d : %d -> %d", i, prevValues[i] or 0, newValue))
                 prevValues[i] = newValue
@@ -736,7 +772,52 @@ gentab:add_button("montable reset", function()
 end)
 
 gentab:add_button("test02", function()
+    script.run_in_fiber(function (vmod)
 
+    local newvehtable = {    }
+    table.insert(newvehtable, "castigator")
+table.insert(newvehtable, "coquette5")
+table.insert(newvehtable, "dominator10")
+table.insert(newvehtable, "driftcypher")
+table.insert(newvehtable, "driftnebula")
+table.insert(newvehtable, "driftsentinel")
+table.insert(newvehtable, "driftvorschlag")
+table.insert(newvehtable, "envisage")
+table.insert(newvehtable, "eurosX32")
+table.insert(newvehtable, "niobe")
+table.insert(newvehtable, "paragon3")
+table.insert(newvehtable, "pipistrello")
+table.insert(newvehtable, "pizzaboy")
+table.insert(newvehtable, "poldominator10")
+table.insert(newvehtable, "poldorado")
+table.insert(newvehtable, "polgreenwood")
+table.insert(newvehtable, "policet3")
+table.insert(newvehtable, "polimpaler5")
+table.insert(newvehtable, "polimpaler6")
+table.insert(newvehtable, "vorschlaghammer")
+table.insert(newvehtable, "yosemite1500")
+
+    for _, veh in pairs(newvehtable) do
+            STREAMING.REQUEST_MODEL(joaat(veh))
+
+            while not STREAMING.HAS_MODEL_LOADED(joaat(veh)) do
+
+                STREAMING.REQUEST_MODEL(joaat(veh))
+                vmod:yield()
+            end   
+                spawncrds = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(), false)
+                veh1 = VEHICLE.CREATE_VEHICLE(joaat(veh), spawncrds.x, spawncrds.y, spawncrds.z, 0 , true, true, true)
+                PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), veh1, -1)
+                vmod:sleep(1000)
+
+                upgrade_vehicle(veh1,veh)
+                vmod.yield()
+        end
+    end)
+
+end)
+gentab:add_button("test03", function()
+    log.info(STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, 7869, 0))
 end)
 ]]
 --------------------------------------------------------------------------------------- TEST
@@ -807,12 +888,12 @@ gentab:add_button("佩里科/事务所合约终章/ULP一键完成", function()
         end
         if FMMC2020host == PLAYER.PLAYER_ID() or FMMChost == PLAYER.PLAYER_ID() then
             gui.show_message("已成为脚本主机","尝试自动完成...")
-            locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
-            locals_set_int("fm_mission_controller_2020",50279,100) --关键代码 --3095
-            locals_set_int("fm_mission_controller", 19728, 12) --3095
-            locals_set_int("fm_mission_controller", 27489 + 859, 99999) --3095
-            locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095
-        else
+            locals_set_int(3258, "fm_mission_controller_2020", 50150 + 1, 51338752)  --关键代码  
+            locals_set_int(3258, "fm_mission_controller_2020", 50150 + 1770 + 1, 100) --关键代码 
+            locals_set_int(3258, "fm_mission_controller", 19746, 12) 
+            locals_set_int(3258, "fm_mission_controller", 27489 + 859 + 18, 99999) 
+            locals_set_int(3258, "fm_mission_controller", 31621 + 69, 99999) 
+                else
             log.info("失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?")
             log.info("已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)")
             gui.show_error("失败,未成为脚本主机","您可能不在支持一键完成的任务中")
@@ -841,8 +922,8 @@ gentab:add_button("配置佩岛前置(猎豹雕像)", function()
     stats.set_int("MPX_H4_MISSIONS", 65279)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
-    if globals.get_int(1970744 + 1093) == 79 then --3095 确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
-        locals_set_int("heist_island_planning", 1544, 2) --3095
+    if globals_get_int(3258, 1971648 + 1093) == 79 then  --确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
+        locals_set_int(3258, "heist_island_planning", 1546, 2) 
     end
 end)
 
@@ -867,8 +948,8 @@ gentab:add_button("配置佩岛前置(粉钻)", function()
     stats.set_int("MPX_H4_MISSIONS", 65279)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 16777215)
     stats.set_int("MPX_H4LOOT_COKE_I", 16777215)
-    if globals.get_int(1970744 + 1093) == 79 then --3095 确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
-        locals_set_int("heist_island_planning", 1544, 2) --3095
+    if globals_get_int(3258, 1971648 + 1093) == 79 then  --确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
+        locals_set_int(3258, "heist_island_planning", 1546, 2) 
     end
 end)
 
@@ -893,8 +974,8 @@ gentab:add_button("重置佩岛", function()
     stats.set_int("MPX_H4_MISSIONS", 0)
     stats.set_int("MPX_H4LOOT_COKE_I_SCOPED", 0)
     stats.set_int("MPX_H4LOOT_COKE_I", 0)
-    if globals.get_int(1970744 + 1093) == 79 then --3095 确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
-        locals_set_int("heist_island_planning", 1544, 2) --3095
+    if globals_get_int(3258, 1971648 + 1093) == 79 then  --确认抢劫计划面板未全屏渲染再刷新，避免脚本死亡
+        locals_set_int(3258, "heist_island_planning", 1546, 2) 
     end
     gui.show_message("注意", "计划面板将还原至刚买虎鲸的状态!")
 end)
@@ -966,16 +1047,16 @@ gentab:add_button("重置赌场计划面板", function()
 end)
 
 
-gentab:add_button("转换CEO/首领", function() --3095
+gentab:add_button("转换CEO/首领", function() 
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     --playerOrganizationTypeRaw: {Global_1886967[PLAYER::PLAYER_ID() /*609*/].f_10.f_429}  GLOBAL  
     --playerOrganizationType: {('1886967', '*609', '10', '429', '1')}  GLOBAL  global + (pid *pidmultiplier) + offset + offset + offset (values: 0 = CEO and 1 = MOTORCYCLE CLUB) 
-    if globals.get_int(1886967+playerIndex*609+10+429+1) == 0 then --1886967+playerIndex*609+10+429+1 = 0 为CEO =1为摩托帮首领
-        globals_set_int(1886967+playerIndex*609+10+429+1,1)
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then --1886967+playerIndex*609+10+429+1 = 0 为CEO =1为摩托帮首领
+        globals_set_int(3258, 1887305+playerIndex*609+10+430+1,1)
         gui.show_message("提示","已转换为摩托帮首领")
     else
-        if globals.get_int(1886967+playerIndex*609+10+429+1) == 1 then
-            globals_set_int(1886967+playerIndex*609+10+429+1,0)
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
+            globals_set_int(3258, 1887305+playerIndex*609+10+430+1,0)
             gui.show_message("提示","已转换为CEO")
         else
             gui.show_message("您不是老大","您既不是CEO也不是首领")
@@ -985,13 +1066,13 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示事务所电脑", function() --3095
+gentab:add_button("显示事务所电脑", function() 
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    if globals.get_int(1886967+playerIndex*609+10+429+1) == 0 then
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then
         run_script("appfixersecurity", 4592)
     else
-        if globals.get_int(1886967+playerIndex*609+10+429+1) == 1 then
-            globals_set_int(1886967+playerIndex*609+10+429+1,0)
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
+            globals_set_int(3258, 1887305+playerIndex*609+10+430+1,0)
             gui.show_message("提示","已转换为CEO")
             run_script("appfixersecurity", 4592)
             else
@@ -1003,12 +1084,12 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示地堡电脑", function() --3095
+gentab:add_button("显示地堡电脑", function() 
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    if globals.get_int(1886967+playerIndex*609+10+429+1) == 0 then
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then
         run_script("appbunkerbusiness", 1424)
     else
-        if globals.get_int(1886967+playerIndex*609+10+429+1) == 1 then
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
             run_script("appbunkerbusiness", 1424)
             else
                 gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
@@ -1019,12 +1100,12 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示机库电脑", function() --3095
+gentab:add_button("显示机库电脑", function() 
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    if globals.get_int(1886967+playerIndex*609+10+429+1) == 0 then
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then
         run_script("appsmuggler", 4592)
     else
-        if globals.get_int(1886967+playerIndex*609+10+429+1) == 1 then
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
             run_script("appsmuggler", 4592)
             else
                 gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
@@ -1035,13 +1116,13 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示游戏厅产业总控电脑", function() --3095
+gentab:add_button("显示游戏厅产业总控电脑", function() 
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    if globals.get_int(1886967+playerIndex*609+10+429+1) == 0 then
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then
         PLAYER.FORCE_CLEANUP_FOR_ALL_THREADS_WITH_THIS_NAME("appArcadeBusinessHub", 1)
         run_script("apparcadebusinesshub", 1424)
     else
-        if globals.get_int(1886967+playerIndex*609+10+429+1) == 1 then
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
             PLAYER.FORCE_CLEANUP_FOR_ALL_THREADS_WITH_THIS_NAME("appArcadeBusinessHub", 1)
             run_script("apparcadebusinesshub", 1424)
         else
@@ -1054,12 +1135,12 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示恐霸主控面板", function() --3095
+gentab:add_button("显示恐霸主控面板", function() 
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    if globals.get_int(1886967+playerIndex*609+10+429+1) == 0 then
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then
         run_script("apphackertruck", 4592)
     else
-        if globals.get_int(1886967+playerIndex*609+10+429+1) == 1 then
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
             run_script("apphackertruck", 4592)
         else
             gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
@@ -1070,12 +1151,12 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("显示复仇者面板", function()  --3095
+gentab:add_button("显示复仇者面板", function()  
     local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    if globals.get_int(1886967+playerIndex*609+10+429+1) == 0 then
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then
         run_script("appAvengerOperations", 4592)
     else
-        if globals.get_int(1886967+playerIndex*609+10+429+1) == 1 then
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
             run_script("appAvengerOperations", 4592)
         else
             gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
@@ -1084,221 +1165,140 @@ gentab:add_button("显示复仇者面板", function()  --3095
     end
 end)
 
-gentab:add_button("小游戏立即完成(任务中的各种门禁、VoltLab、数据包收集小游戏、佩里科等离子/排水口切割、全福和赌场立即钻孔)", function()
-
-    local_H4_hack = 24333 --3095    --func_5790(&Local_24333, &(Local_24324[func_381(bParam1, 3) /*2*/]), 0, joaat("heist"), Global_786547.f_1);
-
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
-
-        locals_set_int("fm_mission_controller_2020", 29118, 6) --3095 --佩里科排水口格栅切割
-
-        locals_set_int("fm_mission_controller_2020", 30356, 4) --3095 --佩里科等离子切割 开始
-
-        if locals.get_int("fm_mission_controller_2020", 30332) == 3 then --佩里科密码箱 --Input_Code_Enter_Correct
-            locals_set_int("fm_mission_controller_2020", 30333, 2) --3095 --已输入三组密码
-            locals_set_float("fm_mission_controller_2020", 30333 + 1 + 1, locals.get_int("fm_mission_controller_2020", 30333 + 1 + 1 + 1)) --3095 --使已输入密码与目标相同
-            locals_set_float("fm_mission_controller_2020", 30333 + 1 + 1 + 2, locals.get_int("fm_mission_controller_2020", 30333 + 1 + 1 + 1 + 2)) --3095 --使已输入密码与目标相同
-            locals_set_float("fm_mission_controller_2020", 30333 + 1 + 1 + 4, locals.get_int("fm_mission_controller_2020", 30333 + 1 + 1 + 1 + 4)) --3095 --使已输入密码与目标相同
-            PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 237, 1.0) --确认密码
-        end
-
-        locals_set_float("fm_mission_controller_2020", 30357 + 3, 100) --3095 佩里科等离子切割
-        
-    
-        local_H4_hack_v = locals.get_int("fm_mission_controller_2020", local_H4_hack) --佩里科finger clone
-        if (local_H4_hack_v & (1 << 0)) == 0 then
-            local_H4_hack_v = local_H4_hack_v ~ (1 << 0)
-            locals_set_int("fm_mission_controller_2020", local_H4_hack, local_H4_hack_v)
-        end
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then --自动钻孔
-        locals_set_float("fm_mission_controller", 10067 + 11, 1) --3095 全福银行钻孔
-        locals_set_int("fm_mission_controller", 10107 + 2, 8) --3095 赌场金库门钻孔 DLC_HEIST3\HEIST_FINALE_LASER_DRILL case 8
-    end
-    --所有赌场指纹和键盘门禁
-    local_H3_hack_1 = 52985 --3095    --func_14102(&Local_52985, &(Local_52920[Local_31603[bLocal_3229 /*292*/].f_27 /*2*/]), 0, joaat("heist"), Global_786547.f_1);
-    local_H3_hack_2 = 54047 --3095    --func_14104(&Local_54047, &(Local_53982[Local_31603[bLocal_3229 /*292*/].f_27 /*2*/]), 0, joaat("heist"), Global_786547.f_1);
-    local_H3_hack_1_p = 2836 --3095    
-    local_H3_hack_2_p = 3833 --3095    
-
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then --赌场指纹门禁
-        local_H3_hack_1_v = locals.get_int("fm_mission_controller", local_H3_hack_1)
-        if (local_H3_hack_1_v & (1 << 0)) == 0 then
-            local_H3_hack_1_v = local_H3_hack_1_v ~ (1 << 0)
-            locals_set_int("fm_mission_controller", local_H3_hack_1, local_H3_hack_1_v)
-        end
-        local_H3_hack_2_v = locals.get_int("fm_mission_controller", local_H3_hack_2)
-        if (local_H3_hack_2_v & (1 << 0)) == 0 then
-            local_H3_hack_2_v = local_H3_hack_2_v ~ (1 << 0)
-            locals_set_int("fm_mission_controller", local_H3_hack_2, local_H3_hack_2_v)
-        end
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("am_mp_arc_cab_manager")) ~= 0 then --赌场指纹门禁-练习
-        local_H3_hack_1_p_v = locals.get_int("am_mp_arc_cab_manager", local_H3_hack_1_p)
-        if (local_H3_hack_1_p_v & (1 << 0)) == 0 then
-            local_H3_hack_1_p_v = local_H3_hack_1_p_v ~ (1 << 0)
-            locals_set_int("am_mp_arc_cab_manager", local_H3_hack_1_p, local_H3_hack_1_p_v)
-        end
-        local_H3_hack_2_p_v = locals.get_int("am_mp_arc_cab_manager", local_H3_hack_2_p)
-        if (local_H3_hack_2_p_v & (1 << 0)) == 0 then
-            local_H3_hack_2_p_v = local_H3_hack_2_p_v ~ (1 << 0)
-            locals_set_int("am_mp_arc_cab_manager", local_H3_hack_2_p, local_H3_hack_2_p_v)
-        end
-    end
-
-    --所有voltlab
-        --[[
-        if (iLocal_765 == iLocal_764)
-            {
-                AUDIO::PLAY_SOUND_FRONTEND(-1, "All_Connected_Correct", uParam1->f_741, true);
-            }
-    ]]
-
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then --voltlab立即完成
-        locals_set_int("fm_mission_controller_2020", 1721, locals.get_int("fm_mission_controller_2020", 1722)) --3095 --voltlab实际值与目标值始终一致
-        locals_set_int("fm_mission_controller_2020", 1723, 3) --3095 已连接三条线
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_content_island_heist")) ~= 0 then
-        locals_set_int("fm_content_island_heist", 764, locals.get_int("fm_content_island_heist", 765)) --3095 --voltlab实际值与目标值始终一致
-        locals_set_int("fm_content_island_heist", 766, 3) --3095  已连接三条线
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_content_vehrob_prep")) ~= 0 then
-        locals_set_int("fm_content_vehrob_prep", 545, locals.get_int("fm_content_vehrob_prep", 546)) --3095 --voltlab实际值与目标值始终一致
-        locals_set_int("fm_content_vehrob_prep", 547, 3) --3095  已连接三条线
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("am_mp_arc_cab_manager")) ~= 0 then
-        locals_set_int("am_mp_arc_cab_manager", 453, locals.get_int("am_mp_arc_cab_manager", 454)) --3095 --voltlab实际值与目标值始终一致
-        locals_set_int("am_mp_arc_cab_manager", 455, 3) --3095  已连接三条线
-    end
-
-
-    --所有收集数据包绕过防火墙破解
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_content_vehrob_casino_prize")) ~= 0 then
-        locals_set_int("fm_content_vehrob_casino_prize", 1043 + 135 , 3) --3095 case 3 Pass_Remote
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then --
-        locals_set_int("fm_mission_controller", 1269 + 135 , 3) --3095 case 3 Pass_Remote
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
-        locals_set_int("fm_mission_controller_2020", 978 + 135 , 3) --3095 case 3 Pass_Remote
-    end
-
-    --所有贪吃蛇破解 CIRC_COMP
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then --
-        locals_set_int("fm_mission_controller", 11776 + 24 , 7)
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then --
-        locals_set_int("fm_mission_controller_2020", 9002 + 24 , 7)
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_content_business_battles")) ~= 0 then --
-        locals_set_int("fm_content_business_battles", 4070 + 24 , 7)
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_content_island_heist")) ~= 0 then --
-        locals_set_int("fm_content_island_heist", 10040 + 24 , 7)
-    end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_content_vehrob_prep")) ~= 0 then --
-        locals_set_int("fm_content_vehrob_prep", 9098 + 24 , 7)
-    end
-
-
-    --int* iParam0, int iParam1, int iParam2, int iParam3, int iParam4, var uParam5, var uParam6, int iParam7, bool bParam8, bool bParam9, bool bParam10, bool bParam11, bool bParam12, bool bParam13, int iParam14, int iParam15, bool bParam16, bool bParam17, bool bParam18, bool bParam19, bool bParam20, bool bParam21, bool bParam22
-    local minigamelocaltable = {
-        [1]  = {script_name = "agency_heist3b", minigame_local = 6210},
-        [2]  = {script_name = "business_battles_sell", minigame_local = 429},
-        [3]  = {script_name = "fm_content_business_battles", minigame_local = 4070},
-        [4]  = {script_name = "fm_content_island_heist", minigame_local = 10040},
-        [5]  = {script_name = "fm_content_vehrob_casino_prize", minigame_local = 7615 + 2},
-        [6]  = {script_name = "fm_content_vehrob_police", minigame_local = 7478},
-        [7]  = {script_name = "fm_content_vehrob_prep", minigame_local = 9098},
-        [8]  = {script_name = "fm_content_vip_contract_1", minigame_local = 7286},
-        [9]  = {script_name = "fm_mission_controller_2020", minigame_local = 28335},
-        [10]  = {script_name = "fm_mission_controller", minigame_local = 9773},
-        [11]  = {script_name = "gb_cashing_out", minigame_local = 399},
-        [12]  = {script_name = "gb_gunrunning_defend", minigame_local = 2259},
-        [13]  = {script_name = "gb_sightseer", minigame_local = 458},
-    }
-        --[12]  = {script_name = "gb_casino_heist", minigame_local = }, --Global_2737317
-        --[12]  = {script_name = "gb_casino", minigame_local = }, --Global_2737317
-        --[12]  = {script_name = "gb_gangops", minigame_local = }, --Global_2737317
-        --[12]  = {script_name = "gb_gunrunning", minigame_local = }, --Global_2737317
-        --[12]  = {script_name = "gb_infiltration", minigame_local = }, --Global_2737317
-        --[12]  = {script_name = "gb_smuggler", minigame_local = }, --Global_2737317
-        --[0]  = {script_name = "business_battles", minigame_local = }, --Global_2737317
-
-    for i = 1, 13 do
-        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat(minigamelocaltable[i].script_name)) ~= 0 then
-            minigame_tmp_v = locals.get_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local) --3095 -- WINBRUTE 
-            if (minigame_tmp_v & (1 << 9)) == 0 then
-                minigame_tmp_v = minigame_tmp_v ~ (1 << 9)
-                locals_set_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local, minigame_tmp_v)
-            end
-        end
-        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat(minigamelocaltable[i].script_name)) ~= 0 then
-            minigame_tmp_v = locals.get_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local) --3095 -- WINIP 
-            if (minigame_tmp_v & (1 << 18)) == 0 then
-                minigame_tmp_v = minigame_tmp_v ~ (1 << 18)
-                locals_set_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local, minigame_tmp_v)
-            end
-        end
-        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat(minigamelocaltable[i].script_name)) ~= 0 then
-            minigame_tmp_v = locals.get_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local) --3095 --  --Biolab 条形上下浮动对准中间 的小游戏 --"Hack_Success", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"
-            if (minigame_tmp_v & (1 << 26)) == 0 then
-                minigame_tmp_v = minigame_tmp_v ~ (1 << 26)
-                locals_set_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local, minigame_tmp_v)
-            end
-        end
-        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat(minigamelocaltable[i].script_name)) ~= 0 then
-            minigame_tmp_v = locals.get_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local) --3095 --  --Biolab 条形上下浮动对准中间 的小游戏 --"Hack_Success", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"
-            if (minigame_tmp_v & (1 << 28)) == 0 then
-                minigame_tmp_v = minigame_tmp_v ~ (1 << 28)
-                locals_set_int(minigamelocaltable[i].script_name, minigamelocaltable[i].minigame_local, minigame_tmp_v)
-            end
-        end
-    end
-
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then --patch for WINIP
-        locals_set_int("fm_mission_controller", 140 , 0)
-        locals_set_int("fm_mission_controller", 141 , 0)
-        locals_set_int("fm_mission_controller", 156 , 7)
-    end
-
-    minigame_tmp_v2 = globals.get_int(2737317)
-    if (minigame_tmp_v2 & (1 << 9)) == 0 then
-        minigame_tmp_v2 = minigame_tmp_v2 ~ (1 << 9)
-    end
-    if (minigame_tmp_v2 & (1 << 18)) == 0 then
-        minigame_tmp_v2 = minigame_tmp_v2 ~ (1 << 18)
-    end
-    if (minigame_tmp_v2 & (1 << 26)) == 0 then
-        minigame_tmp_v2 = minigame_tmp_v2 ~ (1 << 26)
-    end
-    globals_set_int(2737317, minigame_tmp_v2)
-
-    if locals.get_int("fm_content_stash_house", 117 + 15) == 3 then --藏匿屋密码箱 --Input_Code_Enter_Correct SH_HT_MINIG_C f6310->f6299->f6362
-        locals_set_float("fm_content_stash_house", 117 + 22 + 1, locals.get_int("fm_content_stash_house", 117 + 22 + 1 + 1)) --3095 --使已输入密码与目标相同
-        locals_set_float("fm_content_stash_house", 117 + 22 + 1 + 2, locals.get_int("fm_content_stash_house", 117 + 22 + 1 + 1 + 2)) --3095 --使已输入密码与目标相同
-        locals_set_float("fm_content_stash_house", 117 + 22 + 1 + 4, locals.get_int("fm_content_stash_house", 117 + 22 + 1 + 1 + 4)) --3095 --使已输入密码与目标相同
-        gui.show_message("藏匿屋破解","一次不成功就多按几次,直至开门") 
-        --gui.show_message("stash house detected","Continue pressing until success")
-    end
-
-end)
-
 gentab:add_sameline()
+
+gentab:add_button("显示保金办公室面板", function()  
+    local playerIndex = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
+    if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 0 then
+        run_script("appBailOffice", 4592)
+    else
+        if globals_get_int(3258, 1887305+playerIndex*609+10+430+1) == 1 then
+            run_script("appBailOffice", 4592)
+        else
+            gui.show_message("别忘注册为CEO/首领","也可能是脚本检测错误,已知问题,无需反馈")
+            run_script("appBailOffice", 4592)
+        end
+    end
+end)
 
 gentab:add_button("增加团队生命数", function() --MC_TLIVES -3095
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then 
         network.force_script_host("fm_mission_controller_2020") --抢脚本主机
-        c_tlives_v = locals.get_int("fm_mission_controller_2020", 55004 + 873 + 1)
-        locals_set_int("fm_mission_controller_2020", 55004 + 873 + 1, c_tlives_v + 5)
+        c_tlives_v = locals_get_int(3258, "fm_mission_controller_2020", 56798 + 873 + 1)
+        locals_set_int(3258, "fm_mission_controller_2020", 56798 + 873 + 1, c_tlives_v + 5)
     end
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then 
         network.force_script_host("fm_mission_controller") --抢脚本主机
-        globals_set_int(4718592 + 3318 + 1 + 38, 1)
-        c_tlives_v = locals.get_int("fm_mission_controller", 26154 + 1325 + 1)
-        locals_set_int("fm_mission_controller", 26154 + 1325 + 1, c_tlives_v + 5)
+        globals_set_int(3258, 4718592 + 3592 + 1 + 38, 1)
+        c_tlives_v = locals_get_int(3258, "fm_mission_controller", 26172 + 1325 + 1)
+        locals_set_int(3258, "fm_mission_controller", 26172 + 1325 + 1, c_tlives_v + 5)
+        --[[
+        int func_787(bool bParam0, bool bParam1)//Position - 0x200F2
+{
+	int iVar0;
+	int iVar1;
+	
+	iVar0 = Global_4718592.f_3592[bParam0 /*25891*/].f_38;
+	if (BitTest(Global_4718592.f_11, 5))
+	{
+		iVar0 = Global_4718592.f_3592[0 /*25891*/].f_38;
+	}
+	if (Local_28365[bParam0] < 17 && Global_4718592.f_3592[bParam0 /*25891*/].f_40[Local_28365[bParam0] ] != -1)
+	{
+		iVar0 = Global_4718592.f_3592[bParam0 /*25891*/].f_40[Local_28365[bParam0] ];
+	}
+	if (!(bParam1 && BitTest(uLocal_15178, 31)))
+	{
+		if (BitTest(Local_19746.f_2, 21) && (((((((((((BitTest(Local_19746.f_3, 30) || BitTest(Local_19746.f_4, 2)) || BitTest(Local_19746.f_4, 15)) || BitTest(Local_19746.f_4, 30)) || BitTest(Local_19746.f_4, 1)) || (BitTest(Local_19746.f_5, 18) && !func_605(Global_4718592.f_185586))) || BitTest(Local_19746.f_5, 31)) || BitTest(Local_19746.f_7, 4)) || (BitTest(Local_19746.f_7, 8) && !BitTest(Global_4718592.f_26, 28))) || (BitTest(Local_19746.f_4, 9) && BitTest(Global_4718592.f_24, 18))) || (BitTest(Local_19746.f_4, 9) && func_788(Global_4718592.f_185586))) || BitTest(Local_19746.f_8, 17)))
+		{
+			return 0;
+		}
+	}
+	if (BitTest(Global_4718592.f_19, 0))
+	{
+		iVar0 = Local_22960.f_1470[bParam0];
+		if (BitTest(Global_4718592.f_21, 16))
+		{
+			iVar0 = (iVar0 - 1);
+		}
+		return iVar0;
+	}
+	if (bParam1)
+	{
+		iVar1 = Local_31621[bLocal_3230 /*292*/].f_197;
+	}
+	else
+	{
+		iVar1 = Local_26172.f_1325[bParam0];
+	}
+	switch (iVar0)
+	{
+		case -1:
+			return (0 + iVar1);
+		
+		case 0:
+			return -1;
+		
+		case 1:
+			return (1 + iVar1);
+		
+		case 2:
+			return (2 + iVar1);
+		
+		case 3:
+			return (3 + iVar1);
+		
+		case 4:
+			return (4 + iVar1);
+		
+		case 5:
+			return (5 + iVar1);
+		
+		case 6:
+			return (6 + iVar1);
+		
+		case 7:
+			return (7 + iVar1);
+		
+		case 8:
+			return (8 + iVar1);
+		
+		case 9:
+			return (9 + iVar1);
+		
+		case 10:
+			return (10 + iVar1);
+		
+		case 11:
+			return (15 + iVar1);
+		
+		case 12:
+			return (20 + iVar1);
+		
+		case 13:
+			return (30 + iVar1);
+		
+		case 14:
+			return (50 + iVar1);
+		
+		case 15:
+			return (100 + iVar1);
+		
+		case 16:
+			return (Local_19746.f_1765[bParam0] + iVar1);
+		
+		case 17:
+			return ((2 * Local_19746.f_1765[bParam0]) + iVar1);
+		
+		default:
+	}
+	return 0;
+}
+]]
     end
 end)
+
+gentab:add_text("小游戏立即完成已从sch-lua中剥离,请使用MiniGameHack Lua (https://github.com/YimMenu-Lua/MiniGameHack)")
 
 gentab:add_separator()
 gentab:add_text("娱乐功能(稳定性不高,全是bug)(粒子效果达到内存限制后将无法继续生成,请开启然后关闭本页最下方的清理PTFX水柱火柱功能)") --不解释，我自己也搞不明白
@@ -1384,7 +1384,7 @@ gentab:add_button("飞天扫帚", function()
         PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), veh, -1)
         ENTITY.ATTACH_ENTITY_TO_ENTITY(obj, veh, 0, 0, 0, 0.3, -80.0, 0, 0, true, false, false, false, 0, true, 0) 
         myvehisin = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
-        upgrade_vehicle(myvehisin)
+        upgrade_vehicle(myvehisin,"")
     end)
 end)
 
@@ -2063,14 +2063,14 @@ gentab:add_separator()
 gentab:add_text("产业功能-中高风险") 
 
 gentab:add_button("CEO仓库出货一键完成", function()
-    locals_set_int("gb_contraband_sell",545,99999) --iLocal_543.f_2 --3095
+    locals_set_int(3258, "gb_contraband_sell",547,99999) --Local_545.f_2 
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("摩托帮出货一键完成", function()
-    if locals.get_int("gb_biker_contraband_sell",719) >= 1 then --3095
-        locals_set_int("gb_biker_contraband_sell",824,15) --702 + 122 --3095
+    if locals_get_int(3258, "gb_biker_contraband_sell",721) >= 1 then 
+        locals_set_int(3258, "gb_biker_contraband_sell",826,15) --704 + 122 
     else
         gui.show_error("该任务类型不支持一键完成","一共就一辆卡车也要一键??")
         log.info("该任务类型不支持一键完成,否则不会有任何收入.一共就一辆送货载具也要使用一键完成??")
@@ -2080,18 +2080,18 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("致幻剂出货一键完成", function() 
-    locals_set_int("fm_content_acid_lab_sell",6596,9)
-    locals_set_int("fm_content_acid_lab_sell",6597,10)
-    locals_set_int("fm_content_acid_lab_sell",6530,2)
+    locals_set_int(0, "fm_content_acid_lab_sell",6596,9)
+    locals_set_int(0, "fm_content_acid_lab_sell",6597,10)
+    locals_set_int(0, "fm_content_acid_lab_sell",6530,2)
 end)
 ]]
 gentab:add_sameline()
 
 gentab:add_button("地堡出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
-    locals_set_int("gb_gunrunning",1983,0) --3095
-    --  gb_gunrunning.c iLocal_1209.f_774
-    --	for (i = 0; i < func_833(func_3786(), func_60(), iLocal_1209.f_774, iLocal_1209.f_809); i = i + 1)
+    locals_set_int(3258, "gb_gunrunning",1985,0) 
+    --  gb_gunrunning.c Local_1211.f_774
+    --	while (iVar0 < func_837(func_3839(), func_60(), Local_1211.f_774, Local_1211.f_809))
     --  REMOVE_PARTICLE_FX_FROM_ENTITY
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
@@ -2100,8 +2100,8 @@ gentab:add_sameline()
 
 gentab:add_button("机库(空运)出货一键完成", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
-    local integer = locals.get_int("gb_smuggler", 3010)  --1932 + 1078 --3095
-    locals_set_int("gb_smuggler",2967,integer) --1932 + 1035 --3095
+    local integer = locals_get_int(3258, "gb_smuggler", 3012)  --Local_1934.f_1078 SMOT_HLPDROP2
+    locals_set_int(3258, "gb_smuggler",2969,integer) --1934 + 1035  
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
 
@@ -2134,19 +2134,19 @@ gentab:add_sameline()
 local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(危)")
 
 gentab:add_button("摩托帮产业满原材料", function()
-    globals_set_int(1662873+1+1,1) --大麻 -- 3095--freemode.c  	if (func_12737(148, "OR_PSUP_DEL" /*Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits!*/, &unk, false, -99, 0, 0, false, 0))
-    globals_set_int(1662873+1+2,1) --冰毒-- 3095
-    globals_set_int(1662873+1+3,1) --假钞-- 3095
-    globals_set_int(1662873+1+4,1) --证件-- 3095
-    globals_set_int(1662873+1+0,1) --可卡因-- 3095
-    globals_set_int(1662873+1+6,1) --致幻剂-- 3095
+    globals_set_int(3258, 1663174+1+1,1) --大麻 --freemode.c  	if (func_11921(148, "OR_PSUP_DEL" /* GXT: Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits! */, &Var3, 0, -99, 0, 0, 0, 0))
+    globals_set_int(3258, 1663174+1+2,1) --冰毒
+    globals_set_int(3258, 1663174+1+3,1) --假钞
+    globals_set_int(3258, 1663174+1+4,1) --证件
+    globals_set_int(3258, 1663174+1+0,1) --可卡因
+    globals_set_int(3258, 1663174+1+6,1) --致幻剂
     gui.show_message("自动补货","全部完成")
 end)
 
 gentab:add_sameline()
 
 gentab:add_button("地堡满原材料", function()
-    globals_set_int(1662873+1+5,1) --bunker-- 3095
+    globals_set_int(3258, 1663174+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
 end)
 
@@ -2254,7 +2254,6 @@ function tpfac() --传送到设施
     if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(590)) then
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), Pos.x, Pos.y, Pos.z+4)
     end
-
 end
 
 gentab:add_button("虎鲸计划面板", function()
@@ -2268,7 +2267,7 @@ gentab:add_button("虎鲸计划面板", function()
             local SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
             local SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
             while not HUD.DOES_BLIP_EXIST(SubBlip) and not HUD.DOES_BLIP_EXIST(SubControlBlip) do     
-                globals_set_int(2738587 + 960, 1) --呼叫虎鲸 --freemode.c -- 3095	func_12504("HELP_SUBMA_P" /*Go to the Planning Screen on board your new Kosatka ~a~~s~ to begin The Cayo Perico Heist as a VIP, CEO or MC President. You can also request the Kosatka nearby via the Services section of the Interaction Menu.*/, "H_BLIP_SUB2" /*~BLIP_SUB2~*/, func_2189(PLAYER::PLAYER_ID()), -1, false, true);
+                globals_set_int(3258, 2738934 + 975, 1) --呼叫虎鲸 --freemode.c 	func_12504("HELP_SUBMA_P" /*Go to the Planning Screen on board your new Kosatka ~a~~s~ to begin The Cayo Perico Heist as a VIP, CEO or MC President. You can also request the Kosatka nearby via the Services section of the Interaction Menu.*/, "H_BLIP_SUB2" /*~BLIP_SUB2~*/, func_2189(PLAYER::PLAYER_ID()), -1, false, true);
                 SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
                 SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)    
                 callkos:yield()
@@ -2321,23 +2320,14 @@ local NightclubPropertyInfo = {
     [10] = {name = "Vespucci Canals Nightclub",   coords = {x = -1174.85,  y =  -1152.3,   z = 5.56128 }},
 }
 
--- Business / Other Online Work Stuff [[update]]
-local function GetOnlineWorkOffset()
-    -- GLOBAL_PLAYER_STAT
-        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    return (1845263 + 1 + (playerid * 877) + 267) --3095
-end
-
 local function GetNightClubPropertyID()
-    return globals.get_int(GetOnlineWorkOffset() + 356) --3095
-end
-
-local function IsPlayerInNightclub()
-    return (GetPlayerPropertyID() > 101) and (GetPlayerPropertyID() < 112)
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
+    return globals_get_int(3258, 1845281 + 1 + (playerid * 883) + 268 + 358) 
 end
 
 function tpnc() --传送到夜总会
-    local property = GetNightClubPropertyID()
+    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
+    local property = globals_get_int(3258, 1845281 + 1 + (playerid * 883) + 268 + 358) 
     if property ~= 0  then
         local coords = NightclubPropertyInfo[property].coords
         PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
@@ -2495,7 +2485,7 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("恢复1.66下架载具", function()
-    local vehranges = { --3095
+    local vehranges = { 
         {14936, 14944},
         {17510, 17528},
         {17682, 17703},
@@ -2523,7 +2513,7 @@ gentab:add_button("恢复1.66下架载具", function()
     for _, vehrange in ipairs(vehranges) do
         local start, finish = vehrange[1], vehrange[2]
         for x = start, finish do
-            globals_set_int(262145 + x, 1)
+            globals_set_int(3179, 262145 + x, 1)
         end
     end
 end)
@@ -2550,8 +2540,8 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("移除自身悬赏", function() --3095
-    globals_set_int(1+2359296+5150+13,2880000)   
+gentab:add_button("移除自身悬赏", function() 
+    globals_set_int(3179, 1+2359296+5150+13,2880000)   
 end)
 
 gentab:add_sameline()
@@ -2613,8 +2603,8 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("强制保存", function() --3095
-    globals_set_int(2694471 + 1382 , 27)
+gentab:add_button("强制保存", function() 
+    globals_set_int(3179, 2694471 + 1382 , 27)
 end)
 
 gentab:add_sameline()
@@ -2802,8 +2792,8 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("立即穿上重甲", function()
-    globals_set_int(2738587 + 902, 1) --3095
-    globals_set_int(2738587 + 901, 1) --3095
+    globals_set_int(3258, 2738934 + 917, 1) 
+    globals_set_int(3258, 2738934 + 916, 1) 
 end)
 
 local check1 = gentab:add_checkbox("移除交易错误警告") --只是一个开关，代码往后面找
@@ -3601,7 +3591,7 @@ gentab:add_button("赠送暴君MK2", function()
         for _, exptar_player_id in pairs(player_Index_table) do
             spawncrds = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(exptar_player_id), false)
             veh = VEHICLE.CREATE_VEHICLE(joaat("oppressor2"), spawncrds.x, spawncrds.y, spawncrds.z, 0 , true, true, true)
-            upgrade_vehicle(veh)
+            upgrade_vehicle(veh,"")
         end
     end)
 end)
@@ -3850,11 +3840,11 @@ local allclear = gentab:add_checkbox("循环清除实体") --只是一个开关�
 gentab:add_sameline()
 
 gentab:add_button("佩里科/事务所合约终章/ULP一键完成(强制)", function()
-    locals_set_int("fm_mission_controller_2020",48514,51338752)  --关键代码  --3095
-    locals_set_int("fm_mission_controller_2020",50279,100) --关键代码 --3095
-    locals_set_int("fm_mission_controller", 19728, 12) --3095
-    locals_set_int("fm_mission_controller", 27489 + 859, 99999) --3095 --泰坦号差事 0 --赌场日常差事 99999 --巴勒邦背水一战 99999
-    locals_set_int("fm_mission_controller", 31603 + 69, 99999) --3095 --泰坦号差事 1 --赌场日常差事 6 --巴勒邦背水一战 1
+    locals_set_int(3258, "fm_mission_controller_2020", 50150 + 1, 51338752)  --关键代码  
+    locals_set_int(3258, "fm_mission_controller_2020", 50150 + 1770 + 1, 100) --关键代码 
+    locals_set_int(3258, "fm_mission_controller", 19746, 12) 
+    locals_set_int(3258, "fm_mission_controller", 27489 + 859 + 18, 99999) 
+    locals_set_int(3258, "fm_mission_controller", 31621 + 69, 99999) 
 end)
 
 local emmode3 = gentab:add_checkbox("紧急模式3-持续清除任何实体+阻止PTFX火柱水柱+阻止滤镜和镜头抖动+清理物体表面痕迹") --只是一个开关，代码往后面找
@@ -4060,9 +4050,9 @@ hud_take = t_heisttab:add_input_int("太平洋标准银行和赌场豪劫")
 
 t_heisttab:add_button("读取##lhcut", function()
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
-        local_cut_h234:set_value(globals.get_int(2685249 + 6615)) --3095
-        local_cut_h1:set_value(globals.get_int(2685249 + 6379 )) --3095
-        hud_take:set_value(locals.get_int("fm_mission_controller", 19728 + 2686)) --3095 "MONEY_HELD" /* GXT: TAKE */, 1000, 6, 2, 0, "HUD_CASH" /* GXT: $~1~ */
+        local_cut_h234:set_value(globals_get_int(3258, 2685444 + 6639)) 
+        local_cut_h1:set_value(globals_get_int(3258, 2685444 + 6403 )) 
+        hud_take:set_value(locals_get_int(3258, "fm_mission_controller", 19746 + 2686))  --"MONEY_HELD" /* GXT: TAKE */, 1000, 6, 2, 0, "HUD_CASH" /* GXT: $~1~ */
     else
         gui.show_error("错误","请先启动抢劫任务")
     end
@@ -4071,9 +4061,9 @@ end)
 t_heisttab:add_sameline()
 t_heisttab:add_button("应用##lhcut", function()
     if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller_2020")) ~= 0 then
-        globals_set_int(2685249 + 6615, local_cut_h234:get_value()) --3095
-        globals_set_int(2685249 + 6379, local_cut_h1:get_value()) --3095
-        locals_set_int("fm_mission_controller", 19728 + 2686, hud_take:get_value()) --3095
+        globals_set_int(3258, 2685444 + 6639, local_cut_h234:get_value()) 
+        globals_set_int(3258, 2685444 + 6403, local_cut_h1:get_value()) 
+        locals_set_int(3258, "fm_mission_controller", 19746 + 2686, hud_take:get_value()) 
     else
         gui.show_error("错误","请先启动抢劫任务")
     end
@@ -4121,7 +4111,8 @@ end)
 t_ottab:add_sameline()
 misc_tu_lock = t_ottab:add_checkbox("应用##miscv") --这只是一个复选框,代码往最后的循环脚本部分找
 
-biker_val_mtp = t_ottab:add_input_float("摩托帮产业和致幻剂产品价值倍率")
+biker_p_val_mtp = t_ottab:add_input_float("摩托帮产业和致幻剂产品价值倍率")
+biker_far_mtp = t_ottab:add_input_float("摩托帮产业和致幻剂长途销售奖励倍率")
 
 biker_cap_0 = t_ottab:add_input_int("可卡因当前库存") --HUD_CASH 
 biker_cap_1 = t_ottab:add_input_int("大麻当前库存") --HUD_CASH 
@@ -4140,15 +4131,16 @@ biker_cap_max_5 = t_ottab:add_input_int("地堡最大库存") --HUD_CASH
 biker_cap_max_6 = t_ottab:add_input_int("致幻剂实验室产品最大库存") --HUD_CASH 
 
 t_ottab:add_button("读取##miscv2", function()
-    biker_val_mtp:set_value(tunables.get_float(-823848572))
+    biker_p_val_mtp:set_value(tunables.get_float(-823848572))
+    biker_far_mtp:set_value(tunables.get_float("BIKER_SELL_PRODUCT_FAR_MODIFIER"))
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    biker_cap_0:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 0 * 13)+1)) --3095
-    biker_cap_1:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 1 * 13)+1)) --3095
-    biker_cap_2:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 2 * 13)+1)) --3095
-    biker_cap_3:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 3 * 13)+1)) --3095
-    biker_cap_4:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 4 * 13)+1)) --3095
-    biker_cap_5:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 5 * 13)+1)) --3095
-    biker_cap_6:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 6 * 13)+1)) --3095
+    biker_cap_0:set_value(globals_get_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 0 * 13)+1)) 
+    biker_cap_1:set_value(globals_get_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 1 * 13)+1)) 
+    biker_cap_2:set_value(globals_get_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 2 * 13)+1)) 
+    biker_cap_3:set_value(globals_get_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 3 * 13)+1)) 
+    biker_cap_4:set_value(globals_get_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 4 * 13)+1)) 
+    biker_cap_5:set_value(globals_get_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 5 * 13)+1)) 
+    biker_cap_6:set_value(globals_get_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 6 * 13)+1)) 
     biker_cap_max_0:set_value(tunables.get_int("BIKER_COCAINE_CAPACITY"))
     biker_cap_max_1:set_value(tunables.get_int("BIKER_WEED_CAPACITY"))
     biker_cap_max_2:set_value(tunables.get_int("BIKER_METH_CAPACITY"))
@@ -4159,16 +4151,17 @@ t_ottab:add_button("读取##miscv2", function()
 end)
 t_ottab:add_sameline()
 t_ottab:add_button("应用##miscv2", function()
-    tunables.set_float(-823848572, biker_val_mtp:get_value())
+    tunables.set_float(-823848572, biker_p_val_mtp:get_value())
+    tunables.set_float("BIKER_SELL_PRODUCT_FAR_MODIFIER", biker_far_mtp:get_value())
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
-    globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 0 * 13)+1 , biker_cap_0:get_value()) --3095
-    globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 1 * 13)+1 , biker_cap_1:get_value()) --3095
-    globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 2 * 13)+1 , biker_cap_2:get_value()) --3095
-    globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 3 * 13)+1 , biker_cap_3:get_value()) --3095
-    globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 4 * 13)+1 , biker_cap_4:get_value()) --3095
-    globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 5 * 13)+1 , biker_cap_5:get_value()) --3095
-    globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 195 + 1 + 6 * 13)+1 , biker_cap_6:get_value()) --3095
+    globals_set_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 0 * 13)+1 , biker_cap_0:get_value()) 
+    globals_set_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 1 * 13)+1 , biker_cap_1:get_value()) 
+    globals_set_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 2 * 13)+1 , biker_cap_2:get_value()) 
+    globals_set_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 3 * 13)+1 , biker_cap_3:get_value()) 
+    globals_set_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 4 * 13)+1 , biker_cap_4:get_value()) 
+    globals_set_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 5 * 13)+1 , biker_cap_5:get_value()) 
+    globals_set_int(3258, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 6 * 13)+1 , biker_cap_6:get_value()) 
     tunables.set_int("BIKER_COCAINE_CAPACITY", biker_cap_max_0:get_value())
     tunables.set_int("BIKER_WEED_CAPACITY", biker_cap_max_1:get_value())
     tunables.set_int("BIKER_METH_CAPACITY", biker_cap_max_2:get_value())
@@ -4190,14 +4183,6 @@ t_ottab:add_button("应用##miscv3", function()
     tunables.set_int(-954321460, smug_val:get_value())
 end)
 
-nc_stock_0 = t_ottab:add_input_int("运输货物当前库存") --return Global_1845263[iParam0 /*877*/].f_267.f_313.f_8[iParam1];
-nc_stock_1 = t_ottab:add_input_int("体育用品当前库存") 
-nc_stock_2 = t_ottab:add_input_int("南美进口货当前库存") 
-nc_stock_3 = t_ottab:add_input_int("药学产品当前库存") 
-nc_stock_4 = t_ottab:add_input_int("有机农产品当前库存") 
-nc_stock_5 = t_ottab:add_input_int("印刷品当前库存") 
-nc_stock_6 = t_ottab:add_input_int("假钞当前库存") 
-
 nc_cap_max_0 = t_ottab:add_input_int("运输货物最大库存")  
 nc_cap_max_1 = t_ottab:add_input_int("体育用品最大库存")  
 nc_cap_max_2 = t_ottab:add_input_int("南美进口货最大库存")  
@@ -4207,14 +4192,7 @@ nc_cap_max_5 = t_ottab:add_input_int("印刷品最大库存")
 nc_cap_max_6 = t_ottab:add_input_int("假钞最大库存")  
 
 t_ottab:add_button("读取##miscv4", function()
-    local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
-    nc_stock_0:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 0 ))) --3095 --return Global_1845263[iParam0 /*877*/].f_267.f_313.f_8[iParam1];
-    nc_stock_1:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 1 ))) --3095
-    nc_stock_2:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 2 ))) --3095
-    nc_stock_3:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 3 ))) --3095
-    nc_stock_4:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 4 ))) --3095
-    nc_stock_5:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 5 ))) --3095
-    nc_stock_6:set_value(globals.get_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 6 ))) --3095
+
     nc_cap_max_1:set_value(tunables.get_int(-1318722703))
     nc_cap_max_2:set_value(tunables.get_int(-2136290534))
     nc_cap_max_3:set_value(tunables.get_int(1069721135))
@@ -4226,15 +4204,7 @@ t_ottab:add_button("读取##miscv4", function()
 end)
 t_ottab:add_sameline()
 t_ottab:add_button("应用##miscv4", function()
-        local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
-        globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 0 ) , nc_stock_0:get_value()) --3095
-        globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 1 ) , nc_stock_1:get_value()) --3095
-        globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 2 ) , nc_stock_2:get_value()) --3095
-        globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 3 ) , nc_stock_3:get_value()) --3095
-        globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 4 ) , nc_stock_4:get_value()) --3095
-        globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 5 ) , nc_stock_5:get_value()) --3095
-        globals_set_int((1845263 + 1 + (playerid * 877) + 267 + 313 + 8 + 1 + 6 ) , nc_stock_6:get_value()) --3095
         tunables.set_int(-1318722703, nc_cap_max_1:get_value())
         tunables.set_int(-2136290534, nc_cap_max_2:get_value())
         tunables.set_int(1069721135, nc_cap_max_3:get_value())
@@ -4693,8 +4663,7 @@ t_cluckinfarm = t_heisttab:add_tab("当当钟农场")
 t_cluckinfarm:add_text("黑心基金")
 
 t_cluckinfarm:add_button("快速拾取现金", function()
-    locals_set_int("fm_mission_controller_2020",28883,5)  --3095 --switch (Local_28883.f_0)
-
+    locals_set_int(3258, "fm_mission_controller_2020",29465,5)   --CASINO_BLACKJACK_CAMERA --switch (Local_29465.f_0)
 end)
 
 t_cluckinfarm:add_text("Breaking and Entering")
@@ -4731,16 +4700,16 @@ end)
 t_cluckinfarm:add_text("Disorganized Crime")
 
 t_cluckinfarm:add_button("快速钻孔+100%出门禁卡", function()
-    local_CF_drill_v = locals.get_int("fm_mission_controller_2020", 30368 + 54) --3095 获得门禁卡
+    local_CF_drill_v = locals_get_int(3258, "fm_mission_controller_2020", 30950 + 54)  --获得门禁卡 
     if (local_CF_drill_v & (1 << 4)) == 0 then
         local_CF_drill_v = local_CF_drill_v ~ (1 << 4)
     end
     if (local_CF_drill_v & (1 << 16)) == 0 then
         local_CF_drill_v = local_CF_drill_v ~ (1 << 16)
     end
-    locals_set_int("fm_mission_controller_2020", 30368 + 54, local_CF_drill_v)
-    locals_set_int("fm_mission_controller_2020",30368 + 56 ,4)  --3095 获得门禁卡
-    locals_set_int("fm_mission_controller_2020",30368 + 39 ,3)  --3095 钻孔立即完成
+    locals_set_int(3258, "fm_mission_controller_2020", 30950 + 54, local_CF_drill_v)
+    locals_set_int(3258, "fm_mission_controller_2020",30950 + 56 ,4)   --获得门禁卡
+    locals_set_int(3258, "fm_mission_controller_2020",30950 + 39 ,3)   --钻孔立即完成 --switch (uParam0->f_39) -- (tunable) ICH_VAULT_SAFETY_DEPOSIT_BOX_VALUE_LOOT_CHANCE
 end)
 
 t_cluckinfarm:add_text("终章: Scene of the Crime")
@@ -4791,22 +4760,22 @@ script.register_looped("schlua-test", function(script)
     if  devmode == 1 then
         if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then
 
-        localmon1 = 19728
-        deva1 = locals.get_int("fm_mission_controller", localmon1)
+        localmon1 = 19746
+        deva1 = locals_get_int(0, "fm_mission_controller", localmon1)
         if deva1 ~= deva2 then
             log.info(tostring(localmon1.." : "..deva2.." -> "..deva1))
             deva2 = deva1
         end
 
         localmon2 = 27489 + 859
-        deva3 = locals.get_int("fm_mission_controller", localmon2)
+        deva3 = locals_get_int(0, "fm_mission_controller", localmon2)
         if deva3 ~= deva4 then
             log.info(tostring(localmon2.." : "..deva4.." -> "..deva3))
             deva4 = deva3
         end
 
         localmon3 = 31603 + 69
-        deva5 = locals.get_int("fm_mission_controller", localmon3)
+        deva5 = locals_get_int(0, "fm_mission_controller", localmon3)
         if deva5 ~= deva6 then
             log.info(tostring(localmon3.." : "..deva6.." -> "..deva5))
             deva6 = deva5
@@ -4818,7 +4787,7 @@ script.register_looped("schlua-test", function(script)
     if  devmode2 == 1 then
         if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_mission_controller")) ~= 0 then
             for i = 0, 60000 do
-                local newValue = locals.get_int("fm_mission_controller", i)
+                local newValue = locals_get_int(0, "fm_mission_controller", i)
                 if prevValues[i] ~= newValue then
                     log.info(string.format("%d : %d -> %d", i, prevValues[i] or 0, newValue))
                     prevValues[i] = newValue
@@ -5179,47 +5148,47 @@ script.register_looped("schlua-recoveryservice", function(script)
     
 end)
 
-script.register_looped("schlua-ml2", function(script)  -- 3095
+script.register_looped("schlua-ml2", function(script)  
     
     if  autorespl:is_enabled() then--自动补原材料
         if stats.get_int("MPX_MATTOTALFORFACTORY0") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY0") <= 40 and autoresply == 0 then 
-            globals_set_int(1662873+1+0,1) --kky
+            globals_set_int(3258, 1663174+1+0,1) --kky
             log.info("可卡因原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int("MPX_MATTOTALFORFACTORY1") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY1") <= 40 and autoresply == 0 then 
-            globals_set_int(1662873+1+1,1) --dm
+            globals_set_int(3258, 1663174+1+1,1) --dm
             log.info("大麻原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int("MPX_MATTOTALFORFACTORY2") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY2") <= 40 and autoresply == 0 then 
-            globals_set_int(1662873+1+2,1) --bd
+            globals_set_int(3258, 1663174+1+2,1) --bd
             log.info("冰毒原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int("MPX_MATTOTALFORFACTORY3") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY3") <= 40 and autoresply == 0 then 
-            globals_set_int(1662873+1+3,1) --jc
+            globals_set_int(3258, 1663174+1+3,1) --jc
             log.info("假钞原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int("MPX_MATTOTALFORFACTORY4") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY4") <= 40 and autoresply == 0 then 
-            globals_set_int(1662873+1+4,1) --id
+            globals_set_int(3258, 1663174+1+4,1) --id
             log.info("证件原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int("MPX_MATTOTALFORFACTORY5") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY5") <= 40 and autoresply == 0 then 
-            globals_set_int(1662873+1+5,1) --bk
+            globals_set_int(3258, 1663174+1+5,1) --bk
             log.info("地堡原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
         end
         if stats.get_int("MPX_MATTOTALFORFACTORY6") > 0 and stats.get_int("MPX_MATTOTALFORFACTORY6") <= 40 and autoresply == 0 then 
-            globals_set_int(1662873+1+6,1) --acid
+            globals_set_int(3258, 1663174+1+6,1) --acid
             log.info("致幻剂原材料不足,将自动补满")
             MCprintspl()
             autoresply = 1
@@ -5230,15 +5199,15 @@ end)
 script.register_looped("schlua-dataservice", function(script) 
 
     if  check1:is_enabled() then --移除交易错误警告
-        globals_set_int(4537356,0)  --3095 -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
-        globals_set_int(4537357,0) --3095  -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
-        globals_set_int(4537358,0) --3095 -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
+        globals_set_int(3258, 4537455,0)   -- shop_controller.c 	 if (Global_4536677)    HUD::SET_WARNING_MESSAGE_WITH_HEADER("CTALERT_A" /*Alert*/, func_1372(Global_4536683), instructionalKey, 0, false, -1, 0, 0, true, 0);
+        globals_set_int(3258, 4537456,0)   -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
+        globals_set_int(3258, 4537457,0)  -- shop_controller.c   HUD::BEGIN_TEXT_COMMAND_THEFEED_POST("CTALERT_F_1" /*Rockstar game servers could not process this transaction. Please try again and check ~HUD_COLOUR_SOCIAL_CLUB~www.rockstargames.com/support~s~ for information about current issues, outages, or scheduled maintenance periods.*/);
     end
 
     if  checkCEOcargo:is_enabled() then--锁定CEO仓库进货数
         if inputCEOcargo:get_value() <= 111 then --判断一下有没有人一次进天文数字箱货物、或者乱按的
 
-        globals_set_int(1882389+12,inputCEOcargo:get_value()) --3095 --核心代码 --freemode.c      func_17512("SRC_CRG_TICKER_1" /*~a~ Staff has sourced: ~n~1 Crate: ~a~*/, func_6676(hParam0), func_17513(Global_1890714.f_15), HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE);
+        globals_set_int(3258, 1882599+12,inputCEOcargo:get_value())  --核心代码 --freemode.c      func_17512("SRC_CRG_TICKER_1" /*~a~ Staff has sourced: ~n~1 Crate: ~a~*/, func_6676(hParam0), func_17513(Global_1890714.f_15), HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE);
 
         else
             gui.show_error("超过限额", "进货数超过仓库容量上限")
@@ -5247,7 +5216,7 @@ script.register_looped("schlua-dataservice", function(script)
     end
 
     if  check4:is_enabled() then--锁定机库仓库进货数
-        globals_set_int(1882413+6,iputint3:get_value()) --freemode.c  -- 3095 --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
+        globals_set_int(3258, 1882623+6,iputint3:get_value()) --freemode.c   --  "HAN_CRG_TICKER_2"   -- func_10326("HAN_CRG_TICKER_1", str, HUD_COLOUR_PURE_WHITE, HUD_COLOUR_PURE_WHITE, false);
     end
 
     if  cashmtp:is_enabled() and cashmtpin:get_value() >= 0 then--锁定普通联系人差事奖励倍率
@@ -5260,7 +5229,7 @@ script.register_looped("schlua-dataservice", function(script)
 
     if  checklkw:is_enabled() then--锁定名钻赌场幸运轮盘奖品--只影响实际结果，不影响转盘显示
         if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("casino_lucky_wheel")) ~= 0 then
-            locals_set_int("casino_lucky_wheel",292,18) -- 3095  -- 276 + 14
+            locals_set_int(3258, "casino_lucky_wheel", 280 + 14, 18)   -- 280 + 14
         end
         --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
         --你可以自定义代码中的18来获取其他物品。设定为18是展台载具，16衣服，17经验，19现金，4载具折扣，11神秘礼品，15 chips不认识是什么
@@ -5268,18 +5237,18 @@ script.register_looped("schlua-dataservice", function(script)
 
     if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 
         if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("gb_biker_contraband_sell")) ~= 0 then
-            if locals.get_int("gb_biker_contraband_sell",719) ~= 0 then --3095
+            if locals_get_int(3258, "gb_biker_contraband_sell",721) ~= 0 then 
                 log.info("已锁定摩托帮产业出货任务类型.目标出货载具生成前不要关闭此开关.注意:此功能与摩托帮一键完成出货冲突")
-                locals_set_int("gb_biker_contraband_sell",719,0) -- gb_biker_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --iLocal_699.f_17 = randomIntInRange;
+                locals_set_int(3258, "gb_biker_contraband_sell",721,0) -- gb_biker_contraband_sell.c	iVar0 = MISC::GET_RANDOM_INT_IN_RANGE(0, 13); --Local_704.f_17 = randomIntInRange;
             end    
         end
     end
 
     if  ccrgsl:is_enabled() then--锁定CEO仓库出货任务 
         if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("gb_contraband_sell")) ~= 0 then
-            if locals.get_int("gb_contraband_sell",550) ~= 12 then -- 3095
+            if locals_get_int(3258, "gb_contraband_sell", 545 + 7) ~= 12 then 
                 log.info("已锁定CEO仓库出货任务类型.目标出货载具生成前不要关闭此开关")
-                locals_set_int("gb_contraband_sell",550,12) -- gb_contraband_sell.c	randomIntInRange = MISC::GET_RANDOM_INT_IN_RANGE(0, 14); --iLocal_541.f_7 = randomIntInRange;
+                locals_set_int(3258, "gb_contraband_sell", 545 + 7, 12) -- gb_contraband_sell.c	iVar0 = MISC::GET_RANDOM_INT_IN_RANGE(0, 14); --Local_545.f_7 = iVar0;
             end
         end
     end
@@ -5287,7 +5256,21 @@ script.register_looped("schlua-dataservice", function(script)
     if  bussp:is_enabled() then--锁定地堡摩托帮致幻剂生产速度
         local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
         if loopa32 == 0 then
+            bussp2:set_enabled(false)
             gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
+            tunables.set_int("BIKER_WEED_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_METH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_CRACK_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_METH_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_WEED_UPGRADE_STAFF_REDUCTION_TIME", 0)
         end
         if tunables.get_int("BIKER_WEED_PRODUCTION_TIME") ~= 5000 then
             tunables.set_int("BIKER_WEED_PRODUCTION_TIME", 5000)
@@ -5328,6 +5311,21 @@ script.register_looped("schlua-dataservice", function(script)
             tunables.set_int("GR_MANU_PRODUCTION_TIME", 600000)
             tunables.set_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME", 90000)
             tunables.set_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME", 90000)
+
+            tunables.set_int("BIKER_WEED_UPGRADE_EQUIPMENT_REDUCTION_TIME", 60000)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 60000)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 120000)
+            tunables.set_int("BIKER_METH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 360000)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 60000)
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 45000)
+
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_CRACK_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_METH_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_WEED_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+
             loopa32 =0
         end    
     end
@@ -5335,6 +5333,20 @@ script.register_looped("schlua-dataservice", function(script)
     if  bussp2:is_enabled() then--锁定地堡摩托帮致幻剂生产速度
         local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID  --用于判断当前是角色1还是角色2
         if loopa19 == 0 then
+            bussp:set_enabled(false)
+            tunables.set_int("BIKER_WEED_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_METH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_CRACK_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_METH_UPGRADE_STAFF_REDUCTION_TIME", 0)
+            tunables.set_int("BIKER_WEED_UPGRADE_STAFF_REDUCTION_TIME", 0)
             gui.show_message("下次触发生产生效","换战局有时能够立即生效?")
         end
         if tunables.get_int("BIKER_WEED_PRODUCTION_TIME") ~= 60000 then
@@ -5376,8 +5388,23 @@ script.register_looped("schlua-dataservice", function(script)
             tunables.set_int("GR_MANU_PRODUCTION_TIME", 600000)
             tunables.set_int("GR_MANU_UPGRADE_STAFF_REDUCTION_TIME", 90000)
             tunables.set_int("GR_MANU_UPGRADE_EQUIPMENT_REDUCTION_TIME", 90000)
+
+            tunables.set_int("BIKER_WEED_UPGRADE_EQUIPMENT_REDUCTION_TIME", 60000)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 60000)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 120000)
+            tunables.set_int("BIKER_METH_UPGRADE_EQUIPMENT_REDUCTION_TIME", 360000)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_EQUIPMENT_REDUCTION_TIME", 60000)
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 45000)
+
+            tunables.set_int("BIKER_ACID_UPGRADE_EQUIPMENT_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_FAKEIDS_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_COUNTERCASH_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_CRACK_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_METH_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+            tunables.set_int("BIKER_WEED_UPGRADE_STAFF_REDUCTION_TIME", 45000)
+
             loopa19 =0
-        end    
+        end
     end
     
     if  ncspup:is_enabled() then--锁定夜总会生产速度
@@ -5536,9 +5563,6 @@ script.register_looped("schlua-dataservice", function(script)
         end    
     end
 
-
-    
-
     if checkmiss:is_enabled() then --虎鲸导弹 冷却、距离
         tunables.set_int("IH_SUBMARINE_MISSILES_COOLDOWN", 0)  
         tunables.set_int("IH_SUBMARINE_MISSILES_DISTANCE", 80000) 
@@ -5551,12 +5575,12 @@ script.register_looped("schlua-dataservice", function(script)
     end
 
     if checkzhongjia:is_enabled() then --锁定请求重甲花费
-        if iputintzhongjia:get_value() <= 500 then --防止有人拿删除钱设置为负反向刷钱  乐
+        if iputintzhongjia:get_value() <= 500 then --防止有人拿删除钱设置为负反向刷钱
             gui.show_error("错误", "金额需要大于500")
             checkzhongjia:set_enabled(false)
-            else
-                globals_set_int(262145 + 20498, iputintzhongjia:get_value()) -- 3095 --核心代码 --am_pi_menu.c  func_1277("PIM_TBALLI" /*BALLISTIC EQUIPMENT SERVICES*/);
-            end
+        else
+            tunables.set_int("BALLISTICSUITCOSTDELIVERY", iputintzhongjia:get_value())
+        end
     end
 end)
 
@@ -7457,13 +7481,21 @@ end)
     Global_1574996 = etsParam0;   Global_1574996 战局切换状态 0:TRANSITION_STATE_EMPTY  freemode.c
 
     local bsta
-    if bsta == globals.get_int(1574996) then
+    if bsta == globals_get_int(0, 1574996) then
     else
-        bsta = globals.get_int(1574996)
-        log.info(globals.get_int(1574996))
+        bsta = globals_get_int(0, 1574996)
+        log.info(globals_get_int(0, 1574996))
     end
 
-	1.68_3095 赌场右下角收入	func_3556(Local_19728.f_2686, "MONEY_HELD" /* GXT: TAKE */, 1000, 6, 2, 0, "HUD_CASH" /* GXT: $~1~ */, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 1, -1, 0);
+    -- MC_TLIVES 团队生命数
+
+     3095
+    佩里科个人本地分红(可能也适用于赌场、末日) Global_2685444.f_6615 
+    可能适用于公寓抢劫的本地分红Global_2685444.f_6403
+    Global_2685444.f_3485.f_79 celebration 结算页面显示的个人分红 "CELEB_C_EARN" /* GXT: ~1~% CUT OF EARNINGS */
+    iVar7 = Global_2685444.f_6615; fm2020里面的个人分红，最终赋值给Global_2685444.f_3485.f_79
+
+	1.68_3095 赌场右下角收入	func_3556(Local_19746.f_2686, "MONEY_HELD" /* GXT: TAKE */, 1000, 6, 2, 0, "HUD_CASH" /* GXT: $~1~ */, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0, 0, 0, 1, -1, 0);
 
 
 ------------------------------------------------GTAOL 1.67 技工 呼叫 载具资产 freemode.c began
@@ -7537,14 +7569,7 @@ void func_12234(var uParam0, var uParam1, Blip* pblParam2, Blip* pblParam3, Blip
 
 ]]
 
--- MC_TLIVES 团队生命数
 
---[[ 3095
-    佩里科个人本地分红(可能也适用于赌场、末日) Global_2685249.f_6615 
-    可能适用于公寓抢劫的本地分红Global_2685249.f_6379
-    Global_2685249.f_3485.f_79 celebration结算页面显示的个人分红 "CELEB_C_EARN" /* GXT: ~1~% CUT OF EARNINGS */
-    iVar7 = Global_2685249.f_6615; fm2020里面的个人分红，最终赋值给Global_2685249.f_3485.f_79
-]]
 ---------------------------------------------------------------------------------------存储一些小发现、用不上的东西
 
 

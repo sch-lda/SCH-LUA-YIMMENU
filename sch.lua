@@ -1,4 +1,4 @@
--- v4.02 -- 
+-- v4.03 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v4.02"
+luaversion = "v4.03"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -816,7 +816,7 @@ table.insert(newvehtable, "yosemite1500")
     end)
 
 end)
-]]
+
 gentab:add_button("test03", function()
     for i=0, 20000 do
         hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, i, 0)
@@ -875,7 +875,7 @@ gentab:add_button("test03", function()
     end
     log.info("UserId hash done")
 end)
-
+]]
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单

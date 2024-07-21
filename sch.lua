@@ -1,4 +1,4 @@
--- v4.03 -- 
+-- v4.04 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v4.03"
+luaversion = "v4.04"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -5001,6 +5001,9 @@ tstaba1:add_button("解锁部分载具批发价", function()
         dombit = dombit ~ (1 << 10)
     end    
     if (dombit & (1 << 11)) == 0 then
+        dombit = dombit ~ (1 << 11)
+    end    
+    if (dombit & (1 << 11)) == 0 then
         dombit = dombit ~ (1 << 0)
     end
     if (dombit & (1 << 13)) == 0 then
@@ -5134,8 +5137,58 @@ tstaba1:add_button("解锁部分载具批发价", function()
     if stats.get_int("MPX_FINISHED_SASS_RACE_TOP_3") <21 then
         stats.set_int("MPX_FINISHED_SASS_RACE_TOP_3", 21)
     end
+    stats.set_bool("MPX_AWD_TAXISTAR", true)
+
+    --回收站
+    packed_stat_set_bool(41942, true)
+    packed_stat_set_bool(42123, true)
+    packed_stat_set_bool(42234, true)
+    packed_stat_set_bool(42233, true)
+    
+    local slbit = stats.get_int("MPX_SALV23_GEN_BS")
+    if (slbit & (1 << 12)) == 0 then
+        slbit = slbit ~ (1 << 12)
+    end
+    stats.set_int("MPX_SALV23_GEN_BS", slbit)
+    local slbit2 = stats.get_int("MPX_SALV23_SCOPE_BS")
+    if (slbit2 & (1 << 1)) == 0 then
+        slbit2 = slbit2 ~ (1 << 1)
+    end
+    stats.set_int("MPX_SALV23_SCOPE_BS", slbit2)
+
+    --圣安地列斯雇佣兵
+    local mcbit = stats.get_int("MPX_SUM23_AVOP_PROGRESS") 
+    if (mcbit & (1 << 2)) == 0 then
+        mcbit = mcbit ~ (1 << 2) --raiju
+    end
+    stats.set_int("MPX_SUM23_AVOP_PROGRESS", mcbit)
+
+    --犯罪集团
+    local fzjtbit = stats.get_int("MPX_ULP_MISSION_PROGRESS")
+    if (fzjtbit & (1 << 0)) == 0 then
+        fzjtbit = fzjtbit ~ (1 << 0)
+    end
+    if (fzjtbit & (1 << 5)) == 0 then
+        fzjtbit = fzjtbit ~ (1 << 5)
+    end
+    stats.set_int("MPX_ULP_MISSION_PROGRESS", fzjtbit)
+
+    --bottom dollor
+    if stats.get_int("mpx_awd_dispatchwork") <5 then
+        stats.set_int("mpx_awd_dispatchwork", 5)
+    end
+    packed_stat_set_bool(42280, true)
+    packed_stat_set_bool(42281, true)
+    packed_stat_set_bool(42282, true)
+    packed_stat_set_bool(42283, true)
+    packed_stat_set_bool(42284, true)
+
+    --fixer
+    if stats.get_int("mpx_fixer_count") < 21 then
+        stats.set_int("mpx_fixer_count", 21)
+    end
 end)
-tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨+不夜城+改装铺+毒品战")
+tstaba1:add_text("支持DLC范围: 走私犯大进击+名钻赌场豪劫+佩里科岛豪劫+末日豪劫+公寓抢劫+军火霸业+进出口大亨+不夜城+改装铺+毒品战+底价悬赏")
 
 tstaba1:add_button("完成车友会本周奖品载具挑战", function()
     stats.set_bool("MPX_CARMEET_PV_CHLLGE_CMPLT", true)

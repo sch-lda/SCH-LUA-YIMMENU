@@ -1,627 +1,640 @@
- For personal testing and learning only, commercial use is prohibited
-Write the player list
-Write the NPC list
-Write a list of vehicles
-Write a bodyguard helicopter list
-Write the bodyguard NPC list
-正在检查sch-lua是否支持当前游戏版本
-通过检测
-游戏版本不受支持,为了您的线上存档安全,已停止数据修改
-正在检查sch-lua是否支持当前游戏版本
-通过检测
-游戏版本不受支持,为了您的线上存档安全,已停止数据修改
-正在检查sch-lua是否支持当前游戏版本
-通过检测
-游戏版本不受支持,为了您的线上存档安全,已停止数据修改
-警告
-请勿重复启动脚本线程
-假钞 原材料库存: 
-可卡因 原材料库存: 
-冰毒 原材料库存: 
-大麻 原材料库存: 
-假证 原材料库存: 
-地堡 原材料库存: 
-致幻剂 原材料库存: 
-Refresh Bodyguard NPC List
-Empty the bodyguard NPC list
-transfer
-deletion
-healing
-generate
-Refresh Bodyguard Helicopter list
-Empty Bodyguard Helicopter list
-join
-deletion
-generate
-Refresh Player list
-Refresh NPC List
-join
-deletion
-heal
-Refresh vehicle List
-deletion
-join
-Destroy the engine
-throw
-Complete the final chapter of Perico with one click
-正在抢任务脚本主机以便一键完成...
-Has become the script host
-Try to complete automatically...
-失败,未成为脚本主机,队友可能任务立即失败,可能受到其他作弊者干扰.您真的在进行受支持的抢劫任务分红关吗?
-已测试支持的任务:佩里科岛/ULP/数据泄露合约(别惹德瑞)
-Failed to become a script host
-You may not be in a task that supports one-click completion
-Complete the final chapter of Perico with one click (mandatory)
-Skip cayo perico setup (cheetah statue)
-Skip cayo perico setup (pink diamond)
-Reset cayo perico
-Attention
-The planning panel will be restored to the state just bought the killer whale!
-Skip Casino heist prep (Diamond)
-Skip Casino heist prep (Gold)
-Reset casino plan panel
-Switch CEO/Leader
-Prompt 
- has been converted to the leader of the motorcycle gang
-Prompt
-has been converted to CEO
+For personal testing and learning use only, commercial use is prohibited.
+sch-lua is not fully updated, some functions will automatically be disabled!
+sch-lua is compatible with your current game version.
+Adjustable items and statistics
+Special teleport point menu
+++ Tables
++ Game entity table
+- Player table
+Write player table
+The player table is for player aiming response service
+- NPC table
+Write NPC table
+- Vehicle table
+Write vehicle table
+- Object table
+Write object table
++ Lua internal table
+- Bodyguard helicopter table
+- Bodyguard NPC table
+Write bodyguard helicopter table
+Write bodyguard NPC table
+This function's memory address support version does not match the current game version, it may not be updated, data modification has been stopped. Your game version is
+Supported version is
+This function's memory address support version does not match the current game version, it may not be updated, data reading has been stopped. Your game version is
+Warning
+Do not start script threads repeatedly
+Cocaine raw material inventory:
+Marijuana raw material inventory:
+Methamphetamine raw material inventory:
+Counterfeit cash raw material inventory:
+Counterfeit documents raw material inventory:
+Bunker raw material inventory:
+Hallucinogen raw material inventory:
+Refresh bodyguard NPC table
+Clear bodyguard NPC table
+ Distance:
+ Health:
+Teleport to
+Delete
+Heal
+Bring
+Refresh bodyguard helicopter table
+Clear bodyguard helicopter table
+Enter
+Refresh player table
+Refresh object table
+ Model:
+ Potential mission entities
+Refresh NPC table
+Refresh vehicle table
+ Model:
+ Name:
+ Distance:
+ Health:
+Destroy engine
+Throw out
+Minimum resolution requirement: 1920x1080. To use player functions, please select a player in the Yim player list and scroll to the bottom of the player page. Player aim counterattack is accessed from the submenu Table - Game Entity Table.
+Data modification functions will be migrated to the 'Adjustable items and statistics' submenu.
+Mission functions
+Cayo Perico/Agency Contract Finale/ULP One-Click Completion
+Grabbing mission script host for one-click completion...
+Became script host
+Attempting automatic completion...
+Failed, did not become script host, teammates may immediately fail the mission, may be interfered by other cheaters. Are you really doing a supported heist mission split?
+Tested supported missions: Cayo Perico/ULP/Data Breach Contract (Don't F with Dre)
+Failed, did not become script host
+You may not be in a one-click complete supported mission
+Configure Cayo Perico Preps (Panther Statue)
+Configure Cayo Perico Preps (Pink Diamond)
+Reset Cayo Perico
+Note
+The planning board will be restored to the state just after buying the Kosatka!
+Skip Prep - Agency Data Breach Contract (Don't F with Dre)
+Configure Casino Preps (Diamond)
+Configure Casino Preps (Gold)
+Reset Casino planning board
+Convert CEO/President
+Tip
+Converted to Motorcycle Club President
+Converted to CEO
 You are not the boss
-You are neither the CEO nor the leader
-Show office computer
-Prompt
-has been converted to CEO
-Don't forget to register as CEO/Leader
-It may also be a script detection error, a known problem, no feedback required
-Show bunker computer
-Don't forget to register as CEO/Leader
-It may also be a script detection error, a known problem, no feedback required
-Show hangar computer
-Don't forget to register as CEO/Leader
-It may also be a script detection error, a known problem, no feedback required
-Show arcade computer
-Don't forget to register as CEO/Leader
-It may also be a script detection error, a known problem, no feedback required
-Show the Terrorbyte Dashboard
-Don't forget to register as CEO/Leader
-It may also be a script detection error, a known problem, no feedback required
-Show Avengers panel
-Don't forget to register as CEO/Leader
-It may also be a script detection error, a known problem, no feedback required
-light fireworks
-broomstick
-range fireworks
-Meteor rain
-Head666
-Overhead 520
-swim mode
-Separate bodies of water
-Fire breath
+You are neither a CEO nor a President
+Show Agency computer
+Don't forget to register as a CEO/President
+It may also be a script detection error, known issue, no need to report
+Show Bunker computer
+Show Hangar computer
+Show Arcade Master Control computer
+Show Terrorbyte Control Panel
+Show Avenger Panel
+Show Secure Office Panel
+Increase team lives
+Mini-game instant completion has been removed from sch-lua, please use MiniGameHack Lua (https://github.com/YimMenu-Lua/MiniGameHack)
+Entertainment functions (stability is low, full of bugs) (Particle effects will not continue to generate after reaching memory limit, please enable and then disable the PTFX water column and fire column cleaning function at the bottom of this page)
+Fireworks
+Flying broom
+Area fireworks
+Area meteor shower
+666 above head
+520 above head
+Swimming mode
+Part water
+Spray fire
 Ghost Rider
-flame wings
+Flame wings
+Entity control - it is recommended to only enable one switch at a time, otherwise it may severely affect performance and cause some functions to fail
 Vehicle force field
 NPC force field
-Force field (vehicle + NPC)
+Force field (Vehicle + NPC)
 Object force field
-Simple vehicle acceleration controlled by Shift key (test)
-NPC vehicle upside down
-Flameout
-Repair
-Stop
-Jump
-Lock the door for all players
-Chaos
-Rotate
-Delete V
-Flameout 2
-Stop 2
-Delete 2
-interrupt A
-fall A
-Kill a
-burn A
-take off A
-Bodyguard
-Heal A
-Resurrection (unstable)
-remove the body A
-Disarm A
-Electric shock A
-Light beam markera
-interrupt A1
-fall A1
-Kill A1
-burn A1
-take off A1
-Bodyguard A1
-Beam marker A1
-Disarm A1
-Electric shock B
-interrupt B
-Fall B
-Kill B
-burn B
-take off B
-Bodyguard B
-remove B
-Disarm B
-Electric shock C
-interrupt C
-fall C
-kill C
-burn C
-take off C
-Bodyguard C
-remove C
-Disarm C
-Electric shock D
+Shift key controlled simple vehicle acceleration (test)
+NPC vehicle reverse
+Vehicle control
+Engine off ##vehctl0
+Repair ##vehctl0
+Stop ##vehctl0
+Jump ##vehctl0
+Lock doors for all players ##vehctl0
+Chaos ##vehctl0
+Rotate ##vehctl0
+Delete ##vehctl0
+Hostile NPC vehicle control
+Engine off ##vehctl1
+Stop ##vehctl1
+Delete ##vehctl1
+NPC control
+Interrupt ##npcctl0
+Fall ##npcctl0
+Death ##npcctl0
+Burn ##npcctl0
+Take off ##npcctl0
+Bodyguard ##npcctl0
+Heal ##npcctl0
+Revive (unstable) ##npcctl0
+Remove body ##npcctl0
+Disarm ##npcctl0
+Electrocute ##npcctl0
+Beam mark ##npcctl0
+(BETA test) NPC control automatically excludes friendly whitelist (the list is not yet complete, see below for healing friendly NPCs), beam marks still affect globally
+Hostile NPC control
+Interrupt ##npcctl1
+Fall ##npcctl1
+Death ##npcctl1
+Burn ##npcctl1
+Take off ##npcctl1
+Bodyguard ##npcctl1
+Beam mark ##npcctl1
+Disarm ##npcctl1
+Electrocute ##npcctl1
+Explode ##npcctl1
+Weaken combat power ##npcctl1
+NPC aim at me punishment
+Interrupt ##npcctl2
+Fall ##npcctl2
+Death ##npcctl2
+Burn ##npcctl2
+Take off ##npcctl2
+Bodyguard ##npcctl2
+Remove ##npcctl2
+Disarm ##npcctl2
+Electrocute ##npcctl2
+NPC aim punishment
+Interrupt ##npcctl3
+Fall ##npcctl3
+Death ##npcctl3
+Burn ##npcctl3
+Take off ##npcctl3
+Bodyguard ##npcctl3
+Remove ##npcctl3
+Disarm ##npcctl3
+Electrocute ##npcctl3
 Remove all cameras
-Removed Perico heavy armor
-Randomly shoot half of the NPCs in real name
-Randomly shoot half of hostile NPCs in real name
-Real-name shooting NPC
-Shoot and kill hostile NPCs in real name
-Clean up the police and the National Security service
+Remove Cayo Perico heavy armored soldiers
+Randomly kill half the NPCs
+Randomly kill half the hostile NPCs
+Kill NPC by name
+Kill hostile NPC by name
+Clear police and NOOSE
+Killing and death can retain NPC drops such as password clues and Cayo Perico gate key cards, but removal will not get any drops.
+Named killings will be counted in the player's save data statistics and earn kill experience points, while death in NPC control will be considered as NPC natural death, and removal is also anonymous. Killing is done using a special MK2 carbine simulation.
 Heal key NPCs
 Make blue dot NPCs on the mini-map invincible
-Remove invincibility of blue dot NPCs
+Remove invincibility from blue dot NPCs
 Teleport blue dot NPCs to yourself
+Key NPCs recorded: see source code line 199
+Entity generation
 Generate bodyguard helicopter
-移除保镖直升机
+Remove bodyguard helicopter
 Generate bodyguard formation
-Remove the bodyguard formation
-One-click completion of CEO warehouse shipments
-One-click completion of motorcycle shipment
-This task type does not support one-click completion
-One-click for a total of one truck
-该任务类型不支持一键完成,否则不会有任何收入.一共就一辆送货载具也要使用一键完成??
-One-click delivery of acid
-One-click completion of bunker shipment
-Autoship 
- may show that the task failed, but you should get the money!
-Autoship 
- may show that the task failed, but you should get the money!
-One-click completion of hangar (air freight) shipment
-Autoship 
- may show that the task failed, but you should get the money!
-Autoship 
- may show that the task failed, but you should get the money!
-CEO warehouse shipment locks the transport ship
-The motorcycle gang will ship only one truck
-Rapid production of acid in the motorcycle gang industrial bunker (dangerous)
-Nightclub fast purchase (dangerous)
-Purchase at 4 times the speed of the nightclub (dangerous)
-Purchase at 10 times the speed of the nightclub (dangerous)
-Purchase at 20 times the speed of the nightclub (dangerous)
-The motorcycle industry is full of supplies
-Auto-replenishment
-All done
-The bunker is full of supplies
-Auto-replenishment
-All done
-Warehouse automatic replenishment (buggy)
-Max nightclub's popularity
-CEO warehouse staff purchase once
-Hangar staff restock once
-The single purchase quantity of locked warehouse staff is
-Lock hangar staff single purchase quantity is
-Nightclub safe 300,000 cycles 10 times
-Times down
-Warning
-This method is only used for occasional small recovery
-Casino carousel draw (the carousel may appear as something else, but you do get vehicles)
-NPC drops 2000 yuan cycle (high risk)
-Navigation Points (Particle Effects)
-Kosatka Panel
+Remove bodyguard formation
+Industrial functions - medium to high risk
+CEO warehouse one-click delivery completion
+Motorcycle club one-click delivery completion
+This mission type does not support one-click completion
+Do you really need one-click for just one truck??
+This mission type does not support one-click completion, otherwise there would be no income. Do you really need one-click for just one delivery vehicle??
+Hallucinogen one-click delivery completion
+Bunker one-click delivery completion
+Auto delivery
+It may show mission failed, but you should have received the money!
+Hangar (air transport) one-click delivery completion
+CEO warehouse delivery lock transport ship
+Motorcycle club delivery only one truck
+Motorcycle club industry bunker hallucinogen high-speed production (dangerous)
+Motorcycle club industry bunker hallucinogen extreme-speed production (dangerous)
+Nightclub extreme-speed restock (dangerous)
+Nightclub 4x speed restock (dangerous)
+Nightclub 10x speed restock (dangerous)
+Nightclub 20x speed restock (dangerous)
+Motorcycle club industry full raw materials
+Automatic restock
+All completed
+Bunker full raw materials
+Industry automatic restock (bug exists)
+Nightclub full popularity
+CEO warehouse employee restock once
+Hangar employee restock once
+Lock CEO warehouse employee single restock quantity to
+crates
+Lock hangar employee single restock quantity to
+boxes
+Nightclub safe 300k loop 10 times
+Executed times
+This method is only for occasional small amount recovery
+Casino wheel car draw (wheel may show other items, but you will get the vehicle)
+NPC drops $2000 loop (high risk)
+Teleport
+Waypoint (particle effect)
+Random location
+Los Santos Customs
+Ammu-Nation with shooting range
+Kosatka planning panel
 Facility
 No need to teleport
 You are already in the facility
-Facility Plan Screen
+Facility planning screen
 Make sure you are in the facility
 Please enter the facility before teleporting to the planning screen
 Nightclub
-Nightclub safe (enter the nightclub first)
+Nightclub safe (enter nightclub first)
 Arcade
-Arcade Plan Panel (Advanced Arcade)
-Random location
-Remove balance
-Remove balance difference
-executed successfully
-已移除收支差:
-Your income and expenditure are normal, no need to remove or trigger abnormal value protection
-There is no difference in income and expenditure at all, but it may be abnormal
-Restoration of deleted vehicules in 1.66
-Dax cooldown removed
-Security Contract/Phone Assassination cooldown removed
-Removed CEO vehicle cooldown
-Remove self bounty
-Ka Yun retreats offline
-Skip an NPC dialogue
+Arcade planning panel (enter arcade first)
+Casino
+Lucky wheel
+Please enter the casino first
+Ms. Baker's office
+Cayo Perico drainage tunnel grate
+Cayo Perico drainage tunnel entry point
+Cayo Perico underground vault
+Inside the mansion gate
+Sea escape point
+Miscellaneous
+Remove transaction difference
+Execution successful
+Transaction difference removed:
+Your transaction difference is normal, no removal needed or triggered abnormal value protection
+No transaction difference at all may be abnormal
+Restore 1.66 removed vehicles
+Remove Dax cooldown
+Remove security contract/phone assassination cooldown
+Remove CEO vehicle cooldown
+Remove personal bounty
+Force cloud save
+Skip one NPC dialogue
 Automatically skip NPC dialogue
-stop all local sounds
-Ground speedometer
-Air speedometer
+Stop all local sounds
+Generate ground speed strip
+Generate air speed strip
 Force save
-remove all visual effects
-Visual Effects: Taking Drugs
-Blurred
-increase brightness
-heavy fog
-drunk
-Display false warning
-Prevent everyone from using space-based cannons
-Put on heavy armor immediately
+Remove mechanic, property, and business management expenses
+Visuals
+Remove all visual effects
+Visual effect: drug use
+Blur
+Increase brightness
+Heavy fog
+Drunk
+Personal light source
+Show fake ban warning
+Prevent everyone from using orbital cannon
+Wear heavy armor immediately
 Remove transaction error warning
-Removed Orca missile cooldown and increased range
-Lock the angle of the minimap
+Remove Kosatka missile cooldown and increase range
+Lock mini-map angle
 Semi-invincible
-Explosion-proof head
-Radar suspended animation
-Automation of online taxi work (continuous transmission)
-Automation of online taxi work (simulation driving)
-Request heavy armor spend (used to remove black money)
-turn off footsteps
-Turn off your own PED sound
-Lock NPC Zero Damage
-Minimap showing sonar
-global lights out
-display host information
-Allow local pause online
-PED gun (shoot NPC)
-basketball gun
-big ball gun
-Draw + Sight
-stop the police from being dispatched
-No temperature (anti-thermal imaging)
-Allow to attack teammate
-Thunder and lightning A
-SCH LUA PLAYER OPTIONS -!!!!! NO FEEDBACK ACCEPTED!!!!!
-Indirect viewing (not easily detected)
-Light beam marker
-Wire mark
-Gives Vehicle Invulnerability
-The vehicle is completely collision-free
-repair vehicle
-Warning
-The player is not in the vehicle
-Request control failed
-Request control was successful
-remove vehicle
-Warning
-The player is not in the vehicle
-deluxo
-Teleport to player (particle effect)
-small cage
-fence cage
-competitive tube cage
-safe cage
-Vehicle rotation
-electric shock
-bombing
-circulating water column
-No damage explosion
-Cycle swiping cards
-Cyclic brush mannequin
-Drop frame attack (as far away from the target as possible)
-Particle effect bombing (as far away from the target as possible)
-Cycle brush PED
-NPC drops $2000 cycle
-Cycle through the purse (only visible to yourself)
-Fragment crash
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-The target has been detected to have left or the target is himself
-Parachute Crash 2
-The attack has stopped
-The target has been detected to have left or the target is himself
-Model crash
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-Please stay away from the target first
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-Please stay away from the target first
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-Please stay away from the target first
-The attack has stopped
-The target has been detected to have left or the target is himself
-The attack has stopped
-Please stay away from the target first
-sound bombing
-launch upwards
-squeeze down
-distance (m)
-Gift the opressor MK2
-Air defense alert
-apartment invitation
-PED collapse
-Parachute crash
-Please wait patiently until the character lands
-Write Interval
-SUCCESS
-applied
-Error 
-Illegal input, has been reset
-Block sync
-Clean up PTFX flame water column
-Clean up traces on the surface of objects
-Reset filters and lens shake
-Continuously removing cutscene
-Disable version check
-The verification that the lua does not match the game version will be ignored, and you must bear the risk of online archive damage by using outdated scripts
-The verification that the lua does not match the game version will be ignored
-You must bear the risk of online archive damage
-forcescripthost
-Emergency mode-Press Ctrl+S+D at the same time when the game is stuck due to a large number of swiping models, quickly escape the scene and pause the network synchronization (no need to leave the war situation)-if necessary, use it with the cycle to clear the entity function
-Emergency Mode 2 - Press Ctrl+A+D to quickly escape to a new battlefield
-Loop clear entity
-Emergency Mode 3 - Continuously removes any entities + stops PTFX fire columns and water columns + stops filter and lens shake + cleans up traces on the surface of objects
-Render HD only
-Disable player distance calc
-Generate N
-Generate H
-generate ptfx
-Play c
-Stop c
-Set up Contact Person service income ratio
-Generate N
-Generate H
-generate ptfx
-Write the player table
-Write a list of NPCs
-Write a list of vehicle
-Getting the player table and refreshing it automatically (the basis of the operation of the player targeting counterattack)
-Shoot F
-Blow F
-Electroshock F
-Kick out F
-Auto-refresh player table not enabled
-Auto-enabled
-Auto-refresh player table not enabled
-Auto-enabled
-Auto-refresh player table not enabled
-Auto-enabled
-Auto-refresh player table not enabled
-Auto-enabled
-sch lua紧急模式2,已创建新战局
-sch lua emergency mode 2
-New game has been created
-紧急模式3已开启
-紧急模式3已关闭
-紧急模式已开启,与所有玩家取消同步,同时按下WAD关闭
-Emergency mode is turned on 
- Cancel synchronization with all players, and press WAD to close at the same time
-紧急模式已关闭,恢复同步并移动至原位
-Emergency mode is turned off
-Restore synchronization and move to the original position
-紧急模式已关闭,恢复同步并移动至原位
-Emergency mode is turned off
-Restore synchronization and move to the original position
-发现乘客
-乘客将加速上车
-乘客已上车
-传送到目的地
-毫秒后执行下一轮出租车工作
-发现乘客,正在驾驶前往.按下Shift可立即传送跳过
-乘客已上车
-正在自动驾驶前往目的地,按下shift可立即传送跳过
-自动驾驶未能精准到达目的地,将使用传送补救
-毫秒后执行下一轮出租车工作
-Stopped
-The target cannot be yourself!
-假钞原材料不足,将自动补满
-可卡因原材料不足,将自动补满
-冰毒原材料不足,将自动补满
-大麻原材料不足,将自动补满
-证件原材料不足,将自动补满
-地堡原材料不足,将自动补满
-致幻剂原材料不足,将自动补满
-Exceeding the limit
-The number of purchases exceeds the upper limit of warehouse capacity
-Contact Task Revenue Multiplier
-倍
-已锁定摩托帮产业出货任务类型.目标出货载具生成前不要关闭此开关.注意:此功能与摩托帮一键完成出货冲突
-已锁定CEO仓库出货任务类型.目标出货载具生成前不要关闭此开关
-The next time the production is triggered, it will take effect
-Sometimes the battle change can take effect immediately?
-It will take effect the next time production is triggered
-reassign employees to take effect immediately
-It will take effect the next time production is triggered
-reassign employees to take effect immediately
-It will take effect the next time production is triggered
-reassign employees to take effect immediately
-It will take effect the next time production is triggered
-reassign employees to take effect immediately
-Error
-The amount needs to be greater than 500
-The frame drop attack has stopped
-You are attacking yourself!
-The frame drop attack has stopped
-You are attacking yourself!
-ptfx bombing stopped
-You are attacking yourself!
-Footsteps Control
-Mute
-Footstep control
-with sound
-Sonar
-On
-Sonar
-Off
-Lock the angle of the minimap
-On
-Lock the angle of the minimap
-Off
-世界停止
-世界恢复
-Warning
-The player is not in the vehicle
-Request control failed
-Request control was successful
-Vehicle invincible
-Applied
-Warning
+Anti-headshot
+Radar feign death
+Online taxi job automation (continuous teleport)
+Online taxi job automation (simulated driving)
+Request heavy armor cost (for removing dirty money)
+$
+Turn off footstep sounds
+Turn off own PED sounds
+Lock NPC to zero damage
+Mini-map shows sonar
+Global lights off
+Show host information
+Online allow local pause
+PED gun (shoots NPCs)
+Basketball gun
+Big ball gun
+Draw + crosshair
+Prevent dispatching police
+No heat (anti-thermal imaging)
+Allow attacking teammates
+Thunder a
+SCH LUA player options - !!!!! No feedback accepted !!!!!
+Indirect view (hard to detect)
+Beam mark
+Connection mark
+Give vehicle invincibility
+Vehicle complete no collision
+Repair vehicle
 Player not in vehicle
 Request control failed
-Request control was successful
-Vehicle Invincible
-Revoked
-Warning
-The player is not in the vehicle
-Request control failed
-Request control was successful
-Vehicle No Collision
-Applied
-Warning
-The player is not in the vehicle
-Request control failed
-Request control was successful
-Vehicle has no collision
-removed
-FOV exceeds the limit
-the allowable range is 1-130
-PED sound control 
- Mute
-PED sound control 
- with sound
-Prompt 
-NPC damage has been restored
-Overhead 666
-generating
-Heads 666
-Remove
-Overhead 520
-generated
-Head 520
-Remove
-Ghost Rider
-on
-Ghost Rider
-Off
-Warning
-The player is not in the vehicle
-Request control failed
-Request control was successful
-Prompt 
- the police will be dispatched when wanted
-Unsync
- will unsync with all players
-cancel sync
-off
-Prompt 
- unlocked
-sch-lua脚本不支持您的游戏版本,请立即删除,继续使用将损坏您的在线账户!
-sch-luaDoes not support your game version
-Please delete it immediately so as not to damage any online data
-已通过游戏版本适配检测
-Removed casino roulette cooldown
-The player list is for the player's aiming response service
- distance: 
- HP: 
- distance: 
-The player sheet is for the player's aiming response
- distance: 
- Blip: 
- Color: 
- HP: 
-Handle:
- model:
- name:
- distance:
- Blip:
- Color:
- HP:
-Minimum resolution required: 1920x1080. To use the player function, select a player in the yim player list and scroll to the bottom of the player page. Players aiming to counterattack from the sub-menu Entity Table Access
-task function
-Entertainment function (low stability, full of bugs) (the particle effect will not continue to be generated after reaching the memory limit, please enable and disable the function of cleaning PTFX water column and fire column at the bottom of this page)
-Physical control it is recommended to turn on only one switch at the same time, otherwise it may seriously affect performance and cause some functions to fail
-Vehicle control
-Hostile NPC vehicle control
-NPC control
-(BETA testing) NPC control automatically excludes friendly whitelisting (list not yet complete, see below), lightpost markers still work globally
-Hostile NPC control
-Punish targeting NPC
-Punish targeting NPC
-Shooting and dying can keep NPC drops such as password clues and Perico access cards, but if you remove them, you will not be able to get any drops..
-Real-name shooting will be counted in the player's archived statistics and kill experience points will be obtained. Deaths under NPC control will be regarded as natural deaths of NPC, and removal is also anonymous. Shooting is using a special carbine MK2 simulation shooting
-Key NPC has been entered: see line 199 of the source code
-Entity generation
-Industry function - medium and high risk
-Send
-Miscellaneous
-vision
-PTFX collection
-SCH LUA PLAYER OPTIONS -!!!!! NO FEEDBACK ACCEPTED!!!!!
-global options
-Variable Adjustment - Even if you set the scope to a large value, it is actually still limited by the game
-NPC/vehicle force field range
-NPC/vehicle batch control range
-NPC targeting penalty area of effect
-Taxi automation at random intervals
-Viewing lens height
-Viewing lens FOV
-Number of bodyguards in formation
-debugging
-obj generation (Name)
-obj generation (Hash)
-PTFX generation
-Play cutscenes
-debugging
-obj generation (Name)
-obj generation (Hash)
-PTFX generation
-Entity table function will be set in accordance with the scope of entity control to obtain the corresponding entity to write lua table, and presented in the GUI, so that developers can test the entity control function.
-Player Aiming Reaction
-crates
-box
-cash
-Force field radius (meters)
-Control radius (m)
-Penalty radius (m)
-Min (milliseconds)
-max(ms)
-Height (m)
-Number of people
-++ table
-+Game entity list
--Player table
--NPC list
--Vehicle list
-+lua internal list
--Bodyguard helicopter list
--Bodyguard NPC list
-NPC drops $2000 cycle
+Request control successful
+Remove vehicle
+Generate Deluxo
+Teleport to player (particle effect)
+Small cage
+Fence cage
+Arena tube cage
+Safe cage
+Vehicle rotate
+Electrocute
+Bombard
+Loop water column
+Explosion with no damage
+Loop spawn playing cards
+Loop spawn collectibles
+Frame drop attack (stay as far from target as possible)
+Particle effect bombardment (stay as far from target as possible)
+Loop spawn PED
+NPC drop $2000 loop
+Loop spawn money bags (visible only to yourself)
 Fragment crash
-Parachute Crash 2
+Attack stopped
+Target detected has left or target is yourself
+Parachute crash 2
 Model crash
-sound bombing
-launch upwards
-squeeze down
- Return to Grand Theft Auto V.
- You have been permanently banned from entering Grand Theft Auto Online Mode.
+Please move away from the target first
+Sound bombardment
+Frame player explosion
+Launch upwards
+Squeeze downwards
+Follow player (normal)
+Follow player (aggressive)
 Distance (m)
-Field of View (°)
-Multiple
+Global options
+Global chaos explosion
+Give Oppressor MK2
+Air raid alarm
+Apartment invite
+PED parachute crash
+Parachute crash
+Please wait patiently until the character lands
+Variable adjustment - even if you set the range to a large value, it is still limited by the game
+NPC/vehicle force field range
+Force field radius (meters)
+NPC/vehicle mass control range
+Control radius (meters)
+NPC aim punishment range
+Punishment radius (meters)
+Taxi automation random interval
+Minimum (milliseconds)
+Maximum (milliseconds)
+Write interval
+Success
+Applied
+Error
+Invalid input, reset
+View camera height
+Height (meters)
+View camera FOV
+Field of view (°)
+Bodyguard formation number of people
+Number of people
+Debugging
+Cancel sync
+Clear PTFX flame water column
+Clear object surface marks
+Reset filters and camera shake
+Continuously remove cutscenes
+Disable compatibility check
+Will ignore the version mismatch check between lua and the game, using outdated functions you must bear the risk of online save corruption
+Will ignore the version mismatch check between lua and the game
+You must bear the risk of online save corruption
+Manually grab mission script host
+Emergency mode - press Ctrl+S+D simultaneously to quickly leave the scene and pause network sync when game lags due to excessive model spawning (no need to leave the session) - use in conjunction with loop clear entities function if necessary
+Emergency mode 2 - press Ctrl+A+D to quickly escape to a new session
+Loop clear entities
+Cayo Perico/Agency contract final/ULP one-click completion (force)
+Emergency mode 3 - continuously clear any entity + prevent PTFX flame water column + prevent filters and camera shake + clear object surface marks
+Render in high definition only
+Prohibit calculating player distance
+obj spawn (Name)
+Spawn N
+obj spawn (Hash)
+Spawn H
+PTFX spawn
+Generate PTFX
+Play cutscene
+Play c
+Stop c
+Set contact mission income multiplier
+Multiplier - Contact
+The entity table function will retrieve the corresponding entities according to the set entity control range and write them into the Lua table, and present them in the GUI for developers to test entity control functions
+Retrieve player table and auto-refresh (the basis for player aim reaction)
+Player aim reaction
+Shoot ##plyctl0
+Explosion ##plyctl0
+Electrocute ##plyctl0
+Kick ##plyctl0
+Tampering with adjustable items to gain large amounts of money may lead to bans!
+Reload all adjustable items online
+Modification process: 1. Read 2. Modify 3. Apply
+Heist Missions
+Local cut
+Please modify after the mission starts, will not be reflected on the planning board, will not affect teammates, teammates will not see it, only affects your final income settlement
+Cayo Perico/Casino/Doomsday
+Apartment
+HUD income at the bottom right corner
+Pacific Standard Bank and Casino Heist
+Read ##lhcut
+Please start the heist mission first
+Apply ##lhcut
+Cayo Perico Heist
+Main target value
+Cheetah statue
+Pink diamond
+Madrazo files
+Bearer bonds
+Necklace
+Sicilian Tequila
+Loot bag capacity
+Cayo Perico main target value multiplier (normal)
+Cayo Perico main target value multiplier (hard)
+Read ##preicov
+Apply ##preicov
+Industries and Factories
+Bunker research time
+Bunker research time - Equipment upgrade
+Bunker research time - Staff upgrade
+Read ##miscv
+Apply ##miscv
+Motorcycle club industry and hallucinogen product value multiplier
+Motorcycle club industry and hallucinogen long-distance sales reward multiplier
+Cocaine current stock
+Marijuana current stock
+Meth current stock
+Counterfeit cash current stock
+Counterfeit documents current stock
+Bunker current stock
+Hallucinogen lab product current stock
+Cocaine maximum stock
+Marijuana maximum stock
+Meth maximum stock
+Counterfeit cash maximum stock
+Counterfeit documents maximum stock
+Bunker maximum stock
+Hallucinogen lab product maximum stock
+Read ##miscv2
+Apply ##miscv2
+Handle stock carefully, do not exceed limits
+Hangar cargo unit price
+Read ##miscv3
+Apply ##miscv3
+Maximum stock for transport goods
+Maximum stock for sports equipment
+Maximum stock for South American imports
+Maximum stock for pharmaceuticals
+Maximum stock for organic products
+Maximum stock for printed materials
+Read ##miscv4
+Apply ##miscv4
+Agency data leak contract - Don't provoke Dre
+Contract final reward
+Read ##drev
+Apply ##drev
+Doomsday Heist
+Doomsday 1
+Doomsday 2
+Doomsday 3
+Read ##h2v
+Apply ##h2v
+Diamond Casino Heist
+Cash
+Artwork
+Gold
+Diamonds
+Read ##h3v
+Apply ##h3v
+Time and Money
+Values greater than 2147483647 cannot be read correctly but can still be written.
+This Lua cannot restore modified data to default; take screenshots before modifying.
+Modifying statistics data has risks; ensure you know what you are doing before operating.
+Online mode game time (ms)
+First-person game time (ms)
+Character 1 third-person game time (ms)
+Character 2 third-person game time (ms)
+Total Income $
+Total Expenditure $
+Character 1 Job Income $
+Character 2 Job Income $
+Character 1 Gambling Income $
+Character 2 Gambling Income $
+Character 1 Vehicle Sale Income $
+Character 2 Vehicle Sale Income $
+Character 1 Lawful Income $
+Character 2 Lawful Income $
+Character 1 Pickup Income $
+Character 2 Pickup Income $
+Character 1 Weapon/Armor Expenses $
+Character 2 Weapon/Armor Expenses $
+Character 1 Vehicle Expenses $
+Character 2 Vehicle Expenses $
+Character 1 Style/Entertainment Expenses $
+Character 2 Style/Entertainment Expenses $
+Character 1 Asset Expenses $
+Character 2 Asset Expenses $
+Character 1 Job Expenses $
+Character 2 Job Expenses $
+Character 1 Contact Expenses $
+Character 2 Contact Expenses $
+Character 1 Medical Expenses $
+Character 2 Medical Expenses $
+Character 1 Loss/Theft Expenses $
+Character 2 Loss/Theft Expenses $
+I Agree
+Read ##
+Apply ##
+Unlock
+Christmas Gift Truck / XMAS GIFT TRUCK
+eCola Festive Sweater / eCola Festive Sweater
+Sprunk Festive Sweater / Sprunk Festive Sweater
+Christmas Events / XMAS EVENTS
+The Gooch Outfit / The Gooch Outfit
+The Yeti Outfit / The Yeti Outfit
+The Snowman / The Snowman
+Halloween Events / TRICK OR TREAT
+Pumpkin Tee / Pumpkin Tee
+The Horror Pumpkin Mask / The Horror Pumpkin Mask
+Richard's Film Company Event
+Space Interloper Outfit / Space Interloper Outfit
+Casino Heist / Casino Heist
+The High Roller Outfit / The High Roller Outfit
+RDR2 Related / RDR2 related
+The Frontier Outfit / The Frontier Outfit
+Salvage Yard DLC / Salvage Yard DLC
+The McTony Security Outfit / The McTony Security Outfit
+The Los Santos Panic Outfit / The Los Santos Panic Outfit
+Coast Guard Outfit / Coast Guard Outfit
+Unlock some vehicle wholesale prices
+DLC Supported Ranges: Smuggler's Run + Diamond Casino Heist + Cayo Perico Heist + Doomsday Heist + Apartment Heist + Gunrunning + Import/Export + Nightclubs + Mod Shop + Drug Wars + Base Bounty
+Complete Car Club Weekly Prize Vehicle Challenge
+Teleport Point Page
+Snowman Teleport Point
+Snowman
+Dongdong Clock Farm
+Blackheart Fund
+Quick Cash Pickup
+Teleport to Laptop
+Teleport to Terrorbyte
+Shoot Down Drones
+Quick Drilling +100% Access Card
+Final Chapter: Scene of the Crime
+Final Chapter income must not exceed 2,000,000 and must be greater than 0
+Final Chapter income must not exceed 2,500,000 and must be greater than 0
+Automatic player table refresh not enabled
+Automatically enabled
+sch lua Emergency Mode 2, New session created
+sch lua Emergency Mode 2
+New session created
+Emergency Mode 3 activated
+Emergency Mode 3 deactivated
+Emergency Mode activated, unsynchronized with all players, press WAD to close
+Emergency Mode activated
+Unsynchronized with all players, press WAD to close
+Emergency Mode deactivated, restoring sync and returning to original position
+Emergency Mode deactivated
+Restoring sync and returning to original position
+Passenger detected
+Passenger will accelerate to get on the vehicle
+Passenger has boarded
+Teleport to destination
+Execute next round of taxi work in milliseconds
+Passenger detected, driving towards. Press Shift to instantly teleport and skip
+Auto-driving to destination, press Shift to instantly teleport and skip
+Auto-driving failed to precisely reach the destination, using teleport to compensate
+Stopped
+Target cannot be yourself!
+Cocaine raw materials insufficient, will auto-refill
+Marijuana raw materials insufficient, will auto-refill
+Meth raw materials insufficient, will auto-refill
+Counterfeit cash raw materials insufficient, will auto-refill
+Documents raw materials insufficient, will auto-refill
+Bunker raw materials insufficient, will auto-refill
+Hallucinogen raw materials insufficient, will auto-refill
+Exceeds limit
+Stock exceeds warehouse capacity limit
+Contact mission income multiplier
+Multiplier
+Motorcycle Club industry delivery task type locked. Do not close this switch before the target delivery vehicle is generated. Note: This feature conflicts with the Motorcycle Club one-click delivery completion.
+CEO Warehouse delivery task type locked. Do not close this switch before the target delivery vehicle is generated.
+Next trigger production effective
+Switching sessions sometimes effective immediately?
+Effective only on next trigger production
+Reassign staff to take effect immediately
+Amount must be greater than 500
+You are attacking yourself!
+Frame drop attack stopped
+PTFX bombing stopped
+Footstep sound control
+Mute
+Audible
+Sonar
+Enable
+Disable
+World stop
+World restore
+Vehicle invincibility
+Revoked
+Vehicle no collision
+FOV exceeds limit
+Allowed range is 1-130
+PED sound control
+NPC damage restored
+Generate
+Remove
+Open
+Close
+Police will be dispatched during wanted level
+Unsynchronize with all players
+Unlocked
 Session Host:
-Session Script Host:
-Mission Script Host:
-Mission Script Host:
-SCH Lua Warning
-SCH Lua supports the current game version
-SCH Lua does not support your game version
-You can still use features like entity control that are not affected by the version
-Affected features will be automatically disabled to protect your account's security
-The likelihood of crashes may increase
-Game version compatibility check has been passed.
+Script Host:
+Task Script Host:
+You have been permanently banned from Grand Theft Auto Online.
+Return to Grand Theft Auto V.
+Remove casino wheel cooldown

@@ -1,4 +1,4 @@
--- v4.04 -- 
+-- v4.05 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v4.04"
+luaversion = "v4.05"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -4876,7 +4876,7 @@ odatatab:add_button("我同意", function()
     end
 end)
 
-unlocktab = TuneablesandStatsTab:add_tab("解锁")
+unlocktab = TuneablesandStatsTab:add_tab("解锁##schlua")
 
 unlocktab:add_text("圣诞节庆货车/XMAS GIFT TRUCK")
 unlocktab:add_button("易可乐毛衣/eCola Festive Sweater", function()

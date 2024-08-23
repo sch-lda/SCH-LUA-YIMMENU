@@ -1,4 +1,4 @@
--- v4.06 -- 
+-- v4.07 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -28,10 +28,11 @@ Lua中用到的Globals、Locals广泛搬运自UnknownCheats论坛、Heist Contro
 对于lua编写可能有帮助的网站
     1.Yimmenu Lua API  https://github.com/YimMenu/YimMenu/tree/master/docs/lua
     2.GTA5 Native Reference (本机函数)  https://nativedb.dotindustries.dev/natives
-    3.GTA5 反编译脚本  https://github.com/Primexz/GTAV-Decompiled-Scripts
+    3.GTA5 反编译脚本  https://github.com/root-cause/v-decompiled-scripts
     4.PlebMaster (快速搜索模型Hash)  https://forge.plebmasters.de
     5.gta-v-data-dumps (查ptfx/声音/模型/动作,提供预览)  https://github.com/DurtyFree/gta-v-data-dumps
-    5.FiveM Native Reference  https://docs.fivem.net/docs/
+    6.CodeWalker(从GTAV中提取和修改模型、脚本等资源) https://github.com/dexyfex/CodeWalker
+    7.FiveM Native Reference  https://docs.fivem.net/docs/
 
 多语言维护者:
 简体中文:sch https://github.com/sch-lda
@@ -73,13 +74,14 @@ English: Drsexo (https://github.com/Drsexo)
     Websites that may be helpful for Lua writing:
     1. Yimmenu Lua API - https://github.com/YimMenu/YimMenu/tree/master/docs/lua
     2. GTA5 Native Reference (Native functions) - https://nativedb.dotindustries.dev/natives
-    3. GTA5 Decompiled Scripts - https://github.com/Primexz/GTAV-Decompiled-Scripts
+    3. GTA5 Decompiled Scripts - https://github.com/root-cause/v-decompiled-scripts
     4. PlebMaster (GTA5 data search & preview) - https://forge.plebmasters.de
     5. gta-v-data-dumps (Lookup PTFX/sounds/models) - https://github.com/DurtyFree/gta-v-data-dumps
-    6. FiveM Native Reference - https://docs.fivem.net/docs/
+    6. CodeWalker(view and edit scripts/resources in GTA V) - https://github.com/dexyfex/CodeWalker
+    7. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v4.06"
+luaversion = "v4.07"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -2208,6 +2210,10 @@ gentab:add_sameline()
 
 local checklkw = gentab:add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具.偶尔使用风险低)")
 
+gentab:add_sameline()
+
+local vehexportclasslock = gentab:add_checkbox("CEO载具交易锁定获取类型为 顶级(|)")
+
 local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(!!!!)")
 
 gentab:add_sameline()
@@ -2260,6 +2266,7 @@ gentab:add_button("减少摩托帮+地堡原材料消耗(!!,*)", function()
     tunables.set_int("GR_MANU_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
 
 end)
+
 gentab:add_sameline()
 
 gentab:add_button("夜总会出货最简单任务(|,*)", function()
@@ -2275,6 +2282,29 @@ gentab:add_button("夜总会出货最简单任务(|,*)", function()
     tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_FOLLOW_HELI", 0.01)
     tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_FIND_BUYER", 0.01)
 
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("CEO交易载具获取最简单任务(|,*)", function()
+
+    tunables.set_bool("IMPEXP_DISABLE_PARKED_CAR", false)		
+    tunables.set_bool("IMPEXP_DISABLE_MOVING_CAR", true)		
+    tunables.set_bool("IMPEXP_DISABLE_CARGOBOB", true)		
+    tunables.set_bool("IMPEXP_DISABLE_DRUNK_DRIVER", true)		
+    tunables.set_bool("IMPEXP_DISABLE_PHOTO_SHOOT", true)		
+    tunables.set_bool("IMPEXP_DISABLE_PICTURE_MESSAGE", true)		
+    tunables.set_bool("IMPEXP_DISABLE_CRIME_SCENE", true)		
+    tunables.set_bool("IMPEXP_DISABLE_PROTECTED_CAR", true)		
+    tunables.set_bool("IMPEXP_DISABLE_PARTY_CRASHER", true)		
+    tunables.set_bool("IMPEXP_DISABLE_CAR_MEET", true)		
+    tunables.set_bool("IMPEXP_DISABLE_POLICE_CHASE", true)		
+    tunables.set_bool("IMPEXP_DISABLE_EYE_SKY", true)		
+    tunables.set_bool("IMPEXP_DISABLE_BOMB_DEFUSE", true)		
+    tunables.set_bool("IMPEXP_DISABLE_LAPPED_RACE", true)		
+    tunables.set_bool("IMPEXP_DISABLE_STUNT_MAN", true)		
+    tunables.set_bool("IMPEXP_DISABLE_RACE_DRIVER", true)		
+    tunables.set_bool("IMPEXP_DISABLE_TAIL_VEHICLE", true)		
 end)
 
 gentab:add_separator()
@@ -3076,7 +3106,9 @@ end)
 gentab:add_sameline()
 
 gentab:add_button("移除CEO载具冷却", function()
-    tunables.set_int("GB_CALL_VEHICLE_COOLDOWN", 0)
+    tunables.set_int("GB_CALL_VEHICLE_COOLDOWN", 0) --呼叫ceo载具
+    tunables.set_int("IMPEXP_STEAL_COOLDOWN", 0) --载具交易获取载具
+    tunables.set_int("IMPEXP_SELL_COOLDOWN", 0) --载具交易出售载具
 end)
 
 gentab:add_sameline()
@@ -5897,6 +5929,12 @@ script.register_looped("schlua-dataservice", function(script)
         end
         --char* func_180() // Position - 0x7354   --return "CAS_LW_VEHI" /*Congratulations!~n~You won the podium vehicle.*/;
         --你可以自定义代码中的18来获取其他物品。设定为18是展台载具，16衣服，17经验，19现金，4载具折扣，11神秘礼品，15 chips不认识是什么
+    end
+
+    if  vehexportclasslock:is_enabled() then--锁定CEO交易载具获取载具类型为 顶级
+        if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("gb_vehicle_export")) ~= 0 then
+            locals_set_int(3274, "gb_vehicle_export", 836 + 461, 3)
+        end
     end
 
     if  bkeasyms:is_enabled() then--锁定摩托帮出货任务 

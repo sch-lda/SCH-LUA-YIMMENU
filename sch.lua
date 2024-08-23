@@ -1,4 +1,4 @@
--- v4.05 -- 
+-- v4.06 -- 
 --我不限制甚至鼓励玩家根据自己需求修改并定制符合自己使用习惯的lua.
 --有些代码我甚至加了注释说明这是用来干什么的和相关的global在反编译脚本中的定位标识
 --[[
@@ -79,7 +79,7 @@ English: Drsexo (https://github.com/Drsexo)
     6. FiveM Native Reference - https://docs.fivem.net/docs/
 ]]
 
-luaversion = "v4.05"
+luaversion = "v4.06"
 path = package.path
 if path:match("YimMenu") then
     log.info("sch-lua "..luaversion.." 仅供个人测试和学习使用,禁止商用")
@@ -816,66 +816,8 @@ table.insert(newvehtable, "yosemite1500")
     end)
 
 end)
-
-gentab:add_button("test03", function()
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(0, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --int hash     
-        end
-    end
-    log.info("int hash done")
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(1, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --float hash     
-        end
-    end
-    log.info("float hash done")
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(2, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --bool hash     
-        end
-    end
-    log.info("bool hash done")
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(3, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --string hash     
-        end
-    end
-    log.info("string hash done")
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(4, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --textlabel hash     
-        end
-    end
-    log.info("textlabel hash done")
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(5, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --data hash     
-        end
-    end
-    log.info("data hash done")
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(6, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --vector hash     
-        end
-    end
-    log.info("Vector hash done")
-    for i=0, 20000 do
-        hash = STATS.GET_STAT_HASH_FOR_CHARACTER_STAT_(7, i, 0)
-        if hash ~= 0 then
-            log.info(i..","..hash) --UserID hash     
-        end
-    end
-    log.info("UserId hash done")
-end)
 ]]
+
 --------------------------------------------------------------------------------------- TEST
 
 FRDList = {   --友方NPC白名单
@@ -2116,15 +2058,15 @@ end)
 
 gentab:add_separator()
 
-gentab:add_text("产业功能-中高风险") 
+gentab:add_text("产业功能-风险等级指示: |-几乎无风险 !!-中风险 !!!-高风险 !!!!-极高风险  *-临时修改,切换战局失效") 
 
-gentab:add_button("CEO仓库出货一键完成", function()
+gentab:add_button("CEO仓库出货一键完成(!!)", function()
     locals_set_int(3274, "gb_contraband_sell",547,99999) --Local_545.f_2 
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("摩托帮出货一键完成", function()
+gentab:add_button("摩托帮出货一键完成(!!)", function()
     if locals_get_int(3274, "gb_biker_contraband_sell",721) >= 1 then 
         locals_set_int(3274, "gb_biker_contraband_sell",826,15) --704 + 122 
     else
@@ -2143,7 +2085,7 @@ end)
 ]]
 gentab:add_sameline()
 
-gentab:add_button("地堡出货一键完成", function()
+gentab:add_button("地堡出货一键完成(!!)", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     locals_set_int(3274, "gb_gunrunning",1985,0) 
     --  gb_gunrunning.c Local_1211.f_774
@@ -2154,42 +2096,42 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("机库(空运)出货一键完成", function()
+gentab:add_button("机库(空运)出货一键完成(!!)", function()
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
     local integer = locals_get_int(3274, "gb_smuggler", 3012)  --Local_1934.f_1078 SMOT_HLPDROP2
     locals_set_int(3274, "gb_smuggler",2969,integer) --1934 + 1035  
     gui.show_message("自动出货","可能显示任务失败,但是你应该拿到钱了!")
 end)
 
-local ccrgsl = gentab:add_checkbox("CEO仓库出货锁定运输船")
+local ccrgsl = gentab:add_checkbox("仓库出货锁定运输船(|)")
 
 gentab:add_sameline()
 
-local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车")
+local bkeasyms = gentab:add_checkbox("摩托帮出货仅一辆卡车(|)")
 
 gentab:add_sameline()
 
-local bussp2 = gentab:add_checkbox("摩托帮产业地堡致幻剂高速生产(危)")
+local bussp2 = gentab:add_checkbox("摩托帮产业地堡致幻剂高速生产(!!!)")
 
 gentab:add_sameline()
 
-local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂极速生产(危)")
+local bussp = gentab:add_checkbox("摩托帮产业地堡致幻剂极速生产(!!!!)")
 
 gentab:add_sameline()
 
-local ncspup = gentab:add_checkbox("夜总会极速进货(危)")
+local ncspup = gentab:add_checkbox("夜总会极速进货(!!!!)")
 
-local ncspupa1 = gentab:add_checkbox("夜总会4倍速进货(危)")
-
-gentab:add_sameline()
-
-local ncspupa2 = gentab:add_checkbox("夜总会10倍速进货(危)")
+local ncspupa1 = gentab:add_checkbox("夜总会4倍速进货(!!!)")
 
 gentab:add_sameline()
 
-local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(危)")
+local ncspupa2 = gentab:add_checkbox("夜总会10倍速进货(!!!!)")
 
-gentab:add_button("摩托帮产业满原材料", function()
+gentab:add_sameline()
+
+local ncspupa3 = gentab:add_checkbox("夜总会20倍速进货(!!!!)")
+
+gentab:add_button("摩托帮产业满原材料(!!)", function()
     globals_set_int(3274, 1663174+1+1,1) --大麻 --freemode.c  	if (func_11921(148, "OR_PSUP_DEL" /* GXT: Hey, the supplies you purchased have arrived at the ~a~. Remember, paying for them eats into profits! */, &Var3, 0, -99, 0, 0, 0, 0))
     globals_set_int(3274, 1663174+1+2,1) --冰毒
     globals_set_int(3274, 1663174+1+3,1) --假钞
@@ -2201,24 +2143,24 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("地堡满原材料", function()
+gentab:add_button("地堡满原材料(!!)", function()
     globals_set_int(3274, 1663174+1+5,1) --bunker
     gui.show_message("自动补货","全部完成")
 end)
 
 gentab:add_sameline()
 
-local autorespl = gentab:add_checkbox("产业自动补货(存在bug)")
+local autorespl = gentab:add_checkbox("产业自动补货(可能崩溃)")
 
 gentab:add_sameline()
 
-gentab:add_button("夜总会满人气", function()
+gentab:add_button("夜总会满人气(|)", function()
     stats.set_int("MPX_CLUB_POPULARITY", 10000)
 end)
 
 gentab:add_sameline()
 
-gentab:add_button("CEO仓库员工进货一次", function()
+gentab:add_button("CEO仓库员工进货一次(!!)", function()
     --freemode.c void func_17501(int iParam0, BOOL bParam1) // Position - 0x56C7B6
     packed_stat_set_bool(32359,true) --无需更新
     packed_stat_set_bool(32360,true) --无需更新
@@ -2229,7 +2171,7 @@ end)
 
 gentab:add_sameline()
 
-gentab:add_button("机库员工进货一次", function()
+gentab:add_button("机库员工进货一次(!!)", function()
     packed_stat_set_bool(36828,true)  --无需更新
 end)
 
@@ -2237,15 +2179,15 @@ local checkCEOcargo = gentab:add_checkbox("锁定仓库员工单次进货数量�
 
 gentab:add_sameline()
 
-local inputCEOcargo = gentab:add_input_int("个板条箱")
+local inputCEOcargo = gentab:add_input_int("个板条箱(!!)")
 
 local check4 = gentab:add_checkbox("锁定机库员工单次进货数量为")
 
 gentab:add_sameline()
 
-local iputint3 = gentab:add_input_int("箱")
+local iputint3 = gentab:add_input_int("箱(!!)")
 
-gentab:add_button("夜总会保险箱30万循环10次", function()
+gentab:add_button("夜总会保险箱30万循环10次(!!!)", function()
     script.run_in_fiber(function (ncsafeloop)
         a2 =0
         while a2 < 10 do --循环次数
@@ -2264,11 +2206,79 @@ end)
 
 gentab:add_sameline()
 
-local checklkw = gentab:add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具)")
+local checklkw = gentab:add_checkbox("赌场转盘抽车(转盘可能显示为其他物品,但你确实会得到载具.偶尔使用风险低)")
 
-local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(高危)")
+local checkxsdped = gentab:add_checkbox("NPC掉落2000元循环(!!!!)")
+
+gentab:add_sameline()
+
+gentab:add_button("禁止产业突袭(|,*)", function()
+    
+    tunables.set_bool("EXEC_DISABLE_DEFEND_MISSIONS", true)
+    tunables.set_bool("EXEC_DISABLE_DEFEND_FLEEING", true)
+    tunables.set_bool("EXEC_DISABLE_DEFEND_UNDER_ATTACK", true)
+    tunables.set_float("EXEC_WAREHOUSE_STOCK_DEFEND_THRESHOLD", 9999)
+
+    tunables.set_float("BB_DEFEND_MISSIONS_STOCK_THRESHOLD_FOR_MISSION_LAUNCH_DEFAULT", 9999) --Nightclub
+    tunables.set_float("BB_DEFEND_MISSIONS_STOCK_THRESHOLD_FOR_MISSION_LAUNCH_UPGRADED", 9999)
+
+    tunables.set_bool("BIKER_DISABLE_DEFEND_GETAWAY", true)
+    tunables.set_bool("BIKER_DISABLE_DEFEND_SHOOTOUT", true)
+    tunables.set_bool("BIKER_DISABLE_DEFEND_CRASH_DEAL", true)
+    tunables.set_bool("BIKER_DISABLE_DEFEND_SNITCH", true)
+    tunables.set_bool("BIKER_DISABLE_DEFEND_RETRIEVAL", true)
+    tunables.set_int("BIKER_DEFEND_GETAWAY_PRODUCT_THRESHOLD", 9999)
+    tunables.set_int("BIKER_DEFEND_SHOOTOUT_PRODUCT_THRESHOLD", 9999)
+    tunables.set_int("BIKER_DEFEND_CRASH_DEAL_PRODUCT_THRESHOLD", 9999)
+    tunables.set_int("BIKER_DEFEND_SNITCH_PRODUCT_THRESHOLD", 9999)
+    tunables.set_int("BIKER_DEFEND_RETRIEVAL_PRODUCT_THRESHOLD", 9999)
+
+    tunables.set_int("GR_GENERAL_STOCK_LEVEL_LAUNCH_THRESHOLD", 9999)
+end)
+
+gentab:add_sameline()
+
+gentab:add_button("减少摩托帮+地堡原材料消耗(!!,*)", function()
+
+    tunables.set_int("BIKER_WEED_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("BIKER_WEED_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+    tunables.set_int("BIKER_METH_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("BIKER_METH_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+    tunables.set_int("BIKER_CRACK_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("BIKER_CRACK_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+    tunables.set_int("BIKER_FAKEIDS_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("BIKER_FAKEIDS_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+    tunables.set_int("BIKER_COUNTERCASH_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("BIKER_COUNTERCASH_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+
+    tunables.set_int("BIKER_ACID_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("BIKER_ACID_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+
+    tunables.set_int("GR_RESEARCH_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("GR_RESEARCH_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+    tunables.set_int("GR_MANU_MATERIAL_PRODUCT_COST", 1)
+    tunables.set_int("GR_MANU_MATERIAL_PRODUCT_COST_UPGRADE_REDUCTION", 1)
+
+end)
+gentab:add_sameline()
+
+gentab:add_button("夜总会出货最简单任务(|,*)", function()
+
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_SINGLE_DROP", 2)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_MULTI_DROP", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_HACK_DROP", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_ROADBLOCK", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_PROTECT_BUYER", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_UNDERCOVER_COPS", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_OFFSHORE_TRANSFER", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_NOT_A_SCRATCH", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_FOLLOW_HELI", 0.01)
+    tunables.set_float("BB_SELL_MISSIONS_WEIGHTING_FIND_BUYER", 0.01)
+
+end)
 
 gentab:add_separator()
+
 gentab:add_text("传送")
 
 gentab:add_button("导航点(粒子效果)", function()
@@ -4651,6 +4661,9 @@ misc_tu_lock = t_ottab:add_checkbox("应用##miscv") --这只是一个复选框,
 biker_p_val_mtp = t_ottab:add_input_float("摩托帮产业和致幻剂产品价值倍率")
 biker_far_mtp = t_ottab:add_input_float("摩托帮产业和致幻剂长途销售奖励倍率")
 
+bk_p_val_mtp = t_ottab:add_input_float("地堡产品价值倍率")
+bk_far_mtp = t_ottab:add_input_float("地堡产品长途销售奖励倍率")
+
 biker_cap_0 = t_ottab:add_input_int("可卡因当前库存") --HUD_CASH 
 biker_cap_1 = t_ottab:add_input_int("大麻当前库存") --HUD_CASH 
 biker_cap_2 = t_ottab:add_input_int("冰毒当前库存") --HUD_CASH 
@@ -4670,6 +4683,9 @@ biker_cap_max_6 = t_ottab:add_input_int("致幻剂实验室产品最大库存") 
 t_ottab:add_button("读取##miscv2", function()
     biker_p_val_mtp:set_value(tunables.get_float(-823848572))
     biker_far_mtp:set_value(tunables.get_float("BIKER_SELL_PRODUCT_FAR_MODIFIER"))
+    bk_p_val_mtp:set_value(tunables.get_float("GR_SELL_PRODUCT_LOCAL_MODIFIER"))
+    bk_far_mtp:set_value(tunables.get_float("GR_SELL_PRODUCT_FAR_MODIFIER"))
+
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
     biker_cap_0:set_value(globals_get_int(3274, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 0 * 13)+1)) 
     biker_cap_1:set_value(globals_get_int(3274, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 1 * 13)+1)) 
@@ -4690,6 +4706,8 @@ t_ottab:add_sameline()
 t_ottab:add_button("应用##miscv2", function()
     tunables.set_float(-823848572, biker_p_val_mtp:get_value())
     tunables.set_float("BIKER_SELL_PRODUCT_FAR_MODIFIER", biker_far_mtp:get_value())
+    tunables.set_float("GR_SELL_PRODUCT_LOCAL_MODIFIER", bk_p_val_mtp:get_value())
+    tunables.set_float("GR_SELL_PRODUCT_FAR_MODIFIER", bk_far_mtp:get_value())
     local playerid = stats.get_int("MPPLY_LAST_MP_CHAR") --读取角色ID
 
     globals_set_int(3274, (1845281 + 1 + (playerid * 877) + 268 + 197 + 1 + 0 * 13)+1 , biker_cap_0:get_value()) 
@@ -4923,6 +4941,62 @@ unlocktab:add_button("洛圣都战栗队套装/The Los Santos Panic outfit", fun
 end)
 unlocktab:add_button("海岸警卫队套装/Coast Guard Outfit outfit", function()
     packed_stat_set_bool(42111, true) --fm_content_vehrob_cargo_ship CSF_T_UNLKOTFT
+end)
+
+unlocktab:add_separator()
+
+unlocktab:add_button("所有地堡研究", function()
+    packed_stat_set_bool(15381, true)
+    packed_stat_set_bool(15382, true)
+    packed_stat_set_bool(15428, true)
+    packed_stat_set_bool(15429, true)
+    packed_stat_set_bool(15430, true)
+    packed_stat_set_bool(15431, true)
+    packed_stat_set_bool(15491, true)
+    packed_stat_set_bool(15432, true)
+    packed_stat_set_bool(15433, true)
+    packed_stat_set_bool(15434, true)
+    packed_stat_set_bool(15435, true)
+    packed_stat_set_bool(15436, true)
+    packed_stat_set_bool(15437, true)
+    packed_stat_set_bool(15438, true)
+    packed_stat_set_bool(15439, true)
+    packed_stat_set_bool(15447, true)
+    packed_stat_set_bool(15448, true)
+    packed_stat_set_bool(15449, true)
+    packed_stat_set_bool(15450, true)
+    packed_stat_set_bool(15451, true)
+    packed_stat_set_bool(15452, true)
+    packed_stat_set_bool(15453, true)
+    packed_stat_set_bool(15454, true)
+    packed_stat_set_bool(15455, true)
+    packed_stat_set_bool(15456, true)
+    packed_stat_set_bool(15457, true)
+    packed_stat_set_bool(15458, true)
+    packed_stat_set_bool(15459, true)
+    packed_stat_set_bool(15460, true)
+    packed_stat_set_bool(15461, true)
+    packed_stat_set_bool(15462, true)
+    packed_stat_set_bool(15463, true)
+    packed_stat_set_bool(15464, true)
+    packed_stat_set_bool(15465, true)
+    packed_stat_set_bool(15466, true)
+    packed_stat_set_bool(15467, true)
+    packed_stat_set_bool(15468, true)
+    packed_stat_set_bool(15469, true)
+    packed_stat_set_bool(15470, true)
+    packed_stat_set_bool(15471, true)
+    packed_stat_set_bool(15472, true)
+    packed_stat_set_bool(15473, true)
+    packed_stat_set_bool(15474, true)
+    packed_stat_set_bool(15492, true)
+    packed_stat_set_bool(15493, true)
+    packed_stat_set_bool(15494, true)
+    packed_stat_set_bool(15495, true)
+    packed_stat_set_bool(15496, true)
+    packed_stat_set_bool(15497, true)
+    packed_stat_set_bool(15498, true)
+    packed_stat_set_bool(15499, true)
 end)
 
 tstaba1 = TuneablesandStatsTab:add_tab("杂项")
